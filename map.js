@@ -72,7 +72,7 @@ fetch('./data/businesses.json')
 
           const icon = L.icon({
               iconUrl: type.icon,
-              iconSize: [32, 32],
+              iconSize: [28, 28],
               iconAnchor: [16, 32],
               popupAnchor: [0, -32]
           });
