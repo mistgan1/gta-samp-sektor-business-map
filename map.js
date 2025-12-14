@@ -11,13 +11,33 @@ const map = L.map('map', {
     maxZoom: 2
 });
 
+const BUSINESS_TYPES = {
+    gas: {
+        name: 'АЗС',
+        icon: 'assets/icons/gas.png'
+    },
+    cafe: {
+        name: 'Кафе',
+        icon: 'assets/icons/cafe.png'
+    },
+    petshop: {
+        name: 'Зоомагазин',
+        icon: 'assets/icons/petshop.png'
+    },
+    ranch: {
+        name: 'Ранчо',
+        icon: 'assets/icons/ranch.png'
+    },
+    gold: {
+        name: 'Золотая шахта',
+        icon: 'assets/icons/gold.png'
+    }
+};
+
+
 // Фон
 L.imageOverlay('assets/map.jpg', bounds).addTo(map);
 map.fitBounds(bounds);
-
-// ТЕСТ: центр карты
-const testPos = sampToMap(0, 0);
-L.marker(testPos).addTo(map).bindTooltip('ЦЕНТР SA');
 
 // ===============================
 // ПЕРЕВОД КООРДИНАТ ИЗ SA:MP
@@ -37,24 +57,39 @@ function sampToMap(x, y) {
 // ЗАГРУЗКА БИЗНЕСОВ
 // ===============================
 
-fetch('data/businesses.json')
-    .then(r => r.json())
-    .then(businesses => {
-        businesses.forEach(b => {
-            const pos = sampToMap(b.x, b.y);
+fetch('./data/businesses.json')
+  .then(r => r.json())
+  .then(businesses => {
+      businesses.forEach(b => {
 
-            const marker = L.marker(pos, {
-                icon: L.divIcon({
-                    className: '',
-                    html: `<div class="business-marker"></div>`,
-                    iconSize: [14, 14],
-                    iconAnchor: [7, 7]
-                })
-            }).addTo(map);
+          const pos = sampToMap(b.x, b.y);
+          const type = BUSINESS_TYPES[b.type];
 
-            marker.bindTooltip(
-                `<b>${b.name}</b><br>ID: ${b.id}`,
-                { direction: 'top', offset: [0, -10] }
-            );
-        });
-    });
+          if (!type) {
+              console.warn('Неизвестный тип бизнеса:', b.type);
+              return;
+          }
+
+          const icon = L.icon({
+              iconUrl: type.icon,
+              iconSize: [32, 32],
+              iconAnchor: [16, 32],
+              popupAnchor: [0, -32]
+          });
+
+          const marker = L.marker(pos, { icon }).addTo(map);
+
+          marker.bindTooltip(
+              `
+              <b>${b.name}</b><br>
+              Тип: ${type.name}<br>
+              Владелец: ${b.owner}
+              `,
+              {
+                  direction: 'top',
+                  offset: [0, -10],
+                  opacity: 0.95
+              }
+          );
+      });
+  });
