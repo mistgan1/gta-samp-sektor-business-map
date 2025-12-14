@@ -29,7 +29,7 @@ L.marker(testPos).addTo(map).bindTooltip('ЦЕНТР SA');
 
 function sampToMap(x, y) {
     const mapX = (x + 3000) / 6000 * MAP_SIZE;
-    const mapY = (3000 - y) / 6000 * MAP_SIZE; // инверсия Y
+    const mapY = (y + 3000) / 6000 * MAP_SIZE;
     return [mapY, mapX];
 }
 
