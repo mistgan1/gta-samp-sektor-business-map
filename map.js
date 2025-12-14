@@ -15,6 +15,10 @@ const map = L.map('map', {
 L.imageOverlay('assets/map.jpg', bounds).addTo(map);
 map.fitBounds(bounds);
 
+// ТЕСТ: центр карты
+const testPos = sampToMap(0, 0);
+L.marker(testPos).addTo(map).bindTooltip('ЦЕНТР SA');
+
 // ===============================
 // ПЕРЕВОД КООРДИНАТ ИЗ SA:MP
 // ===============================
