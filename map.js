@@ -1,96 +1,66 @@
-// Размер карты (подгоняется под твоё изображение)
+// ===============================
+// НАСТРОЙКИ КАРТЫ
+// ===============================
+
 const MAP_SIZE = 6144;
+const PADDING = MAP_SIZE * 0.3;
 
-// Границы карты
-const bounds = [[0, 0], [MAP_SIZE, MAP_SIZE]];
+// Где лежит ИЗОБРАЖЕНИЕ
+const imageBounds = [
+    [0, 0],
+    [MAP_SIZE, MAP_SIZE]
+];
 
-const PADDING = MAP_SIZE * 0.25;
-
-const extendedBounds = [
+// Логические границы МИРА (больше картинки)
+const worldBounds = [
     [-PADDING, -PADDING],
     [MAP_SIZE + PADDING, MAP_SIZE + PADDING]
 ];
 
+// ===============================
+// ИНИЦИАЛИЗАЦИЯ КАРТЫ
+// ===============================
 
-// Leaflet карта
 const map = L.map('map', {
     crs: L.CRS.Simple,
     minZoom: -2,
-    maxZoom: 2,
-    maxBounds: extendedBounds,
-    maxBoundsViscosity: 0 
+    maxZoom: 2
 });
 
+// Фон
+L.imageOverlay('assets/map.jpg', imageBounds).addTo(map);
 
+// Стартовое положение — по картинке
+map.fitBounds(imageBounds);
 
+// ===============================
+// МОБИЛЬНЫЕ УЛУЧШЕНИЯ
+// ===============================
 
-
-// Мобильные улучшения
 if (L.Browser.mobile) {
-    map.dragging.enable();
     map.tap = true;
     map.touchZoom.enable();
     map.doubleClickZoom.disable();
 }
 
+// ===============================
+// ТИПЫ ОБЪЕКТОВ
+// ===============================
 
 const BUSINESS_TYPES = {
-    gas: {
-        name: 'Бизнес',
-        icon: 'assets/icons/gas.png'
-    },
-    cafe: {
-        name: 'Бизнес',
-        icon: 'assets/icons/cafe.png'
-    },
-    petshop: {
-        name: 'Бизнес',
-        icon: 'assets/icons/petshop.png'
-    },
-    ranch: {
-        name: 'Бизнес',
-        icon: 'assets/icons/ranch.png'
-    },
-    gold: {
-        name: 'Бизнес',
-        icon: 'assets/icons/gold.png'
-    },
-    icecream: {
-        name: 'Бизнес',
-        icon: 'assets/icons/icecream.png'
-    },
-    hotdog: {
-        name: 'Бизнес',
-        icon: 'assets/icons/hotdog.png'
-    },
-    canteen: {
-        name: 'Бизнес',
-        icon: 'assets/icons/canteen.png'
-    }
+    gas: { name: 'Бизнес', icon: 'assets/icons/gas.png' },
+    cafe: { name: 'Бизнес', icon: 'assets/icons/cafe.png' },
+    petshop: { name: 'Бизнес', icon: 'assets/icons/petshop.png' },
+    ranch: { name: 'Бизнес', icon: 'assets/icons/ranch.png' },
+    gold: { name: 'Бизнес', icon: 'assets/icons/gold.png' },
+    icecream: { name: 'Бизнес', icon: 'assets/icons/icecream.png' },
+    hotdog: { name: 'Бизнес', icon: 'assets/icons/hotdog.png' },
+    canteen: { name: 'Бизнес', icon: 'assets/icons/canteen.png' }
 };
-
-
-// Фон
-L.imageOverlay('assets/map.jpg', bounds).addTo(map);
-map.fitBounds(bounds);
-map.setMaxBounds(bounds);
-map.on('zoomend', () => {
-    map.panInsideBounds(bounds, {
-        animate: true,
-        duration: 0.25
-    });
-});
-
-
-
 
 // ===============================
 // ПЕРЕВОД КООРДИНАТ ИЗ SA:MP
 // ===============================
-
-// GTA SA координаты:
-// X: -3000 ... +3000
-// Y: -3000 ... +3000
 
 function sampToMap(x, y) {
     const mapX = (x + 3000) / 6000 * MAP_SIZE;
@@ -99,42 +69,37 @@ function sampToMap(x, y) {
 }
 
 // ===============================
-// ЗАГРУЗКА БИЗНЕСОВ
+// ЗАГРУЗКА ОБЪЕКТОВ
 // ===============================
 
 fetch('./data/businesses.json')
-  .then(r => r.json())
-  .then(businesses => {
-      businesses.forEach(b => {
+    .then(r => r.json())
+    .then(businesses => {
+        businesses.forEach(b => {
+            const pos = sampToMap(b.x, b.y);
+            const type = BUSINESS_TYPES[b.type];
 
-          const pos = sampToMap(b.x, b.y);
-          const type = BUSINESS_TYPES[b.type];
+            if (!type) return;
 
-          if (!type) {
-              console.warn('Неизвестный тип бизнеса:', b.type);
-              return;
-          }
+            const icon = L.icon({
+                iconUrl: type.icon,
+                iconSize: [28, 28],
+                iconAnchor: [14, 14],
+                popupAnchor: [0, -14]
+            });
 
-          const icon = L.icon({
-              iconUrl: type.icon,
-              iconSize: [28, 28],
-              iconAnchor: [14, 14],
-              popupAnchor: [0, -14]
-          });
+            const marker = L.marker(pos, { icon }).addTo(map);
 
-          const marker = L.marker(pos, { icon }).addTo(map);
-
-          marker.bindTooltip(
-              `
-              <b>${b.name}</b><br>
-              Тип: ${type.name}<br>
-              Владелец: ${b.owner}
-              `,
-              {
-                  direction: 'top',
-                  offset: [0, -10],
-                  opacity: 0.95
-              }
-          );
-      });
-  });
+            marker.bindTooltip(
+                `<b>${b.name}</b><br>
+                 Тип: ${type.name}<br>
+                 Владелец: ${b.owner}`,
+                {
+                    direction: 'top',
+                    offset: [0, -10],
+                    opacity: 0.95,
+                    sticky: true
+                }
+            );
+        });
+    });
