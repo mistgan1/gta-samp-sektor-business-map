@@ -8,8 +8,12 @@ const bounds = [[0, 0], [MAP_SIZE, MAP_SIZE]];
 const map = L.map('map', {
     crs: L.CRS.Simple,
     minZoom: -2,
-    maxZoom: 2
+    maxZoom: 2,
+    maxBounds: bounds,
+    maxBoundsViscosity: 1.0
 });
+
+
 
 // Мобильные улучшения
 if (L.Browser.mobile) {
@@ -59,6 +63,12 @@ const BUSINESS_TYPES = {
 // Фон
 L.imageOverlay('assets/map.jpg', bounds).addTo(map);
 map.fitBounds(bounds);
+map.setMaxBounds(bounds);
+map.on('zoomend', () => {
+    map.panInsideBounds(bounds, { animate: false });
+});
+
+
 
 // ===============================
 // ПЕРЕВОД КООРДИНАТ ИЗ SA:MP
