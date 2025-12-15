@@ -69,3 +69,7 @@ body {
         filter: none;
     }
 }
+
+.leaflet-bar button:hover {
+    background: #222;
+}

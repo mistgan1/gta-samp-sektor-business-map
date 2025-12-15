@@ -4,6 +4,8 @@
 
 const MAP_SIZE = 6144;
 const PADDING = MAP_SIZE * 1.5; 
+const MAP_CENTER = [MAP_SIZE / 2, MAP_SIZE / 2];
+
 
 const worldBounds = [
     [-PADDING, -PADDING],
@@ -101,3 +103,38 @@ fetch('./data/businesses.json')
             );
         });
     });
+// ===============================
+// КНОПКА ЦЕНТРИРОВАНИЯ
+// ===============================
+
+const CenterControl = L.Control.extend({
+    options: {
+        position: 'topleft'
+    },
+
+    onAdd: function () {
+        const btn = L.DomUtil.create('button', 'leaflet-bar');
+
+        btn.innerHTML = '📍';
+        btn.title = 'Вернуться в центр карты';
+        btn.style.width = '30px';
+        btn.style.height = '30px';
+        btn.style.cursor = 'pointer';
+        btn.style.fontSize = '16px';
+        btn.style.background = '#111';
+        btn.style.color = '#fff';
+        btn.style.border = 'none';
+
+        L.DomEvent.disableClickPropagation(btn);
+        L.DomEvent.on(btn, 'click', () => {
+            map.flyTo(MAP_CENTER, map.getZoom(), {
+                animate: true,
+                duration: 0.6
+            });
+        });
+
+        return btn;
+    }
+});
+
+map.addControl(new CenterControl());
