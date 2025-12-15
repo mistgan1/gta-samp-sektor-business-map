@@ -39,6 +39,10 @@ const BUSINESS_TYPES = {
     hotdog: {
         name: 'Фабрика сосисок',
         icon: 'assets/icons/hotdog.png'
+    },
+    canteen: {
+        name: 'Тюремная столовая',
+        icon: 'assets/icons/canteen.png'
     }
 };
 
