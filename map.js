@@ -1,5 +1,5 @@
 // Размер карты (подгоняется под твоё изображение)
-const MAP_SIZE = 6000;
+const MAP_SIZE = 6144;
 
 // Границы карты
 const bounds = [[0, 0], [MAP_SIZE, MAP_SIZE]];
@@ -10,6 +10,15 @@ const map = L.map('map', {
     minZoom: -2,
     maxZoom: 2
 });
+
+// Мобильные улучшения
+if (L.Browser.mobile) {
+    map.dragging.enable();
+    map.tap = true;
+    map.touchZoom.enable();
+    map.doubleClickZoom.disable();
+}
+
 
 const BUSINESS_TYPES = {
     gas: {
@@ -85,8 +94,8 @@ fetch('./data/businesses.json')
           const icon = L.icon({
               iconUrl: type.icon,
               iconSize: [28, 28],
-              iconAnchor: [16, 32],
-              popupAnchor: [0, -32]
+              iconAnchor: [14, 14],
+              popupAnchor: [0, -14]
           });
 
           const marker = L.marker(pos, { icon }).addTo(map);
