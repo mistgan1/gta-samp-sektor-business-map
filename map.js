@@ -4,14 +4,23 @@ const MAP_SIZE = 6144;
 // Границы карты
 const bounds = [[0, 0], [MAP_SIZE, MAP_SIZE]];
 
+const PADDING = MAP_SIZE * 0.25;
+
+const extendedBounds = [
+    [-PADDING, -PADDING],
+    [MAP_SIZE + PADDING, MAP_SIZE + PADDING]
+];
+
+
 // Leaflet карта
 const map = L.map('map', {
     crs: L.CRS.Simple,
     minZoom: -2,
     maxZoom: 2,
-    maxBounds: bounds,
-    maxBoundsViscosity: 0.4
+    maxBounds: extendedBounds,
+    maxBoundsViscosity: 0 
 });
+
 
 
 
