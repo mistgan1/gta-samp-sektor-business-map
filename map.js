@@ -13,35 +13,35 @@ const map = L.map('map', {
 
 const BUSINESS_TYPES = {
     gas: {
-        name: 'АЗС',
+        name: 'Бизнес',
         icon: 'assets/icons/gas.png'
     },
     cafe: {
-        name: 'Кафе',
+        name: 'Бизнес',
         icon: 'assets/icons/cafe.png'
     },
     petshop: {
-        name: 'Зоомагазин',
+        name: 'Бизнес',
         icon: 'assets/icons/petshop.png'
     },
     ranch: {
-        name: 'Ранчо',
+        name: 'Бизнес',
         icon: 'assets/icons/ranch.png'
     },
     gold: {
-        name: 'Золотая шахта',
+        name: 'Бизнес',
         icon: 'assets/icons/gold.png'
     },
     iceream: {
-        name: 'Фабрика мороженного',
+        name: 'Бизнес',
         icon: 'assets/icons/icecream.png'
     },
     hotdog: {
-        name: 'Фабрика сосисок',
+        name: 'Бизнес',
         icon: 'assets/icons/hotdog.png'
     },
     canteen: {
-        name: 'Тюремная столовая',
+        name: 'Бизнес',
         icon: 'assets/icons/canteen.png'
     }
 };
