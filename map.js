@@ -117,8 +117,8 @@ const CenterControl = L.Control.extend({
 
         btn.innerHTML = '📍';
         btn.title = 'Вернуться в центр карты';
-        btn.style.width = '30px';
-        btn.style.height = '35px';
+        btn.style.width = '32px';
+        btn.style.height = '30px';
         btn.style.cursor = 'pointer';
         btn.style.fontSize = '16px';
         btn.style.background = '#fff';
