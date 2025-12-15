@@ -10,8 +10,9 @@ const map = L.map('map', {
     minZoom: -2,
     maxZoom: 2,
     maxBounds: bounds,
-    maxBoundsViscosity: 1.0
+    maxBoundsViscosity: 0.4
 });
+
 
 
 
@@ -65,8 +66,12 @@ L.imageOverlay('assets/map.jpg', bounds).addTo(map);
 map.fitBounds(bounds);
 map.setMaxBounds(bounds);
 map.on('zoomend', () => {
-    map.panInsideBounds(bounds, { animate: false });
+    map.panInsideBounds(bounds, {
+        animate: true,
+        duration: 0.25
+    });
 });
+
 
 
 
