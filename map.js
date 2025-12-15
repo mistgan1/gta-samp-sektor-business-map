@@ -31,6 +31,14 @@ const BUSINESS_TYPES = {
     gold: {
         name: 'Золотая шахта',
         icon: 'assets/icons/gold.png'
+    },
+    iceream: {
+        name: 'Фабрика мороженного',
+        icon: 'assets/icons/icecream.png'
+    },
+    hotdog: {
+        name: 'Фабрика сосисок',
+        icon: 'assets/icons/hotdog.png'
     }
 };
 
