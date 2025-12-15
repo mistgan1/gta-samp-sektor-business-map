@@ -3,18 +3,16 @@
 // ===============================
 
 const MAP_SIZE = 6144;
-const PADDING = MAP_SIZE * 0.3;
+const PADDING = MAP_SIZE * 1.5; 
 
-// Где лежит ИЗОБРАЖЕНИЕ
-const imageBounds = [
-    [0, 0],
-    [MAP_SIZE, MAP_SIZE]
-];
-
-// Логические границы МИРА (больше картинки)
 const worldBounds = [
     [-PADDING, -PADDING],
     [MAP_SIZE + PADDING, MAP_SIZE + PADDING]
+];
+
+const imageBounds = [
+    [0, 0],
+    [MAP_SIZE, MAP_SIZE]
 ];
 
 // ===============================
@@ -24,13 +22,13 @@ const worldBounds = [
 const map = L.map('map', {
     crs: L.CRS.Simple,
     minZoom: -2,
-    maxZoom: 2
+    maxZoom: 2,
+    maxBounds: worldBounds,
+    maxBoundsViscosity: 0.0
 });
 
 // Фон
 L.imageOverlay('assets/map.jpg', imageBounds).addTo(map);
-
-// Стартовое положение — по картинке
 map.fitBounds(imageBounds);
 
 // ===============================
