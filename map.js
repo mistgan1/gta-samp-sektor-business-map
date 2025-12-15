@@ -32,7 +32,7 @@ const BUSINESS_TYPES = {
         name: 'Бизнес',
         icon: 'assets/icons/gold.png'
     },
-    iceream: {
+    icecream: {
         name: 'Бизнес',
         icon: 'assets/icons/icecream.png'
     },
