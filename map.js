@@ -1,11 +1,6 @@
-// ===============================
-// НАСТРОЙКИ КАРТЫ
-// ===============================
-
 const MAP_SIZE = 6144;
-const PADDING = MAP_SIZE * 1.5; 
+const PADDING = MAP_SIZE * 1.5;
 const MAP_CENTER = [MAP_SIZE / 2, MAP_SIZE / 2];
-
 
 const worldBounds = [
     [-PADDING, -PADDING],
@@ -17,50 +12,16 @@ const imageBounds = [
     [MAP_SIZE, MAP_SIZE]
 ];
 
-// ===============================
-// ИНИЦИАЛИЗАЦИЯ КАРТЫ
-// ===============================
-
 const map = L.map('map', {
     crs: L.CRS.Simple,
     minZoom: -2,
     maxZoom: 2,
     maxBounds: worldBounds,
-    maxBoundsViscosity: 0.0
+    maxBoundsViscosity: 0
 });
 
-// Фон
 L.imageOverlay('assets/map.jpg', imageBounds).addTo(map);
 map.fitBounds(imageBounds);
-// ===============================
-// ПЕРЕХОД ПО ССЫЛКЕ С КООРДИНАТАМИ
-// ===============================
-
-const params = new URLSearchParams(window.location.search);
-
-if (params.has('x') && params.has('y')) {
-    const x = parseFloat(params.get('x'));
-    const y = parseFloat(params.get('y'));
-    const z = params.has('z') ? parseInt(params.get('z')) : 0;
-
-    const pos = sampToMap(x, y);
-
-    map.setView(pos, z, { animate: false });
-
-    L.marker(pos)
-        .addTo(map)
-        .bindPopup(`
-            <b>Отметка по ссылке</b><br>
-            X: ${x}<br>
-            Y: ${y}
-        `)
-        .openPopup();
-}
-
-
-// ===============================
-// МОБИЛЬНЫЕ УЛУЧШЕНИЯ
-// ===============================
 
 if (L.Browser.mobile) {
     map.tap = true;
@@ -68,205 +29,133 @@ if (L.Browser.mobile) {
     map.doubleClickZoom.disable();
 }
 
-// ===============================
-// ТИПЫ ОБЪЕКТОВ
-// ===============================
-
 const BUSINESS_TYPES = {
-    gas: { name: 'Бизнес', icon: 'assets/icons/gas.png' },
-    cafe: { name: 'Бизнес', icon: 'assets/icons/cafe.png' },
-    petshop: { name: 'Бизнес', icon: 'assets/icons/petshop.png' },
-    ranch: { name: 'Бизнес', icon: 'assets/icons/ranch.png' },
-    gold: { name: 'Бизнес', icon: 'assets/icons/gold.png' },
-    icecream: { name: 'Бизнес', icon: 'assets/icons/icecream.png' },
-    hotdog: { name: 'Бизнес', icon: 'assets/icons/hotdog.png' },
-    canteen: { name: 'Бизнес', icon: 'assets/icons/canteen.png' }
+    gas: { icon: 'assets/icons/gas.png' },
+    cafe: { icon: 'assets/icons/cafe.png' },
+    petshop: { icon: 'assets/icons/petshop.png' },
+    ranch: { icon: 'assets/icons/ranch.png' },
+    gold: { icon: 'assets/icons/gold.png' },
+    icecream: { icon: 'assets/icons/icecream.png' },
+    hotdog: { icon: 'assets/icons/hotdog.png' },
+    canteen: { icon: 'assets/icons/canteen.png' }
 };
 
+function sampToMap(x, y) {
+    return [
+        (y + 3000) / 6000 * MAP_SIZE,
+        (x + 3000) / 6000 * MAP_SIZE
+    ];
+}
+
+function mapToSamp(lat, lng) {
+    return {
+        x: +((lng / MAP_SIZE) * 6000 - 3000).toFixed(4),
+        y: +((lat / MAP_SIZE) * 6000 - 3000).toFixed(4)
+    };
+}
 
 function copyToClipboard(text) {
     if (navigator.clipboard && window.isSecureContext) {
         navigator.clipboard.writeText(text);
     } else {
-        const textarea = document.createElement('textarea');
-        textarea.value = text;
-        textarea.style.position = 'fixed';
-        textarea.style.left = '-9999px';
-        document.body.appendChild(textarea);
-        textarea.focus();
-        textarea.select();
-
-        try {
-            document.execCommand('copy');
-        } catch (err) {
-            console.warn('Не удалось скопировать ссылку');
-        }
-
-        document.body.removeChild(textarea);
+        const t = document.createElement('textarea');
+        t.value = text;
+        t.style.position = 'fixed';
+        t.style.left = '-9999px';
+        document.body.appendChild(t);
+        t.select();
+        document.execCommand('copy');
+        document.body.removeChild(t);
     }
 }
 
-// ===============================
-// ПЕРЕВОД КООРДИНАТ ИЗ SA:MP
-// ===============================
-
-function sampToMap(x, y) {
-    const mapX = (x + 3000) / 6000 * MAP_SIZE;
-    const mapY = (y + 3000) / 6000 * MAP_SIZE;
-    return [mapY, mapX];
-}
-function mapToSamp(lat, lng) {
-    const x = (lng / MAP_SIZE) * 6000 - 3000;
-    const y = (lat / MAP_SIZE) * 6000 - 3000;
-    return {
-        x: Number(x.toFixed(4)),
-        y: Number(y.toFixed(4))
-    };
-}
-
-
-// ===============================
-// ЗАГРУЗКА ОБЪЕКТОВ
-// ===============================
-
 fetch('./data/businesses.json')
     .then(r => r.json())
-    .then(businesses => {
-        businesses.forEach(b => {
-            const pos = sampToMap(b.x, b.y);
+    .then(list => {
+        list.forEach(b => {
             const type = BUSINESS_TYPES[b.type];
-
             if (!type) return;
 
-            const icon = L.icon({
-                iconUrl: type.icon,
-                iconSize: [28, 28],
-                iconAnchor: [14, 14],
-                popupAnchor: [0, -14]
-            });
-
-            const marker = L.marker(pos, { icon }).addTo(map);
-
-            marker.bindTooltip(
-                `<b>${b.name}</b><br>
-                 Тип: ${type.name}<br>
-                 Владелец: ${b.owner}`,
-                {
-                    direction: 'top',
-                    offset: [0, -10],
-                    opacity: 0.95,
-                    sticky: true
-                }
+            L.marker(sampToMap(b.x, b.y), {
+                icon: L.icon({
+                    iconUrl: type.icon,
+                    iconSize: [28, 28],
+                    iconAnchor: [14, 14]
+                })
+            }).addTo(map).bindTooltip(
+                `<b>${b.name}</b><br>Владелец: ${b.owner}`,
+                { direction: 'top', offset: [0, -10], sticky: true }
             );
         });
     });
-// ===============================
-// КНОПКА ЦЕНТРИРОВАНИЯ
-// ===============================
 
 const CenterControl = L.Control.extend({
-    options: {
-        position: 'topleft'
-    },
-
-    onAdd: function () {
-        const btn = L.DomUtil.create('button', 'leaflet-bar');
-
-        btn.innerHTML = '📍';
-        btn.title = 'Вернуться в центр карты';
-        btn.style.width = '32px';
-        btn.style.height = '30px';
-        btn.style.cursor = 'pointer';
-        btn.style.fontSize = '16px';
-        btn.style.background = '#fff';
-        btn.style.color = '#fff';
-        btn.style.border = 'none';
-
-        L.DomEvent.disableClickPropagation(btn);
-        L.DomEvent.on(btn, 'click', () => {
-            map.flyTo(MAP_CENTER, map.getZoom(), {
-                animate: true,
-                duration: 0.6
-            });
-        });
-
-        return btn;
+    options: { position: 'topleft' },
+    onAdd() {
+        const b = L.DomUtil.create('button', 'leaflet-bar');
+        b.innerHTML = '📍';
+        b.style.width = '32px';
+        b.style.height = '30px';
+        b.style.cursor = 'pointer';
+        b.style.fontSize = '16px';
+        b.style.background = '#fff';
+        b.style.color = '#000';
+        b.style.border = 'none';
+        L.DomEvent.disableClickPropagation(b);
+        b.onclick = () => map.flyTo(MAP_CENTER, map.getZoom(), { duration: 0.6 });
+        return b;
     }
 });
 
 map.addControl(new CenterControl());
+
 let sharedMarker = null;
 
-map.on('click', (e) => {
-    if (e.originalEvent.target.closest('.leaflet-marker-icon')) return;
-    const { lat, lng } = e.latlng;
+function createSharedMarker(lat, lng) {
+    if (sharedMarker) map.removeLayer(sharedMarker);
 
-    // Удаляем старую метку
-    if (sharedMarker) {
-        map.removeLayer(sharedMarker);
-        sharedMarker = null;
-    }
+    sharedMarker = L.marker([lat, lng], { draggable: true }).addTo(map);
 
-    sharedMarker = L.marker(pos, {
-        draggable: true
-    }).addTo(map);
+    function update() {
+        const p = sharedMarker.getLatLng();
+        const s = mapToSamp(p.lat, p.lng);
+        const url = new URL(location.href);
+        url.searchParams.set('x', s.x);
+        url.searchParams.set('y', s.y);
+        url.searchParams.set('z', map.getZoom());
 
-    sharedMarker.bindPopup(`
-        <b>Отметка по ссылке</b><br>
-        X: ${x}<br>
-        Y: ${y}
-    `).openPopup();
-
-    sharedMarker.on('popupclose', () => {
-        if (sharedMarker) {
-            map.removeLayer(sharedMarker);
-            sharedMarker = null;
-        }
-    });
-
-
-    function updatePopup() {
-        const { lat, lng } = sharedMarker.getLatLng();
-        const samp = mapToSamp(lat, lng);
-        const zoom = map.getZoom();
-
-        const url = new URL(window.location.href);
-        url.searchParams.set('x', samp.x);
-        url.searchParams.set('y', samp.y);
-        url.searchParams.set('z', zoom);
-
-        const html = `
+        sharedMarker.setPopupContent(`
             <b>Координаты</b><br>
-            X: ${samp.x}<br>
-            Y: ${samp.y}<br><br>
+            X: ${s.x}<br>
+            Y: ${s.y}<br><br>
             <button id="copy-link">📋 Скопировать ссылку</button>
-        `;
-
-        sharedMarker.setPopupContent(html).openPopup();
+        `).openPopup();
 
         setTimeout(() => {
             const btn = document.getElementById('copy-link');
-            if (btn) {
-                btn.onclick = () => {
-                    copyToClipboard(url.toString());
-                    btn.innerText = '✅ Скопировано';
-                };
-            }
+            if (btn) btn.onclick = () => {
+                copyToClipboard(url.toString());
+                btn.innerText = '✅ Скопировано';
+            };
         }, 0);
     }
 
-    // Первичное окно
-    updatePopup();
-
-    // 🔹 Метка исчезает при закрытии popup
+    update();
+    sharedMarker.on('dragend', update);
     sharedMarker.on('popupclose', () => {
-        if (sharedMarker) {
-            map.removeLayer(sharedMarker);
-            sharedMarker = null;
-        }
+        map.removeLayer(sharedMarker);
+        sharedMarker = null;
     });
+}
 
-    // 🔹 Обновление при перетаскивании
-    sharedMarker.on('dragend', updatePopup);
+map.on('click', e => {
+    if (e.originalEvent.target.closest('.leaflet-marker-icon')) return;
+    createSharedMarker(e.latlng.lat, e.latlng.lng);
 });
 
+const params = new URLSearchParams(location.search);
+if (params.has('x') && params.has('y')) {
+    const pos = sampToMap(+params.get('x'), +params.get('y'));
+    map.setView(pos, +params.get('z') || 0, { animate: false });
+    createSharedMarker(pos[0], pos[1]);
+}
