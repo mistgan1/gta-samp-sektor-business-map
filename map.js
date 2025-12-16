@@ -198,6 +198,7 @@ map.addControl(new CenterControl());
 let sharedMarker = null;
 
 map.on('click', (e) => {
+    if (e.originalEvent.target.closest('.leaflet-marker-icon')) return;
     const { lat, lng } = e.latlng;
 
     // Удаляем старую метку
@@ -206,9 +207,23 @@ map.on('click', (e) => {
         sharedMarker = null;
     }
 
-    sharedMarker = L.marker([lat, lng], {
+    sharedMarker = L.marker(pos, {
         draggable: true
     }).addTo(map);
+
+    sharedMarker.bindPopup(`
+        <b>Отметка по ссылке</b><br>
+        X: ${x}<br>
+        Y: ${y}
+    `).openPopup();
+
+    sharedMarker.on('popupclose', () => {
+        if (sharedMarker) {
+            map.removeLayer(sharedMarker);
+            sharedMarker = null;
+        }
+    });
+
 
     function updatePopup() {
         const { lat, lng } = sharedMarker.getLatLng();
