@@ -32,6 +32,31 @@ const map = L.map('map', {
 // Фон
 L.imageOverlay('assets/map.jpg', imageBounds).addTo(map);
 map.fitBounds(imageBounds);
+// ===============================
+// ПЕРЕХОД ПО ССЫЛКЕ С КООРДИНАТАМИ
+// ===============================
+
+const params = new URLSearchParams(window.location.search);
+
+if (params.has('x') && params.has('y')) {
+    const x = parseFloat(params.get('x'));
+    const y = parseFloat(params.get('y'));
+    const z = params.has('z') ? parseInt(params.get('z')) : 0;
+
+    const pos = sampToMap(x, y);
+
+    map.setView(pos, z, { animate: false });
+
+    L.marker(pos)
+        .addTo(map)
+        .bindPopup(`
+            <b>Отметка по ссылке</b><br>
+            X: ${x}<br>
+            Y: ${y}
+        `)
+        .openPopup();
+}
+
 
 // ===============================
 // МОБИЛЬНЫЕ УЛУЧШЕНИЯ
@@ -67,6 +92,15 @@ function sampToMap(x, y) {
     const mapY = (y + 3000) / 6000 * MAP_SIZE;
     return [mapY, mapX];
 }
+function mapToSamp(lat, lng) {
+    const x = (lng / MAP_SIZE) * 6000 - 3000;
+    const y = (lat / MAP_SIZE) * 6000 - 3000;
+    return {
+        x: Number(x.toFixed(4)),
+        y: Number(y.toFixed(4))
+    };
+}
+
 
 // ===============================
 // ЗАГРУЗКА ОБЪЕКТОВ
@@ -138,3 +172,42 @@ const CenterControl = L.Control.extend({
 });
 
 map.addControl(new CenterControl());
+let sharedMarker = null;
+
+map.on('click', (e) => {
+    const { lat, lng } = e.latlng;
+
+    // Удаляем старую метку
+    if (sharedMarker) {
+        map.removeLayer(sharedMarker);
+    }
+
+    sharedMarker = L.marker([lat, lng]).addTo(map);
+
+    const samp = mapToSamp(lat, lng);
+    const zoom = map.getZoom();
+
+    const url = new URL(window.location.href);
+    url.searchParams.set('x', samp.x);
+    url.searchParams.set('y', samp.y);
+    url.searchParams.set('z', zoom);
+
+    const html = `
+        <b>Координаты</b><br>
+        X: ${samp.x}<br>
+        Y: ${samp.y}<br><br>
+        <button id="copy-link">📋 Скопировать ссылку</button>
+    `;
+
+    sharedMarker.bindPopup(html).openPopup();
+
+    setTimeout(() => {
+        const btn = document.getElementById('copy-link');
+        if (btn) {
+            btn.onclick = () => {
+                navigator.clipboard.writeText(url.toString());
+                btn.innerText = '✅ Скопировано';
+            };
+        }
+    }, 0);
+});
