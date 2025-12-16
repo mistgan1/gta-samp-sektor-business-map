@@ -83,6 +83,29 @@ const BUSINESS_TYPES = {
     canteen: { name: 'Бизнес', icon: 'assets/icons/canteen.png' }
 };
 
+
+function copyToClipboard(text) {
+    if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(text);
+    } else {
+        const textarea = document.createElement('textarea');
+        textarea.value = text;
+        textarea.style.position = 'fixed';
+        textarea.style.left = '-9999px';
+        document.body.appendChild(textarea);
+        textarea.focus();
+        textarea.select();
+
+        try {
+            document.execCommand('copy');
+        } catch (err) {
+            console.warn('Не удалось скопировать ссылку');
+        }
+
+        document.body.removeChild(textarea);
+    }
+}
+
 // ===============================
 // ПЕРЕВОД КООРДИНАТ ИЗ SA:MP
 // ===============================
@@ -205,7 +228,7 @@ map.on('click', (e) => {
         const btn = document.getElementById('copy-link');
         if (btn) {
             btn.onclick = () => {
-                navigator.clipboard.writeText(url.toString());
+                copyToClipboard(url.toString());
                 btn.innerText = '✅ Скопировано';
             };
         }
