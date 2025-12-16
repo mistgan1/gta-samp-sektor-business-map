@@ -165,44 +165,52 @@ function createSharedMarker(lat, lng) {
 
 let sharedMarker = null;
 
+function buildPopup(marker) {
+    const { lat, lng } = marker.getLatLng();
+    const samp = mapToSamp(lat, lng);
+
+    const url = new URL(location.href);
+    url.searchParams.set('x', samp.x);
+    url.searchParams.set('y', samp.y);
+    url.searchParams.set('z', map.getZoom());
+
+    return `
+        <b>Координаты</b><br>
+        X: ${samp.x}<br>
+        Y: ${samp.y}<br><br>
+        <button class="copy-link" data-url="${url}">
+            📋 Скопировать ссылку
+        </button>
+    `;
+}
+
 map.on('click', (e) => {
     if (e.originalEvent.target.closest('.leaflet-marker-icon')) return;
 
-    if (sharedMarker) map.removeLayer(sharedMarker);
+    if (sharedMarker) {
+        map.removeLayer(sharedMarker);
+        sharedMarker = null;
+    }
 
     sharedMarker = L.marker(e.latlng, {
         draggable: true,
         autoPan: true
     }).addTo(map);
 
-    function buildPopup() {
-        const { lat, lng } = sharedMarker.getLatLng();
-        const samp = mapToSamp(lat, lng);
-
-        const url = new URL(location.href);
-        url.searchParams.set('x', samp.x);
-        url.searchParams.set('y', samp.y);
-        url.searchParams.set('z', map.getZoom());
-
-        return `
-            <b>Координаты</b><br>
-            X: ${samp.x}<br>
-            Y: ${samp.y}<br><br>
-            <button class="copy-link">📋 Скопировать ссылку</button>
-        `;
-    }
-
-    sharedMarker.bindPopup(buildPopup(), {
+    sharedMarker.bindPopup('', {
         closeOnClick: false,
         autoClose: false
-    }).openPopup();
+    });
+
+    sharedMarker.setPopupContent(buildPopup(sharedMarker));
+    sharedMarker.openPopup();
 
     sharedMarker.on('popupopen', (ev) => {
         const btn = ev.popup.getElement().querySelector('.copy-link');
         if (!btn) return;
 
         btn.onclick = () => {
-            navigator.clipboard.writeText(location.href);
+            navigator.clipboard.writeText(btn.dataset.url);
             btn.textContent = '✅ Скопировано';
         };
     });
@@ -212,7 +220,8 @@ map.on('click', (e) => {
     });
 
     sharedMarker.on('dragend', () => {
-        sharedMarker.setPopupContent(buildPopup()).openPopup();
+        sharedMarker.setPopupContent(buildPopup(sharedMarker));
+        sharedMarker.openPopup();
     });
 });
 
@@ -223,3 +232,10 @@ if (params.has('x') && params.has('y')) {
     map.setView(pos, +params.get('z') || 0, { animate: false });
     createSharedMarker(pos[0], pos[1]);
 }
+
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && sharedMarker) {
+        map.removeLayer(sharedMarker);
+        sharedMarker = null;
+    }
+});
