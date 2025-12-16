@@ -83,7 +83,7 @@ fetch('./data/businesses.json')
                     iconAnchor: [14, 14]
                 })
             }).addTo(map).bindTooltip(
-                `<b>${b.name}</b><br>Владелец: ${b.owner}`,
+                `<b>${b.name}</b><br>Тип: Бизнес<br>Владелец: ${b.owner}`,
                 { direction: 'top', offset: [0, -10], sticky: true }
             );
         });
@@ -116,37 +116,53 @@ function createSharedMarker(lat, lng) {
 
     sharedMarker = L.marker([lat, lng], { draggable: true }).addTo(map);
 
-    function update() {
+    function updatePopup() {
         const p = sharedMarker.getLatLng();
         const s = mapToSamp(p.lat, p.lng);
         const url = new URL(location.href);
+
         url.searchParams.set('x', s.x);
         url.searchParams.set('y', s.y);
         url.searchParams.set('z', map.getZoom());
 
-        sharedMarker.setPopupContent(`
+        const html = `
             <b>Координаты</b><br>
             X: ${s.x}<br>
             Y: ${s.y}<br><br>
             <button id="copy-link">📋 Скопировать ссылку</button>
-        `).openPopup();
+        `;
+
+        sharedMarker.bindPopup(html).openPopup();
 
         setTimeout(() => {
             const btn = document.getElementById('copy-link');
-            if (btn) btn.onclick = () => {
-                copyToClipboard(url.toString());
-                btn.innerText = '✅ Скопировано';
-            };
+            if (btn) {
+                btn.onclick = () => {
+                    copyToClipboard(url.toString());
+                    btn.innerText = '✅ Скопировано';
+                };
+            }
         }, 0);
     }
 
-    update();
-    sharedMarker.on('dragend', update);
+    updatePopup();
+
+    sharedMarker.on('dragstart', () => {
+        sharedMarker.closePopup();
+    });
+
+    sharedMarker.on('dragend', () => {
+        updatePopup();
+    });
+
     sharedMarker.on('popupclose', () => {
-        map.removeLayer(sharedMarker);
-        sharedMarker = null;
+        if (sharedMarker) {
+            map.removeLayer(sharedMarker);
+            sharedMarker = null;
+        }
     });
 }
+
 
 map.on('click', e => {
     if (e.originalEvent.target.closest('.leaflet-marker-icon')) return;
