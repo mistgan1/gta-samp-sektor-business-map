@@ -203,34 +203,55 @@ map.on('click', (e) => {
     // Удаляем старую метку
     if (sharedMarker) {
         map.removeLayer(sharedMarker);
+        sharedMarker = null;
     }
 
-    sharedMarker = L.marker([lat, lng]).addTo(map);
+    sharedMarker = L.marker([lat, lng], {
+        draggable: true
+    }).addTo(map);
 
-    const samp = mapToSamp(lat, lng);
-    const zoom = map.getZoom();
+    function updatePopup() {
+        const { lat, lng } = sharedMarker.getLatLng();
+        const samp = mapToSamp(lat, lng);
+        const zoom = map.getZoom();
 
-    const url = new URL(window.location.href);
-    url.searchParams.set('x', samp.x);
-    url.searchParams.set('y', samp.y);
-    url.searchParams.set('z', zoom);
+        const url = new URL(window.location.href);
+        url.searchParams.set('x', samp.x);
+        url.searchParams.set('y', samp.y);
+        url.searchParams.set('z', zoom);
 
-    const html = `
-        <b>Координаты</b><br>
-        X: ${samp.x}<br>
-        Y: ${samp.y}<br><br>
-        <button id="copy-link">📋 Скопировать ссылку</button>
-    `;
+        const html = `
+            <b>Координаты</b><br>
+            X: ${samp.x}<br>
+            Y: ${samp.y}<br><br>
+            <button id="copy-link">📋 Скопировать ссылку</button>
+        `;
 
-    sharedMarker.bindPopup(html).openPopup();
+        sharedMarker.setPopupContent(html).openPopup();
 
-    setTimeout(() => {
-        const btn = document.getElementById('copy-link');
-        if (btn) {
-            btn.onclick = () => {
-                copyToClipboard(url.toString());
-                btn.innerText = '✅ Скопировано';
-            };
+        setTimeout(() => {
+            const btn = document.getElementById('copy-link');
+            if (btn) {
+                btn.onclick = () => {
+                    copyToClipboard(url.toString());
+                    btn.innerText = '✅ Скопировано';
+                };
+            }
+        }, 0);
+    }
+
+    // Первичное окно
+    updatePopup();
+
+    // 🔹 Метка исчезает при закрытии popup
+    sharedMarker.on('popupclose', () => {
+        if (sharedMarker) {
+            map.removeLayer(sharedMarker);
+            sharedMarker = null;
         }
-    }, 0);
+    });
+
+    // 🔹 Обновление при перетаскивании
+    sharedMarker.on('dragend', updatePopup);
 });
+
