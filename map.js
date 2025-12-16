@@ -109,7 +109,6 @@ const CenterControl = L.Control.extend({
 
 map.addControl(new CenterControl());
 
-let sharedMarker = null;
 
 function createSharedMarker(lat, lng) {
     if (sharedMarker) map.removeLayer(sharedMarker);
@@ -164,10 +163,59 @@ function createSharedMarker(lat, lng) {
 }
 
 
-map.on('click', e => {
+let sharedMarker = null;
+
+map.on('click', (e) => {
     if (e.originalEvent.target.closest('.leaflet-marker-icon')) return;
-    createSharedMarker(e.latlng.lat, e.latlng.lng);
+
+    if (sharedMarker) map.removeLayer(sharedMarker);
+
+    sharedMarker = L.marker(e.latlng, {
+        draggable: true,
+        autoPan: true
+    }).addTo(map);
+
+    function buildPopup() {
+        const { lat, lng } = sharedMarker.getLatLng();
+        const samp = mapToSamp(lat, lng);
+
+        const url = new URL(location.href);
+        url.searchParams.set('x', samp.x);
+        url.searchParams.set('y', samp.y);
+        url.searchParams.set('z', map.getZoom());
+
+        return `
+            <b>Координаты</b><br>
+            X: ${samp.x}<br>
+            Y: ${samp.y}<br><br>
+            <button class="copy-link">📋 Скопировать ссылку</button>
+        `;
+    }
+
+    sharedMarker.bindPopup(buildPopup(), {
+        closeOnClick: false,
+        autoClose: false
+    }).openPopup();
+
+    sharedMarker.on('popupopen', (ev) => {
+        const btn = ev.popup.getElement().querySelector('.copy-link');
+        if (!btn) return;
+
+        btn.onclick = () => {
+            navigator.clipboard.writeText(location.href);
+            btn.textContent = '✅ Скопировано';
+        };
+    });
+
+    sharedMarker.on('dragstart', () => {
+        sharedMarker.closePopup();
+    });
+
+    sharedMarker.on('dragend', () => {
+        sharedMarker.setPopupContent(buildPopup()).openPopup();
+    });
 });
+
 
 const params = new URLSearchParams(location.search);
 if (params.has('x') && params.has('y')) {
