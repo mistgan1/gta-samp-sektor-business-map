@@ -105,10 +105,15 @@ body {
 
 .copy-link.copied {
     background: rgba(80, 200, 120, 0.35);
-    border-color: rgba(80, 200, 120, 0.7);
+    border-color: rgba(80, 200, 120, 0.9);
     color: #eafff2;
 }
 
+
 .copy-link:active {
     transform: scale(0.96);
+}
+
+.copy-link.copied:hover {
+    background: rgba(80, 200, 120, 0.55) !important;
 }
