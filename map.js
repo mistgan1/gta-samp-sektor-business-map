@@ -341,6 +341,7 @@ function buildPopup(marker, withButton = true) {
 
 
 map.on('click', (e) => {
+    if (rulerActive) return; 
     if (e.originalEvent.target.closest('.leaflet-marker-icon')) return;
 
     if (sharedMarker) {
