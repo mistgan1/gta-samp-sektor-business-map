@@ -206,12 +206,21 @@ map.on('click', (e) => {
         autoClose: false
     });
 
-    function openPopupWithHandler() {
-        sharedMarker.setPopupContent(buildPopup(sharedMarker, true));
-        sharedMarker.openPopup();
+    function setPopup(withButton = true) {
+        sharedMarker.setPopupContent(buildPopup(sharedMarker, withButton));
+    }
 
+    function openPopup() {
+        sharedMarker.openPopup();
+    }
+
+    // ✅ ВЕШАЕМ ДО openPopup(), чтобы работало на любой новой метке сразу
+    sharedMarker.on('popupopen', (ev) => {
         setTimeout(() => {
-            const btn = document.querySelector('.copy-link');
+            const root = ev.popup.getElement();
+            if (!root) return;
+
+            const btn = root.querySelector('.copy-link');
             if (!btn) return;
 
             btn.onclick = () => {
@@ -219,18 +228,21 @@ map.on('click', (e) => {
                 btn.textContent = '✅ Скопировано';
             };
         }, 0);
-    }
+    });
 
-    openPopupWithHandler();
+    setPopup(true);
+    openPopup();
 
     sharedMarker.on('dragstart', () => {
         sharedMarker.closePopup();
     });
 
     sharedMarker.on('dragend', () => {
-        openPopupWithHandler();
+        setPopup(true);
+        openPopup();
     });
 });
+
 
 
 
