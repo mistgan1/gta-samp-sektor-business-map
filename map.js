@@ -1,6 +1,7 @@
 const MAP_SIZE = 6144;
 const PADDING = MAP_SIZE * 1.5;
 const MAP_CENTER = [MAP_SIZE / 2, MAP_SIZE / 2];
+let rulerClickLock = false;
 
 const worldBounds = [
     [-PADDING, -PADDING],
@@ -50,7 +51,9 @@ function enableRuler() {
 }
 
 map.on('click', (e) => {
-    if (!rulerActive) return;
+    if (!rulerActive || rulerClickLock) return;
+
+    rulerClickLock = true;
 
     // Первая точка
     if (!rulerPointA) {
@@ -67,20 +70,27 @@ map.on('click', (e) => {
             dashArray: '6,4'
         }).addTo(map);
 
+        rulerClickLock = false;
         return;
     }
 
     // Вторая точка — фиксируем
-    rulerActive = false; // ⬅️ ВАЖНО: ДО всего остального
-    document.querySelector('.ruler-btn')?.classList.remove('active');
-
     rulerMarkerB = L.circleMarker(e.latlng, {
         radius: 5,
         className: 'ruler-point'
     }).addTo(map);
 
     updateRuler(e.latlng, true);
+
+    rulerActive = false;
+    document.querySelector('.ruler-btn')?.classList.remove('active');
+
+    // ⬅️ снимаем блокировку В СЛЕДУЮЩЕМ тике
+    setTimeout(() => {
+        rulerClickLock = false;
+    }, 0);
 });
+
 
 
 map.on('mousemove', (e) => {
@@ -356,6 +366,7 @@ function buildPopup(marker, withButton = true) {
 
 
 map.on('click', (e) => {
+    if (rulerActive || rulerClickLock) return;
     if (rulerActive) return; 
     if (e.originalEvent.target.closest('.leaflet-marker-icon')) return;
 
