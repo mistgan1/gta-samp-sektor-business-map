@@ -186,11 +186,6 @@ function closeInfoPanel() {
 
 infoClose?.addEventListener('click', closeInfoPanel);
 
-// Закрытие по Esc (в дополнение к твоим обработчикам)
-document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') closeInfoPanel();
-});
-
 
 /* =========================
    5) Контролы карты
@@ -578,6 +573,8 @@ map.on('touchend', () => {
 document.addEventListener('keydown', (e) => {
     if (e.key !== 'Escape') return;
 
+    closeInfoPanel();
+    
     // Удаляем обычную метку
     if (sharedMarker) {
         map.removeLayer(sharedMarker);
