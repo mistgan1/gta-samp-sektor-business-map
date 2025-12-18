@@ -227,9 +227,13 @@ map.on('click', (e) => {
 
             btn.onclick = () => {
                 copyToClipboard(btn.dataset.url);
+
+                btn.classList.add('copied');
+                btn.setAttribute('data-copied', '1');
+
                 btn.innerHTML = `
-                <img src="assets/img/complete.gif" class="copy-icon" alt="">
-                Скопировано
+                    <img src="assets/img/copy.gif" class="copy-icon" alt="">
+                    Скопировано
                 `;
             };
         }, 0);

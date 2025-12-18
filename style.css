@@ -103,17 +103,17 @@ body {
     background: rgba(120, 180, 255, 0.25);
 }
 
-.copy-link.copied {
+.copy-link[data-copied="1"] {
     background: rgba(80, 200, 120, 0.35);
     border-color: rgba(80, 200, 120, 0.9);
     color: #eafff2;
 }
 
+.copy-link[data-copied="1"]:hover {
+    background: rgba(80, 200, 120, 0.55);
+}
 
 .copy-link:active {
     transform: scale(0.96);
 }
 
-.copy-link.copied:hover {
-    background: rgba(80, 200, 120, 0.55) !important;
-}
