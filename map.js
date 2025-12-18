@@ -71,8 +71,8 @@ fetch('./data/businesses.json')
                 `<b>${b.name}</b><br>Тип: Бизнес<br>Владелец: ${b.owner}`,
                 { direction: 'top', offset: [0, -10], sticky: true }
             );
+
             marker.on('click', () => {
-                // прокидываем latlng маркера, чтобы показать X/Y
                 const payload = { ...b, _latlng: marker.getLatLng() };
                 openInfoPanel(payload);
             });
@@ -128,6 +128,7 @@ function copyToClipboard(text) {
     }
 }
 
+
 /* =========================
    INFO PANEL (открытие карточки по клику)
    ========================= */
@@ -140,10 +141,8 @@ const infoMeta = document.getElementById('info-meta');
 const infoDesc = document.getElementById('info-desc');
 
 function openInfoPanel(data) {
-    // Заголовок
     infoTitle.textContent = data.name || 'Объект';
 
-    // Скриншот (пока поддержка: data.image или data.images[0])
     const img = (data.images && data.images.length ? data.images[0] : data.image) || '';
     if (img) {
         infoImage.src = img;
@@ -153,11 +152,8 @@ function openInfoPanel(data) {
         infoImage.classList.add('hidden');
     }
 
-    // Метаданные
     const typeText = data.type ? data.type : '—';
     const ownerText = data.owner ? data.owner : '—';
-
-    // Координаты в SA:MP
     const samp = mapToSamp(data._latlng?.lat ?? 0, data._latlng?.lng ?? 0);
 
     infoMeta.innerHTML = `
@@ -166,7 +162,6 @@ function openInfoPanel(data) {
         <div><b>X:</b> ${samp.x} <b>Y:</b> ${samp.y}</div>
     `;
 
-    // Описание (опционально)
     if (data.description) {
         infoDesc.textContent = data.description;
         infoDesc.classList.remove('hidden');
@@ -218,7 +213,6 @@ map.addControl(new CenterControl());
 
 let sharedMarker = null;
 
-// Popup HTML
 function buildPopup(marker, withButton = true) {
     const { lat, lng } = marker.getLatLng();
     const samp = mapToSamp(lat, lng);
@@ -242,9 +236,7 @@ function buildPopup(marker, withButton = true) {
     `;
 }
 
-// Клик по карте (обычный режим)
 function handleSharedMarkerClick(e) {
-    // Не ставим обычную метку, если включена линейка или клик "занят" линейкой
     if (rulerActive || rulerClickLock) return;
     if (e.originalEvent.target.closest('.leaflet-marker-icon')) return;
 
@@ -308,7 +300,6 @@ function handleSharedMarkerClick(e) {
 
 map.on('click', handleSharedMarkerClick);
 
-// Позиция по ссылке (?x&y&z)
 const params = new URLSearchParams(location.search);
 if (params.has('x') && params.has('y')) {
     const pos = sampToMap(+params.get('x'), +params.get('y'));
@@ -335,10 +326,8 @@ let rulerMarkerA = null;
 let rulerMarkerB = null;
 let rulerLabel = null;
 
-// Какая точка сейчас перетаскивается: 'A' | 'B' | null
 let rulerDraggingPoint = null;
 
-// Контрол линейки
 const RulerControl = L.Control.extend({
     options: { position: 'topleft' },
     onAdd() {
@@ -363,17 +352,9 @@ map.addControl(new RulerControl());
 
 function setCursorMode() {
     const el = map.getContainer();
-
-    if (rulerActive) {
-        el.style.cursor = 'crosshair';
-        return;
-    }
-
-    // обычный режим
-    el.style.cursor = 'default';
+    el.style.cursor = rulerActive ? 'crosshair' : 'default';
 }
 
-// карта перетаскивается — рука (только в обычном режиме)
 map.on('dragstart', () => {
     if (rulerActive) return;
     map.getContainer().style.cursor = 'grabbing';
@@ -395,7 +376,6 @@ function toggleRuler(btn) {
         return;
     }
 
-    // Включаем
     resetRuler();
     rulerActive = true;
     rulerFinished = false;
@@ -406,7 +386,6 @@ function toggleRuler(btn) {
     btn.classList.add('active');
     map.getContainer().classList.add('ruler-mode');
 
-    // Принудительно убираем обычную метку при включении линейки
     if (sharedMarker) {
         map.removeLayer(sharedMarker);
         sharedMarker = null;
@@ -431,7 +410,6 @@ function resetRuler() {
     rulerDraggingPoint = null;
 }
 
-// Подпись расстояния + обновление линии
 function updateRuler(pointB, fixed) {
     if (!rulerLine || !rulerPointA) return;
 
@@ -458,9 +436,7 @@ function updateRuler(pointB, fixed) {
     }
 }
 
-// Привязка drag к точке
 function bindPointDrag(layer, which) {
-
     layer.on('mousedown', (ev) => {
         if (!rulerActive || !rulerFinished) return;
 
@@ -472,18 +448,21 @@ function bindPointDrag(layer, which) {
     });
 }
 
+/* ✅ ВОТ ЭТОЙ ФУНКЦИИ НЕ ХВАТАЛО — из-за неё ломалось всё ниже */
+function stopRulerDrag() {
+    if (!rulerDraggingPoint) return;
+    rulerDraggingPoint = null;
+    map.dragging.enable();
+}
+
 map.on('mouseup', stopRulerDrag);
 
-// Клик по карте в режиме линейки
 function handleRulerClick(e) {
     if (!rulerActive || rulerClickLock) return;
-
-    // если отрезок уже построен — клики ничего не создают
     if (rulerFinished) return;
 
     rulerClickLock = true;
 
-    // 1-я точка (A)
     if (!rulerPointA) {
         rulerPointA = e.latlng;
 
@@ -500,12 +479,10 @@ function handleRulerClick(e) {
             interactive: false
         }).addTo(map);
 
-        // A можно будет двигать только после построения B (как ты и хотел — корректировка уже готового)
         setTimeout(() => { rulerClickLock = false; }, 0);
         return;
     }
 
-    // 2-я точка (B) — фиксируем отрезок
     rulerPointB = e.latlng;
 
     rulerMarkerB = L.circleMarker(rulerPointB, {
@@ -517,7 +494,6 @@ function handleRulerClick(e) {
     updateRuler(rulerPointB, true);
     rulerFinished = true;
 
-    // Теперь можно корректировать позицию drag’ом по точкам
     bindPointDrag(rulerMarkerA, 'A');
     bindPointDrag(rulerMarkerB, 'B');
 
@@ -526,9 +502,7 @@ function handleRulerClick(e) {
 
 map.on('click', handleRulerClick);
 
-// Динамика построения (пока выбираем B) + drag точек после построения
 map.on('mousemove', (e) => {
-    // Drag точек (после построения)
     if (rulerDraggingPoint && rulerFinished) {
         if (rulerDraggingPoint === 'A') {
             rulerPointA = e.latlng;
@@ -547,22 +521,8 @@ map.on('mousemove', (e) => {
         }
     }
 
-    // Динамика (пока B ещё не поставлена)
     if (!rulerActive || !rulerPointA || !rulerLine || rulerFinished) return;
     updateRuler(e.latlng, false);
-});
-
-
-map.on('mouseup', () => {
-    if (!rulerDraggingPoint) return;
-    rulerDraggingPoint = null;
-    map.dragging.enable();
-});
-
-map.on('touchend', () => {
-    if (!rulerDraggingPoint) return;
-    rulerDraggingPoint = null;
-    map.dragging.enable();
 });
 
 
@@ -574,14 +534,12 @@ document.addEventListener('keydown', (e) => {
     if (e.key !== 'Escape') return;
 
     closeInfoPanel();
-    
-    // Удаляем обычную метку
+
     if (sharedMarker) {
         map.removeLayer(sharedMarker);
         sharedMarker = null;
     }
 
-    // Сбрасываем линейку + выключаем режим
     if (rulerActive || rulerFinished) {
         resetRuler();
         rulerActive = false;
@@ -594,5 +552,4 @@ document.addEventListener('keydown', (e) => {
     }
 });
 
-// Стартовое состояние курсора
 setCursorMode();
