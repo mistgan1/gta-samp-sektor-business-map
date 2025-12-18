@@ -52,8 +52,14 @@ function enableRuler() {
 map.on('click', (e) => {
     if (!rulerActive) return;
 
+    // Первая точка
     if (!rulerPointA) {
         rulerPointA = e.latlng;
+
+        rulerMarkerA = L.circleMarker(rulerPointA, {
+            radius: 5,
+            className: 'ruler-point'
+        }).addTo(map);
 
         rulerLine = L.polyline([rulerPointA, rulerPointA], {
             color: '#7ab6ff',
@@ -64,16 +70,24 @@ map.on('click', (e) => {
         return;
     }
 
-    // Второй клик — фиксируем
+    // Вторая точка — фиксируем
+    rulerMarkerB = L.circleMarker(e.latlng, {
+        radius: 5,
+        className: 'ruler-point'
+    }).addTo(map);
+
     updateRuler(e.latlng, true);
+
     rulerActive = false;
+    document.querySelector('.ruler-btn')?.classList.remove('active');
 });
+
 
 map.on('mousemove', (e) => {
     if (!rulerActive || !rulerPointA || !rulerLine) return;
-
     updateRuler(e.latlng, false);
 });
+
 
 function getDistanceMeters(a, b) {
     const p1 = mapToSamp(a.lat, a.lng);
@@ -100,11 +114,17 @@ function updateRuler(pointB, fixed) {
     rulerLabel = L.marker(mid, {
         interactive: false,
         icon: L.divIcon({
-            className: 'ruler-label',
+            className: 'ruler-distance',
             html: `${dist} м`
         })
     }).addTo(map);
+
+    // если линия зафиксирована — убираем пунктир
+    if (fixed) {
+        rulerLine.setStyle({ dashArray: null });
+    }
 }
+
 
 
 function sampToMap(x, y) {
@@ -184,8 +204,12 @@ map.addControl(new RulerControl());
 
 let rulerActive = false;
 let rulerPointA = null;
+
 let rulerLine = null;
+let rulerMarkerA = null;
+let rulerMarkerB = null;
 let rulerLabel = null;
+
 
 function toggleRuler(btn) {
     rulerActive = !rulerActive;
@@ -202,12 +226,17 @@ function toggleRuler(btn) {
 
 function resetRuler() {
     if (rulerLine) map.removeLayer(rulerLine);
+    if (rulerMarkerA) map.removeLayer(rulerMarkerA);
+    if (rulerMarkerB) map.removeLayer(rulerMarkerB);
     if (rulerLabel) map.removeLayer(rulerLabel);
 
     rulerLine = null;
+    rulerMarkerA = null;
+    rulerMarkerB = null;
     rulerLabel = null;
     rulerPointA = null;
 }
+
 
 
 const CenterControl = L.Control.extend({

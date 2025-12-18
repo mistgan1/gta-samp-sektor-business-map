@@ -143,3 +143,17 @@ body {
     white-space: nowrap;
     pointer-events: none;
 }
+
+.ruler-point {
+    stroke: #7ab6ff;
+    fill: #7ab6ff;
+    fill-opacity: 1;
+}
+
+.ruler-distance {
+    color: #7ab6ff;
+    font-size: 13px;
+    font-weight: bold;
+    white-space: nowrap;
+    pointer-events: none;
+}
