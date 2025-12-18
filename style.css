@@ -106,12 +106,14 @@ body {
 .copy-link[data-copied="1"] {
     background: rgba(80, 200, 120, 0.35);
     border-color: rgba(80, 200, 120, 0.9);
-    color: #eafff2;
+    color: #0b2f1a; 
 }
 
 .copy-link[data-copied="1"]:hover {
     background: rgba(80, 200, 120, 0.55);
+    color: #071f12; 
 }
+
 
 .copy-link:active {
     transform: scale(0.96);

@@ -232,7 +232,7 @@ map.on('click', (e) => {
                 btn.setAttribute('data-copied', '1');
 
                 btn.innerHTML = `
-                    <img src="assets/img/copy.gif" class="copy-icon" alt="">
+                    <img src="assets/img/complete.gif" class="copy-icon" alt="">
                     Скопировано
                 `;
             };
