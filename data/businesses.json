@@ -5,7 +5,12 @@
     "type": "gas",
     "owner": "Gan",
     "x": 70.3031,
-    "y": 1218.3302
+    "y": 1218.3302,
+    "images": [
+    "assets/screens/1.png",
+    "assets/screens/2.png"
+  ],
+  "description": "Первая заправка на сектора, которая появилась в далеком 2013 году"
   },
   {
     "id": 2,
