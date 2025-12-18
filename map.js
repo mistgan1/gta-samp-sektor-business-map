@@ -535,6 +535,34 @@ document.addEventListener('keydown', (e) => {
 
     closeInfoPanel();
 
+    /* =========================
+   FULLSCREEN IMAGE LOGIC
+   ========================= */
+
+    const imageOverlay = document.getElementById('image-overlay');
+    const imageOverlayImg = imageOverlay?.querySelector('img');
+
+    infoImage.addEventListener('click', () => {
+        if (!infoImage.src) return;
+
+        imageOverlayImg.src = infoImage.src;
+        imageOverlay.classList.add('active');
+    });
+
+    // Закрытие по клику
+    imageOverlay.addEventListener('click', () => {
+        imageOverlay.classList.remove('active');
+        imageOverlayImg.src = '';
+    });
+
+    // Закрытие по Esc
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && imageOverlay.classList.contains('active')) {
+            imageOverlay.classList.remove('active');
+            imageOverlayImg.src = '';
+        }
+    });
+
     if (sharedMarker) {
         map.removeLayer(sharedMarker);
         sharedMarker = null;

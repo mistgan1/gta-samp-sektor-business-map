@@ -260,18 +260,21 @@ body {
 
 .info-panel__body {
     padding: 12px 14px 14px;
-    overflow: auto;
+    overflow-x: hidden;
+    overflow-y: auto;
     max-height: calc(100vh - 36px - 54px);
+    box-sizing: border-box;
 }
 
+
 .info-panel__image {
+    display: block;
     width: 100%;
     height: auto;
-    border-radius: 12px;
-    display: block;
-    margin-bottom: 10px;
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-sizing: border-box;
+    cursor: zoom-in;
 }
+
 
 .info-panel__meta {
     font-size: 13px;
@@ -302,4 +305,36 @@ body {
         width: calc(100vw - 20px);
         border-radius: 12px;
     }
+}
+
+/* =========================
+   FULLSCREEN IMAGE
+   ========================= */
+
+.image-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.85);
+    z-index: 3000;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .2s ease;
+}
+
+.image-overlay.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.image-overlay img {
+    max-width: 95vw;
+    max-height: 95vh;
+    border-radius: 12px;
+    box-shadow: 0 20px 80px rgba(0, 0, 0, 0.6);
+    cursor: zoom-out;
 }
