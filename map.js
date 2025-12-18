@@ -61,7 +61,7 @@ fetch('./data/businesses.json')
             const type = BUSINESS_TYPES[b.type];
             if (!type) return;
 
-            L.marker(sampToMap(b.x, b.y), {
+            const marker = L.marker(sampToMap(b.x, b.y), {
                 icon: L.icon({
                     iconUrl: type.icon,
                     iconSize: [28, 28],
@@ -71,6 +71,11 @@ fetch('./data/businesses.json')
                 `<b>${b.name}</b><br>Тип: Бизнес<br>Владелец: ${b.owner}`,
                 { direction: 'top', offset: [0, -10], sticky: true }
             );
+            marker.on('click', () => {
+                // прокидываем latlng маркера, чтобы показать X/Y
+                const payload = { ...b, _latlng: marker.getLatLng() };
+                openInfoPanel(payload);
+            });
         });
     });
 
@@ -122,6 +127,69 @@ function copyToClipboard(text) {
         document.body.removeChild(t);
     }
 }
+
+/* =========================
+   INFO PANEL (открытие карточки по клику)
+   ========================= */
+
+const infoPanel = document.getElementById('info-panel');
+const infoTitle = document.getElementById('info-title');
+const infoClose = document.getElementById('info-close');
+const infoImage = document.getElementById('info-image');
+const infoMeta = document.getElementById('info-meta');
+const infoDesc = document.getElementById('info-desc');
+
+function openInfoPanel(data) {
+    // Заголовок
+    infoTitle.textContent = data.name || 'Объект';
+
+    // Скриншот (пока поддержка: data.image или data.images[0])
+    const img = (data.images && data.images.length ? data.images[0] : data.image) || '';
+    if (img) {
+        infoImage.src = img;
+        infoImage.classList.remove('hidden');
+    } else {
+        infoImage.src = '';
+        infoImage.classList.add('hidden');
+    }
+
+    // Метаданные
+    const typeText = data.type ? data.type : '—';
+    const ownerText = data.owner ? data.owner : '—';
+
+    // Координаты в SA:MP
+    const samp = mapToSamp(data._latlng?.lat ?? 0, data._latlng?.lng ?? 0);
+
+    infoMeta.innerHTML = `
+        <div><b>Тип:</b> ${typeText}</div>
+        <div><b>Владелец:</b> ${ownerText}</div>
+        <div><b>X:</b> ${samp.x} <b>Y:</b> ${samp.y}</div>
+    `;
+
+    // Описание (опционально)
+    if (data.description) {
+        infoDesc.textContent = data.description;
+        infoDesc.classList.remove('hidden');
+    } else {
+        infoDesc.textContent = '';
+        infoDesc.classList.add('hidden');
+    }
+
+    infoPanel.classList.remove('hidden');
+    infoPanel.setAttribute('aria-hidden', 'false');
+}
+
+function closeInfoPanel() {
+    infoPanel.classList.add('hidden');
+    infoPanel.setAttribute('aria-hidden', 'true');
+}
+
+infoClose?.addEventListener('click', closeInfoPanel);
+
+// Закрытие по Esc (в дополнение к твоим обработчикам)
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeInfoPanel();
+});
 
 
 /* =========================
