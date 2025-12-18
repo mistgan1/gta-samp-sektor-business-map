@@ -163,20 +163,26 @@ body {
 }
 
 
-/* 1) Обычный режим — стандартная стрелка (перебиваем Leaflet) */
-#map,
-#map.leaflet-container,
-#map.leaflet-container.leaflet-grab {
-  cursor: default !important;
+
+
+/* ===== КУРСОРЫ ===== */
+
+/* Обычный режим */
+#map {
+    cursor: default;
 }
 
-/* 2) Когда карту реально тащат — рука */
-#map.leaflet-container.leaflet-grabbing {
-  cursor: grabbing !important;
+/* Когда Leaflet реально тащит карту */
+#map.leaflet-grabbing {
+    cursor: grabbing;
 }
 
-/* 3) Режим линейки — крестик везде (и на интерактивных слоях тоже) */
-#map.ruler-mode,
+/* Режим линейки — крестик */
+#map.ruler-mode {
+    cursor: crosshair;
+}
+
+/* В режиме линейки — крестик на всём содержимом */
 #map.ruler-mode * {
-  cursor: crosshair !important;
+    cursor: crosshair;
 }
