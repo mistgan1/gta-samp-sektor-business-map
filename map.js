@@ -498,6 +498,34 @@ map.on('mousemove', (e) => {
     updateRuler(e.latlng, false);
 });
 
+map.on('touchmove', (e) => {
+    if (!e.latlng) return;
+
+    // Drag точек (после построения)
+    if (rulerDraggingPoint && rulerFinished) {
+        if (rulerDraggingPoint === 'A') {
+            rulerPointA = e.latlng;
+            rulerMarkerA.setLatLng(rulerPointA);
+            rulerLine.setLatLngs([rulerPointA, rulerPointB]);
+            updateRuler(rulerPointB, true);
+            return;
+        }
+
+        if (rulerDraggingPoint === 'B') {
+            rulerPointB = e.latlng;
+            rulerMarkerB.setLatLng(rulerPointB);
+            rulerLine.setLatLngs([rulerPointA, rulerPointB]);
+            updateRuler(rulerPointB, true);
+            return;
+        }
+    }
+
+    // Динамика построения (пока выбираем B)
+    if (!rulerActive || !rulerPointA || !rulerLine || rulerFinished) return;
+    updateRuler(e.latlng, false);
+});
+
+
 map.on('mouseup', () => {
     if (!rulerDraggingPoint) return;
     rulerDraggingPoint = null;
