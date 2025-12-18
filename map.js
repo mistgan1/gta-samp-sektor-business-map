@@ -397,28 +397,42 @@ function updateRuler(pointB, fixed) {
 
 // Привязка drag к точке
 function bindPointDrag(layer, which) {
-    layer.on('mousedown', (ev) => {
-        if (!rulerActive || !rulerFinished) return;
-
-        // ❌ запрещаем нативный drag браузера
-        ev.originalEvent.preventDefault();
-        ev.originalEvent.stopPropagation();
-
-        rulerDraggingPoint = which;
-        map.dragging.disable();
-    });
 
     layer.on('touchstart', (ev) => {
         if (!rulerActive || !rulerFinished) return;
 
-        ev.originalEvent.preventDefault();
-        ev.originalEvent.stopPropagation();
+        // 🔒 ПОЛНОЕ перехватывание
+        L.DomEvent.preventDefault(ev.originalEvent);
+        L.DomEvent.stopPropagation(ev.originalEvent);
+
+        rulerDraggingPoint = which;
+
+        // ⛔ ОЧЕНЬ ВАЖНО: отключаем drag карты СРАЗУ
+        map.dragging.disable();
+        map.touchZoom.disable();
+    });
+
+    layer.on('mousedown', (ev) => {
+        if (!rulerActive || !rulerFinished) return;
+
+        L.DomEvent.preventDefault(ev.originalEvent);
+        L.DomEvent.stopPropagation(ev.originalEvent);
 
         rulerDraggingPoint = which;
         map.dragging.disable();
     });
 }
 
+function stopRulerDrag() {
+    rulerDraggingPoint = null;
+
+    map.dragging.enable();
+    map.touchZoom.enable();
+}
+
+map.on('mouseup', stopRulerDrag);
+map.on('touchend', stopRulerDrag);
+map.on('touchcancel', stopRulerDrag);
 
 // Клик по карте в режиме линейки
 function handleRulerClick(e) {
@@ -436,7 +450,8 @@ function handleRulerClick(e) {
         rulerMarkerA = L.circleMarker(rulerPointA, {
             radius: 6,
             className: 'ruler-point',
-            interactive: true
+            interactive: true,
+            bubblingMouseEvents: false   // ⬅️ КЛЮЧ
         }).addTo(map);
 
         rulerLine = L.polyline([rulerPointA, rulerPointA], {
@@ -457,7 +472,8 @@ function handleRulerClick(e) {
     rulerMarkerB = L.circleMarker(rulerPointB, {
         radius: 6,
         className: 'ruler-point',
-        interactive: true
+        interactive: true,
+        bubblingMouseEvents: false   // ⬅️ КЛЮЧ
     }).addTo(map);
 
     updateRuler(rulerPointB, true);
