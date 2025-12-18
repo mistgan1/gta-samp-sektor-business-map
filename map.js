@@ -1,12 +1,10 @@
+/* =========================
+   0) Константы и параметры
+   ========================= */
+
 const MAP_SIZE = 6144;
 const PADDING = MAP_SIZE * 1.5;
 const MAP_CENTER = [MAP_SIZE / 2, MAP_SIZE / 2];
-let rulerClickLock = false;
-let rulerFinished = false;
-
-let rulerDragging = false;
-let rulerDragStart = null;
-
 
 const worldBounds = [
     [-PADDING, -PADDING],
@@ -18,6 +16,11 @@ const imageBounds = [
     [MAP_SIZE, MAP_SIZE]
 ];
 
+
+/* =========================
+   1) Инициализация карты
+   ========================= */
+
 const map = L.map('map', {
     crs: L.CRS.Simple,
     minZoom: -2,
@@ -25,7 +28,6 @@ const map = L.map('map', {
     maxBounds: worldBounds,
     maxBoundsViscosity: 0
 });
-
 
 L.imageOverlay('assets/map.jpg', imageBounds).addTo(map);
 map.fitBounds(imageBounds);
@@ -35,6 +37,11 @@ if (L.Browser.mobile) {
     map.touchZoom.enable();
     map.doubleClickZoom.disable();
 }
+
+
+/* =========================
+   2) Типы бизнесов + загрузка
+   ========================= */
 
 const BUSINESS_TYPES = {
     gas: { icon: 'assets/icons/gas.png' },
@@ -46,183 +53,6 @@ const BUSINESS_TYPES = {
     hotdog: { icon: 'assets/icons/hotdog.png' },
     canteen: { icon: 'assets/icons/canteen.png' }
 };
-
-function enableRuler() {
-    rulerActive = true;
-    rulerPointA = null;
-
-    if (rulerLine) map.removeLayer(rulerLine);
-    if (rulerLabel) map.removeLayer(rulerLabel);
-}
-
-function startRulerDrag(latlng) {
-    rulerDragging = true;
-    rulerDragStart = latlng;
-    map.dragging.disable();
-}
-
-function bindRulerDrag(layer) {
-    layer.on('mousedown', (e) => {
-        if (!rulerFinished) return;
-        startRulerDrag(e.latlng);
-        L.DomEvent.stopPropagation(e.originalEvent);
-    });
-}
-
-
-map.on('click', (e) => {
-    if (!rulerActive || rulerClickLock) return;
-
-    rulerClickLock = true;
-
-    // Первая точка
-    if (!rulerPointA) {
-        rulerPointA = e.latlng;
-
-        rulerMarkerA = L.circleMarker(rulerPointA, {
-            radius: 5,
-            className: 'ruler-point',
-            interactive: true
-        }).addTo(map);
-
-        rulerLine = L.polyline([rulerPointA, rulerPointA], {
-            color: '#000',
-            weight: 2,
-            dashArray: '6,4',
-            interactive: true
-        }).addTo(map);
-
-        rulerClickLock = false;
-        return;
-    }
-
-    // Вторая точка — фиксируем
-    rulerMarkerB = L.circleMarker(e.latlng, {
-        radius: 5,
-        className: 'ruler-point'
-    }).addTo(map);
-
-    updateRuler(e.latlng, true);
-
-    rulerFinished = true;
-
-    bindRulerDrag(rulerLine);
-    bindRulerDrag(rulerMarkerA);
-    bindRulerDrag(rulerMarkerB);
-
-    // ⬅️ снимаем блокировку В СЛЕДУЮЩЕМ тике
-    setTimeout(() => {
-        rulerClickLock = false;
-    }, 0);
-});
-
-map.on('mousemove', (e) => {
-    if (!rulerDragging) return;
-
-    const dx = e.latlng.lat - rulerDragStart.lat;
-    const dy = e.latlng.lng - rulerDragStart.lng;
-
-    rulerPointA = L.latLng(
-        rulerPointA.lat + dx,
-        rulerPointA.lng + dy
-    );
-
-    const pointB = rulerLine.getLatLngs()[1];
-    const newPointB = L.latLng(
-        pointB.lat + dx,
-        pointB.lng + dy
-    );
-
-    rulerLine.setLatLngs([rulerPointA, newPointB]);
-    rulerMarkerA.setLatLng(rulerPointA);
-    rulerMarkerB.setLatLng(newPointB);
-
-    updateRuler(newPointB, true);
-
-    rulerDragStart = e.latlng;
-});
-
-map.on('mouseup', () => {
-    if (!rulerDragging) return;
-
-    rulerDragging = false;
-    rulerDragStart = null;
-    map.dragging.enable();
-});
-
-
-map.on('mousemove', (e) => {
-    if (!rulerActive || !rulerPointA || !rulerLine || rulerFinished) return;
-    updateRuler(e.latlng, false);
-});
-
-
-function getDistanceMeters(a, b) {
-    const p1 = mapToSamp(a.lat, a.lng);
-    const p2 = mapToSamp(b.lat, b.lng);
-
-    const dx = p2.x - p1.x;
-    const dy = p2.y - p1.y;
-
-    return Math.sqrt(dx * dx + dy * dy);
-}
-
-function updateRuler(pointB, fixed) {
-    rulerLine.setLatLngs([rulerPointA, pointB]);
-
-    const dist = getDistanceMeters(rulerPointA, pointB).toFixed(2);
-
-    const mid = L.latLng(
-        (rulerPointA.lat + pointB.lat) / 2,
-        (rulerPointA.lng + pointB.lng) / 2
-    );
-
-    if (rulerLabel) map.removeLayer(rulerLabel);
-
-    rulerLabel = L.marker(mid, {
-        interactive: false,
-        icon: L.divIcon({
-            className: 'ruler-distance',
-            html: `${dist} м`
-        })
-    }).addTo(map);
-
-    // если линия зафиксирована — убираем пунктир
-    if (fixed) {
-        rulerLine.setStyle({ dashArray: null });
-    }
-}
-
-
-
-function sampToMap(x, y) {
-    return [
-        (y + 3000) / 6000 * MAP_SIZE,
-        (x + 3000) / 6000 * MAP_SIZE
-    ];
-}
-
-function mapToSamp(lat, lng) {
-    return {
-        x: +((lng / MAP_SIZE) * 6000 - 3000).toFixed(4),
-        y: +((lat / MAP_SIZE) * 6000 - 3000).toFixed(4)
-    };
-}
-
-function copyToClipboard(text) {
-    if (navigator.clipboard && window.isSecureContext) {
-        navigator.clipboard.writeText(text);
-    } else {
-        const t = document.createElement('textarea');
-        t.value = text;
-        t.style.position = 'fixed';
-        t.style.left = '-9999px';
-        document.body.appendChild(t);
-        t.select();
-        document.execCommand('copy');
-        document.body.removeChild(t);
-    }
-}
 
 fetch('./data/businesses.json')
     .then(r => r.json())
@@ -244,82 +74,61 @@ fetch('./data/businesses.json')
         });
     });
 
-const RulerControl = L.Control.extend({
-    options: { position: 'topleft' },
 
-    onAdd() {
-        const btn = L.DomUtil.create('button', 'leaflet-bar ruler-btn');
-        btn.innerHTML = '📏';
-        btn.style.width = '32px';
-        btn.style.height = '30px';
-        btn.style.cursor = 'pointer';
-        btn.style.fontSize = '16px';
-        btn.style.background = '#fff';
-        btn.style.color = '#000';
-        btn.style.border = 'none';
+/* =========================
+   3) Утилиты координат SA:MP
+   ========================= */
 
-        L.DomEvent.disableClickPropagation(btn);
+function sampToMap(x, y) {
+    return [
+        (y + 3000) / 6000 * MAP_SIZE,
+        (x + 3000) / 6000 * MAP_SIZE
+    ];
+}
 
-        btn.onclick = () => {
-            toggleRuler(btn);
-        };
+function mapToSamp(lat, lng) {
+    return {
+        x: +((lng / MAP_SIZE) * 6000 - 3000).toFixed(4),
+        y: +((lat / MAP_SIZE) * 6000 - 3000).toFixed(4)
+    };
+}
 
-        return btn;
-    }
-});
+function getDistanceMeters(latlngA, latlngB) {
+    const p1 = mapToSamp(latlngA.lat, latlngA.lng);
+    const p2 = mapToSamp(latlngB.lat, latlngB.lng);
 
-map.addControl(new RulerControl());
+    const dx = p2.x - p1.x;
+    const dy = p2.y - p1.y;
 
-let rulerActive = false;
-let rulerPointA = null;
-
-let rulerLine = null;
-let rulerMarkerA = null;
-let rulerMarkerB = null;
-let rulerLabel = null;
+    return Math.sqrt(dx * dx + dy * dy);
+}
 
 
-function toggleRuler(btn) {
-    if (rulerActive) {
-        resetRuler();
-        rulerActive = false;
-        rulerFinished = false;
-        btn.classList.remove('active');
-        map.getContainer().classList.remove('ruler-mode');
-        return;
-    }
+/* =========================
+   4) Clipboard helper
+   ========================= */
 
-    resetRuler();
-    rulerActive = true;
-    rulerFinished = false;
-    rulerPointA = null;
-    btn.classList.add('active');
-
-    map.getContainer().classList.add('ruler-mode');
-
-    if (sharedMarker) {
-        map.removeLayer(sharedMarker);
-        sharedMarker = null;
+function copyToClipboard(text) {
+    if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(text);
+    } else {
+        const t = document.createElement('textarea');
+        t.value = text;
+        t.style.position = 'fixed';
+        t.style.left = '-9999px';
+        document.body.appendChild(t);
+        t.select();
+        document.execCommand('copy');
+        document.body.removeChild(t);
     }
 }
 
 
+/* =========================
+   5) Контролы карты
+   ========================= */
 
-function resetRuler() {
-    if (rulerLine) map.removeLayer(rulerLine);
-    if (rulerMarkerA) map.removeLayer(rulerMarkerA);
-    if (rulerMarkerB) map.removeLayer(rulerMarkerB);
-    if (rulerLabel) map.removeLayer(rulerLabel);
-
-    rulerLine = null;
-    rulerMarkerA = null;
-    rulerMarkerB = null;
-    rulerLabel = null;
-    rulerPointA = null;
-}
-
-
-
+// Центрирование
 const CenterControl = L.Control.extend({
     options: { position: 'topleft' },
     onAdd() {
@@ -337,65 +146,16 @@ const CenterControl = L.Control.extend({
         return b;
     }
 });
-
 map.addControl(new CenterControl());
 
 
-function createSharedMarker(lat, lng) {
-    if (sharedMarker) map.removeLayer(sharedMarker);
-
-    sharedMarker = L.marker([lat, lng], { draggable: true }).addTo(map);
-
-    function updatePopup() {
-        const p = sharedMarker.getLatLng();
-        const s = mapToSamp(p.lat, p.lng);
-        const url = new URL(location.href);
-
-        url.searchParams.set('x', s.x);
-        url.searchParams.set('y', s.y);
-        url.searchParams.set('z', map.getZoom());
-
-        const html = `
-            <b>Координаты</b><br>
-            X: ${s.x}<br>
-            Y: ${s.y}<br><br>
-            <button id="copy-link">📋 Скопировать ссылку</button>
-        `;
-
-        sharedMarker.bindPopup(html).openPopup();
-
-        setTimeout(() => {
-            const btn = document.getElementById('copy-link');
-            if (btn) {
-                btn.onclick = () => {
-                    copyToClipboard(url.toString());
-                    btn.innerText = '✅ Скопировано';
-                };
-            }
-        }, 0);
-    }
-
-    updatePopup();
-
-    sharedMarker.on('dragstart', () => {
-        sharedMarker.closePopup();
-    });
-
-    sharedMarker.on('dragend', () => {
-        updatePopup();
-    });
-
-    sharedMarker.on('popupclose', () => {
-        if (sharedMarker) {
-            map.removeLayer(sharedMarker);
-            sharedMarker = null;
-        }
-    });
-}
-
+/* =========================
+   6) Обычная метка (координаты + копирование)
+   ========================= */
 
 let sharedMarker = null;
 
+// Popup HTML
 function buildPopup(marker, withButton = true) {
     const { lat, lng } = marker.getLatLng();
     const samp = mapToSamp(lat, lng);
@@ -415,15 +175,14 @@ function buildPopup(marker, withButton = true) {
                 <img src="assets/img/copy.gif" class="copy-icon" alt="">
                 Скопировать координаты
             </button>
-
         ` : ``}
     `;
 }
 
-
-map.on('click', (e) => {
+// Клик по карте (обычный режим)
+function handleSharedMarkerClick(e) {
+    // Не ставим обычную метку, если включена линейка или клик "занят" линейкой
     if (rulerActive || rulerClickLock) return;
-    if (rulerActive) return; 
     if (e.originalEvent.target.closest('.leaflet-marker-icon')) return;
 
     if (sharedMarker) {
@@ -449,7 +208,6 @@ map.on('click', (e) => {
         sharedMarker.openPopup();
     }
 
-    // ✅ ВЕШАЕМ ДО openPopup(), чтобы работало на любой новой метке сразу
     sharedMarker.on('popupopen', (ev) => {
         setTimeout(() => {
             const root = ev.popup.getElement();
@@ -483,11 +241,11 @@ map.on('click', (e) => {
         setPopup(true);
         openPopup();
     });
-});
+}
 
+map.on('click', handleSharedMarkerClick);
 
-
-
+// Позиция по ссылке (?x&y&z)
 const params = new URLSearchParams(location.search);
 if (params.has('x') && params.has('y')) {
     const pos = sampToMap(+params.get('x'), +params.get('y'));
@@ -498,18 +256,278 @@ if (params.has('x') && params.has('y')) {
 }
 
 
-document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && sharedMarker) {
-        map.removeLayer(sharedMarker);
-        sharedMarker = null;
+/* =========================
+   7) Линейка (отрезок A-B + расстояние) + Drag точек
+   ========================= */
+
+let rulerActive = false;
+let rulerFinished = false;
+let rulerClickLock = false;
+
+let rulerPointA = null;
+let rulerPointB = null;
+
+let rulerLine = null;
+let rulerMarkerA = null;
+let rulerMarkerB = null;
+let rulerLabel = null;
+
+// Какая точка сейчас перетаскивается: 'A' | 'B' | null
+let rulerDraggingPoint = null;
+
+// Контрол линейки
+const RulerControl = L.Control.extend({
+    options: { position: 'topleft' },
+    onAdd() {
+        const btn = L.DomUtil.create('button', 'leaflet-bar ruler-btn');
+        btn.innerHTML = '📏';
+        btn.style.width = '32px';
+        btn.style.height = '30px';
+        btn.style.cursor = 'pointer';
+        btn.style.fontSize = '16px';
+        btn.style.background = '#fff';
+        btn.style.color = '#000';
+        btn.style.border = 'none';
+
+        L.DomEvent.disableClickPropagation(btn);
+        btn.onclick = () => toggleRuler(btn);
+
+        return btn;
     }
 });
 
-document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') {
+map.addControl(new RulerControl());
+
+function setCursorMode() {
+    const el = map.getContainer();
+
+    if (rulerActive) {
+        el.style.cursor = 'crosshair';
+        return;
+    }
+
+    // обычный режим
+    el.style.cursor = 'default';
+}
+
+// карта перетаскивается — рука (только в обычном режиме)
+map.on('dragstart', () => {
+    if (rulerActive) return;
+    map.getContainer().style.cursor = 'grabbing';
+});
+map.on('dragend', () => {
+    if (rulerActive) return;
+    map.getContainer().style.cursor = 'default';
+});
+
+function toggleRuler(btn) {
+    if (rulerActive) {
         resetRuler();
         rulerActive = false;
         rulerFinished = false;
+        rulerClickLock = false;
+        btn.classList.remove('active');
+        map.getContainer().classList.remove('ruler-mode');
+        setCursorMode();
+        return;
+    }
+
+    // Включаем
+    resetRuler();
+    rulerActive = true;
+    rulerFinished = false;
+    rulerClickLock = false;
+    rulerPointA = null;
+    rulerPointB = null;
+
+    btn.classList.add('active');
+    map.getContainer().classList.add('ruler-mode');
+
+    // Принудительно убираем обычную метку при включении линейки
+    if (sharedMarker) {
+        map.removeLayer(sharedMarker);
+        sharedMarker = null;
+    }
+
+    setCursorMode();
+}
+
+function resetRuler() {
+    if (rulerLine) map.removeLayer(rulerLine);
+    if (rulerMarkerA) map.removeLayer(rulerMarkerA);
+    if (rulerMarkerB) map.removeLayer(rulerMarkerB);
+    if (rulerLabel) map.removeLayer(rulerLabel);
+
+    rulerLine = null;
+    rulerMarkerA = null;
+    rulerMarkerB = null;
+    rulerLabel = null;
+
+    rulerPointA = null;
+    rulerPointB = null;
+    rulerDraggingPoint = null;
+}
+
+// Подпись расстояния + обновление линии
+function updateRuler(pointB, fixed) {
+    if (!rulerLine || !rulerPointA) return;
+
+    rulerLine.setLatLngs([rulerPointA, pointB]);
+
+    const dist = getDistanceMeters(rulerPointA, pointB).toFixed(2);
+    const mid = L.latLng(
+        (rulerPointA.lat + pointB.lat) / 2,
+        (rulerPointA.lng + pointB.lng) / 2
+    );
+
+    if (rulerLabel) map.removeLayer(rulerLabel);
+
+    rulerLabel = L.marker(mid, {
+        interactive: false,
+        icon: L.divIcon({
+            className: 'ruler-distance',
+            html: `${dist} м`
+        })
+    }).addTo(map);
+
+    if (fixed) {
+        rulerLine.setStyle({ dashArray: null });
+    }
+}
+
+// Привязка drag к точке
+function bindPointDrag(layer, which) {
+    layer.on('mousedown', (ev) => {
+        if (!rulerActive || !rulerFinished) return;
+        rulerDraggingPoint = which;
+        map.dragging.disable();
+        L.DomEvent.stopPropagation(ev.originalEvent);
+    });
+
+    layer.on('touchstart', (ev) => {
+        if (!rulerActive || !rulerFinished) return;
+        rulerDraggingPoint = which;
+        map.dragging.disable();
+        L.DomEvent.stopPropagation(ev.originalEvent);
+    });
+}
+
+// Клик по карте в режиме линейки
+function handleRulerClick(e) {
+    if (!rulerActive || rulerClickLock) return;
+
+    // если отрезок уже построен — клики ничего не создают
+    if (rulerFinished) return;
+
+    rulerClickLock = true;
+
+    // 1-я точка (A)
+    if (!rulerPointA) {
+        rulerPointA = e.latlng;
+
+        rulerMarkerA = L.circleMarker(rulerPointA, {
+            radius: 6,
+            className: 'ruler-point',
+            interactive: true
+        }).addTo(map);
+
+        rulerLine = L.polyline([rulerPointA, rulerPointA], {
+            color: '#000',
+            weight: 2,
+            dashArray: '6,4',
+            interactive: false
+        }).addTo(map);
+
+        // A можно будет двигать только после построения B (как ты и хотел — корректировка уже готового)
+        setTimeout(() => { rulerClickLock = false; }, 0);
+        return;
+    }
+
+    // 2-я точка (B) — фиксируем отрезок
+    rulerPointB = e.latlng;
+
+    rulerMarkerB = L.circleMarker(rulerPointB, {
+        radius: 6,
+        className: 'ruler-point',
+        interactive: true
+    }).addTo(map);
+
+    updateRuler(rulerPointB, true);
+    rulerFinished = true;
+
+    // Теперь можно корректировать позицию drag’ом по точкам
+    bindPointDrag(rulerMarkerA, 'A');
+    bindPointDrag(rulerMarkerB, 'B');
+
+    setTimeout(() => { rulerClickLock = false; }, 0);
+}
+
+map.on('click', handleRulerClick);
+
+// Динамика построения (пока выбираем B) + drag точек после построения
+map.on('mousemove', (e) => {
+    // Drag точек (после построения)
+    if (rulerDraggingPoint && rulerFinished) {
+        if (rulerDraggingPoint === 'A') {
+            rulerPointA = e.latlng;
+            rulerMarkerA.setLatLng(rulerPointA);
+            rulerLine.setLatLngs([rulerPointA, rulerPointB]);
+            updateRuler(rulerPointB, true);
+            return;
+        }
+
+        if (rulerDraggingPoint === 'B') {
+            rulerPointB = e.latlng;
+            rulerMarkerB.setLatLng(rulerPointB);
+            rulerLine.setLatLngs([rulerPointA, rulerPointB]);
+            updateRuler(rulerPointB, true);
+            return;
+        }
+    }
+
+    // Динамика (пока B ещё не поставлена)
+    if (!rulerActive || !rulerPointA || !rulerLine || rulerFinished) return;
+    updateRuler(e.latlng, false);
+});
+
+map.on('mouseup', () => {
+    if (!rulerDraggingPoint) return;
+    rulerDraggingPoint = null;
+    map.dragging.enable();
+});
+
+map.on('touchend', () => {
+    if (!rulerDraggingPoint) return;
+    rulerDraggingPoint = null;
+    map.dragging.enable();
+});
+
+
+/* =========================
+   8) ESC — удаление метки + сброс линейки
+   ========================= */
+
+document.addEventListener('keydown', (e) => {
+    if (e.key !== 'Escape') return;
+
+    // Удаляем обычную метку
+    if (sharedMarker) {
+        map.removeLayer(sharedMarker);
+        sharedMarker = null;
+    }
+
+    // Сбрасываем линейку + выключаем режим
+    if (rulerActive || rulerFinished) {
+        resetRuler();
+        rulerActive = false;
+        rulerFinished = false;
+        rulerClickLock = false;
+
         document.querySelector('.ruler-btn')?.classList.remove('active');
+        map.getContainer().classList.remove('ruler-mode');
+        setCursorMode();
     }
 });
+
+// Стартовое состояние курсора
+setCursorMode();

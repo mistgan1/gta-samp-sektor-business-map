@@ -162,12 +162,21 @@ body {
     cursor: crosshair;
 }
 
-/* Обычный режим — стандартная стрелка */
-#map {
-    cursor: default;
+
+/* 1) Обычный режим — стандартная стрелка (перебиваем Leaflet) */
+#map,
+#map.leaflet-container,
+#map.leaflet-container.leaflet-grab {
+  cursor: default !important;
 }
 
-/* Когда двигают карту — рука */
-#map.leaflet-grabbing {
-    cursor: grabbing;
+/* 2) Когда карту реально тащат — рука */
+#map.leaflet-container.leaflet-grabbing {
+  cursor: grabbing !important;
+}
+
+/* 3) Режим линейки — крестик везде (и на интерактивных слоях тоже) */
+#map.ruler-mode,
+#map.ruler-mode * {
+  cursor: crosshair !important;
 }
