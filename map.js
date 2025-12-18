@@ -409,13 +409,6 @@ function bindPointDrag(layer, which) {
     });
 }
 
-function stopRulerDrag() {
-    rulerDraggingPoint = null;
-
-    map.dragging.enable();
-    map.touchZoom.enable();
-}
-
 map.on('mouseup', stopRulerDrag);
 
 // Клик по карте в режиме линейки
