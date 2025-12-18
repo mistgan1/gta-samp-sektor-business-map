@@ -4,6 +4,9 @@ const MAP_CENTER = [MAP_SIZE / 2, MAP_SIZE / 2];
 let rulerClickLock = false;
 let rulerFinished = false;
 
+let rulerDragging = false;
+let rulerDragStart = null;
+
 
 const worldBounds = [
     [-PADDING, -PADDING],
@@ -52,6 +55,21 @@ function enableRuler() {
     if (rulerLabel) map.removeLayer(rulerLabel);
 }
 
+function startRulerDrag(latlng) {
+    rulerDragging = true;
+    rulerDragStart = latlng;
+    map.dragging.disable();
+}
+
+function bindRulerDrag(layer) {
+    layer.on('mousedown', (e) => {
+        if (!rulerFinished) return;
+        startRulerDrag(e.latlng);
+        L.DomEvent.stopPropagation(e.originalEvent);
+    });
+}
+
+
 map.on('click', (e) => {
     if (!rulerActive || rulerClickLock) return;
 
@@ -63,13 +81,15 @@ map.on('click', (e) => {
 
         rulerMarkerA = L.circleMarker(rulerPointA, {
             radius: 5,
-            className: 'ruler-point'
+            className: 'ruler-point',
+            interactive: true
         }).addTo(map);
 
         rulerLine = L.polyline([rulerPointA, rulerPointA], {
             color: '#000',
             weight: 2,
-            dashArray: '6,4'
+            dashArray: '6,4',
+            interactive: true
         }).addTo(map);
 
         rulerClickLock = false;
@@ -86,12 +106,49 @@ map.on('click', (e) => {
 
     rulerFinished = true;
 
+    bindRulerDrag(rulerLine);
+    bindRulerDrag(rulerMarkerA);
+    bindRulerDrag(rulerMarkerB);
+
     // ⬅️ снимаем блокировку В СЛЕДУЮЩЕМ тике
     setTimeout(() => {
         rulerClickLock = false;
     }, 0);
 });
 
+map.on('mousemove', (e) => {
+    if (!rulerDragging) return;
+
+    const dx = e.latlng.lat - rulerDragStart.lat;
+    const dy = e.latlng.lng - rulerDragStart.lng;
+
+    rulerPointA = L.latLng(
+        rulerPointA.lat + dx,
+        rulerPointA.lng + dy
+    );
+
+    const pointB = rulerLine.getLatLngs()[1];
+    const newPointB = L.latLng(
+        pointB.lat + dx,
+        pointB.lng + dy
+    );
+
+    rulerLine.setLatLngs([rulerPointA, newPointB]);
+    rulerMarkerA.setLatLng(rulerPointA);
+    rulerMarkerB.setLatLng(newPointB);
+
+    updateRuler(newPointB, true);
+
+    rulerDragStart = e.latlng;
+});
+
+map.on('mouseup', () => {
+    if (!rulerDragging) return;
+
+    rulerDragging = false;
+    rulerDragStart = null;
+    map.dragging.enable();
+});
 
 
 map.on('mousemove', (e) => {
@@ -223,28 +280,29 @@ let rulerLabel = null;
 
 
 function toggleRuler(btn) {
-    // если линейка включена → сброс
     if (rulerActive) {
         resetRuler();
         rulerActive = false;
         rulerFinished = false;
         btn.classList.remove('active');
+        map.getContainer().classList.remove('ruler-mode');
         return;
     }
 
-    // включаем линейку
     resetRuler();
     rulerActive = true;
     rulerFinished = false;
     rulerPointA = null;
     btn.classList.add('active');
 
-    // принудительно убираем обычную метку
+    map.getContainer().classList.add('ruler-mode');
+
     if (sharedMarker) {
         map.removeLayer(sharedMarker);
         sharedMarker = null;
     }
 }
+
 
 
 function resetRuler() {

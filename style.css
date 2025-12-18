@@ -158,3 +158,16 @@ body {
     pointer-events: none;
 }
 
+#map.ruler-mode {
+    cursor: crosshair;
+}
+
+/* Обычный режим — стандартная стрелка */
+#map {
+    cursor: default;
+}
+
+/* Когда двигают карту — рука */
+#map.leaflet-grabbing {
+    cursor: grabbing;
+}
