@@ -128,3 +128,18 @@ body {
     white-space: nowrap;
     pointer-events: none;
 }
+
+.ruler-btn.active {
+    background: #7ab6ff !important;
+    color: #000;
+}
+
+.ruler-label {
+    background: rgba(0, 0, 0, 0.75);
+    color: #7ab6ff;
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 13px;
+    white-space: nowrap;
+    pointer-events: none;
+}

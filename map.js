@@ -20,10 +20,6 @@ const map = L.map('map', {
     maxBoundsViscosity: 0
 });
 
-let rulerActive = false;
-let rulerPointA = null;
-let rulerLine = null;
-let rulerLabel = null;
 
 L.imageOverlay('assets/map.jpg', imageBounds).addTo(map);
 map.fitBounds(imageBounds);
@@ -159,6 +155,60 @@ fetch('./data/businesses.json')
             );
         });
     });
+
+const RulerControl = L.Control.extend({
+    options: { position: 'topleft' },
+
+    onAdd() {
+        const btn = L.DomUtil.create('button', 'leaflet-bar ruler-btn');
+        btn.innerHTML = '📏';
+        btn.style.width = '32px';
+        btn.style.height = '30px';
+        btn.style.cursor = 'pointer';
+        btn.style.fontSize = '16px';
+        btn.style.background = '#fff';
+        btn.style.color = '#000';
+        btn.style.border = 'none';
+
+        L.DomEvent.disableClickPropagation(btn);
+
+        btn.onclick = () => {
+            toggleRuler(btn);
+        };
+
+        return btn;
+    }
+});
+
+map.addControl(new RulerControl());
+
+let rulerActive = false;
+let rulerPointA = null;
+let rulerLine = null;
+let rulerLabel = null;
+
+function toggleRuler(btn) {
+    rulerActive = !rulerActive;
+
+    if (!rulerActive) {
+        resetRuler();
+        btn.classList.remove('active');
+        return;
+    }
+
+    btn.classList.add('active');
+    rulerPointA = null;
+}
+
+function resetRuler() {
+    if (rulerLine) map.removeLayer(rulerLine);
+    if (rulerLabel) map.removeLayer(rulerLabel);
+
+    rulerLine = null;
+    rulerLabel = null;
+    rulerPointA = null;
+}
+
 
 const CenterControl = L.Control.extend({
     options: { position: 'topleft' },
