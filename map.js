@@ -34,7 +34,6 @@ map.fitBounds(imageBounds);
 
 if (L.Browser.mobile) {
     map.tap = true;
-    map.touchZoom.enable();
     map.doubleClickZoom.disable();
 }
 
@@ -397,42 +396,20 @@ function updateRuler(pointB, fixed) {
 
 // Привязка drag к точке
 function bindPointDrag(layer, which) {
-
-    layer.on('touchstart', (ev) => {
-        if (!rulerActive || !rulerFinished) return;
-
-        // 🔒 ПОЛНОЕ перехватывание
-        L.DomEvent.preventDefault(ev.originalEvent);
-        L.DomEvent.stopPropagation(ev.originalEvent);
-
-        rulerDraggingPoint = which;
-
-        // ⛔ ОЧЕНЬ ВАЖНО: отключаем drag карты СРАЗУ
-        map.dragging.disable();
-        map.touchZoom.disable();
-    });
-
     layer.on('mousedown', (ev) => {
         if (!rulerActive || !rulerFinished) return;
 
         L.DomEvent.preventDefault(ev.originalEvent);
         L.DomEvent.stopPropagation(ev.originalEvent);
 
-        rulerDraggingPoint = which;
+        rulerDragging = true;
+        rulerDragStart = ev.latlng;
         map.dragging.disable();
     });
 }
 
-function stopRulerDrag() {
-    rulerDraggingPoint = null;
 
-    map.dragging.enable();
-    map.touchZoom.enable();
-}
 
-map.on('mouseup', stopRulerDrag);
-map.on('touchend', stopRulerDrag);
-map.on('touchcancel', stopRulerDrag);
 
 // Клик по карте в режиме линейки
 function handleRulerClick(e) {
@@ -450,8 +427,7 @@ function handleRulerClick(e) {
         rulerMarkerA = L.circleMarker(rulerPointA, {
             radius: 6,
             className: 'ruler-point',
-            interactive: true,
-            bubblingMouseEvents: false   // ⬅️ КЛЮЧ
+            interactive: true
         }).addTo(map);
 
         rulerLine = L.polyline([rulerPointA, rulerPointA], {
@@ -472,8 +448,7 @@ function handleRulerClick(e) {
     rulerMarkerB = L.circleMarker(rulerPointB, {
         radius: 6,
         className: 'ruler-point',
-        interactive: true,
-        bubblingMouseEvents: false   // ⬅️ КЛЮЧ
+        interactive: true
     }).addTo(map);
 
     updateRuler(rulerPointB, true);
@@ -490,56 +465,31 @@ map.on('click', handleRulerClick);
 
 // Динамика построения (пока выбираем B) + drag точек после построения
 map.on('mousemove', (e) => {
-    // Drag точек (после построения)
-    if (rulerDraggingPoint && rulerFinished) {
-        if (rulerDraggingPoint === 'A') {
-            rulerPointA = e.latlng;
-            rulerMarkerA.setLatLng(rulerPointA);
-            rulerLine.setLatLngs([rulerPointA, rulerPointB]);
-            updateRuler(rulerPointB, true);
-            return;
-        }
+    if (!rulerDragging) return;
 
-        if (rulerDraggingPoint === 'B') {
-            rulerPointB = e.latlng;
-            rulerMarkerB.setLatLng(rulerPointB);
-            rulerLine.setLatLngs([rulerPointA, rulerPointB]);
-            updateRuler(rulerPointB, true);
-            return;
-        }
-    }
+    const dx = e.latlng.lat - rulerDragStart.lat;
+    const dy = e.latlng.lng - rulerDragStart.lng;
 
-    // Динамика (пока B ещё не поставлена)
-    if (!rulerActive || !rulerPointA || !rulerLine || rulerFinished) return;
-    updateRuler(e.latlng, false);
+    rulerPointA = L.latLng(
+        rulerPointA.lat + dx,
+        rulerPointA.lng + dy
+    );
+
+    const pointB = rulerLine.getLatLngs()[1];
+    const newPointB = L.latLng(
+        pointB.lat + dx,
+        pointB.lng + dy
+    );
+
+    rulerLine.setLatLngs([rulerPointA, newPointB]);
+    rulerMarkerA.setLatLng(rulerPointA);
+    rulerMarkerB.setLatLng(newPointB);
+
+    updateRuler(newPointB, true);
+    rulerDragStart = e.latlng;
 });
 
-map.on('touchmove', (e) => {
-    if (!e.latlng) return;
 
-    // Drag точек (после построения)
-    if (rulerDraggingPoint && rulerFinished) {
-        if (rulerDraggingPoint === 'A') {
-            rulerPointA = e.latlng;
-            rulerMarkerA.setLatLng(rulerPointA);
-            rulerLine.setLatLngs([rulerPointA, rulerPointB]);
-            updateRuler(rulerPointB, true);
-            return;
-        }
-
-        if (rulerDraggingPoint === 'B') {
-            rulerPointB = e.latlng;
-            rulerMarkerB.setLatLng(rulerPointB);
-            rulerLine.setLatLngs([rulerPointA, rulerPointB]);
-            updateRuler(rulerPointB, true);
-            return;
-        }
-    }
-
-    // Динамика построения (пока выбираем B)
-    if (!rulerActive || !rulerPointA || !rulerLine || rulerFinished) return;
-    updateRuler(e.latlng, false);
-});
 
 
 map.on('mouseup', () => {
@@ -548,11 +498,6 @@ map.on('mouseup', () => {
     map.dragging.enable();
 });
 
-map.on('touchend', () => {
-    if (!rulerDraggingPoint) return;
-    rulerDraggingPoint = null;
-    map.dragging.enable();
-});
 
 
 /* =========================
