@@ -73,3 +73,36 @@ body {
 .leaflet-bar button:hover {
     background: #222;
 }
+
+.copy-icon {
+    width: 14px;
+    height: 14px;
+    object-fit: contain;
+    pointer-events: none; 
+}
+
+.copy-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+
+    padding: 6px 10px;
+    font-size: 13px;
+
+    border-radius: 8px;      
+    border: 1px solid rgba(255, 255, 255, 0.25);
+
+    background: rgba(0, 0, 0, 0.6);
+    color: #fff;
+
+    cursor: pointer;
+    transition: background 0.2s ease, transform 0.1s ease;
+}
+
+.copy-link:hover {
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.copy-link:active {
+    transform: scale(0.96);
+}

@@ -181,8 +181,10 @@ function buildPopup(marker, withButton = true) {
         ${withButton ? `
             <br><br>
             <button class="copy-link" data-url="${url}">
-                📋 Скопировать координаты
+                <img src="assets/img/copy.gif" class="copy-icon" alt="">
+                Скопировать координаты
             </button>
+
         ` : ``}
     `;
 }
@@ -225,7 +227,10 @@ map.on('click', (e) => {
 
             btn.onclick = () => {
                 copyToClipboard(btn.dataset.url);
-                btn.textContent = '✅ Скопировано';
+                btn.innerHTML = `
+                <img src="assets/img/complete.gif" class="copy-icon" alt="">
+                Скопировано
+                `;
             };
         }, 0);
     });
