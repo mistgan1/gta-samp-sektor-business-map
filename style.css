@@ -100,7 +100,13 @@ body {
 }
 
 .copy-link:hover {
-    background: rgba(255, 255, 255, 0.15);
+    background: rgba(120, 180, 255, 0.25);
+}
+
+.copy-link.copied {
+    background: rgba(80, 200, 120, 0.35);
+    border-color: rgba(80, 200, 120, 0.7);
+    color: #eafff2;
 }
 
 .copy-link:active {
