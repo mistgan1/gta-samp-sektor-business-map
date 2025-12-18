@@ -2,6 +2,8 @@ const MAP_SIZE = 6144;
 const PADDING = MAP_SIZE * 1.5;
 const MAP_CENTER = [MAP_SIZE / 2, MAP_SIZE / 2];
 let rulerClickLock = false;
+let rulerFinished = false;
+
 
 const worldBounds = [
     [-PADDING, -PADDING],
@@ -82,8 +84,7 @@ map.on('click', (e) => {
 
     updateRuler(e.latlng, true);
 
-    rulerActive = false;
-    document.querySelector('.ruler-btn')?.classList.remove('active');
+    rulerFinished = true;
 
     // ⬅️ снимаем блокировку В СЛЕДУЮЩЕМ тике
     setTimeout(() => {
@@ -94,7 +95,7 @@ map.on('click', (e) => {
 
 
 map.on('mousemove', (e) => {
-    if (!rulerActive || !rulerPointA || !rulerLine) return;
+    if (!rulerActive || !rulerPointA || !rulerLine || rulerFinished) return;
     updateRuler(e.latlng, false);
 });
 
@@ -222,32 +223,29 @@ let rulerLabel = null;
 
 
 function toggleRuler(btn) {
-    rulerActive = !rulerActive;
+    // если линейка включена → сброс
+    if (rulerActive) {
+        resetRuler();
+        rulerActive = false;
+        rulerFinished = false;
+        btn.classList.remove('active');
+        return;
+    }
 
-    // ⬅️ ПРИНУДИТЕЛЬНО удаляем обычную метку
-    if (rulerActive && sharedMarker) {
+    // включаем линейку
+    resetRuler();
+    rulerActive = true;
+    rulerFinished = false;
+    rulerPointA = null;
+    btn.classList.add('active');
+
+    // принудительно убираем обычную метку
+    if (sharedMarker) {
         map.removeLayer(sharedMarker);
         sharedMarker = null;
     }
-
-    if (!rulerActive) {
-        resetRuler();
-        btn.classList.remove('active');
-        return;
-    }
-
-    btn.classList.add('active');
-    rulerPointA = null;
-
-    if (!rulerActive) {
-        resetRuler();
-        btn.classList.remove('active');
-        return;
-    }
-
-    btn.classList.add('active');
-    rulerPointA = null;
 }
+
 
 function resetRuler() {
     if (rulerLine) map.removeLayer(rulerLine);
@@ -451,12 +449,9 @@ document.addEventListener('keydown', (e) => {
 
 document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') {
-        if (rulerLine) map.removeLayer(rulerLine);
-        if (rulerLabel) map.removeLayer(rulerLabel);
-
-        rulerLine = null;
-        rulerLabel = null;
-        rulerPointA = null;
+        resetRuler();
         rulerActive = false;
+        rulerFinished = false;
+        document.querySelector('.ruler-btn')?.classList.remove('active');
     }
 });
