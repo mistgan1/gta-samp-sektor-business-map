@@ -148,13 +148,9 @@ body {
     stroke: #ffcc00;
     fill: #ffcc00;
     fill-opacity: 1;
-    transition: transform 0.12s ease;
-    cursor: move;
 }
 
-.ruler-point:hover {
-    transform: scale(1.25);
-}
+
 
 .ruler-distance {
     color: #ffcc00;
