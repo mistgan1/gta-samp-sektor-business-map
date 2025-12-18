@@ -165,7 +165,7 @@ function createSharedMarker(lat, lng) {
 
 let sharedMarker = null;
 
-function buildPopup(marker) {
+function buildPopup(marker, withButton = true) {
     const { lat, lng } = marker.getLatLng();
     const samp = mapToSamp(lat, lng);
 
@@ -177,12 +177,16 @@ function buildPopup(marker) {
     return `
         <b>Координаты</b><br>
         X: ${samp.x}<br>
-        Y: ${samp.y}<br><br>
-        <button class="copy-link" data-url="${url}">
-            📋 Скопировать ссылку
-        </button>
+        Y: ${samp.y}
+        ${withButton ? `
+            <br><br>
+            <button class="copy-link" data-url="${url}">
+                📋 Скопировать координаты
+            </button>
+        ` : ``}
     `;
 }
+
 
 map.on('click', (e) => {
     if (e.originalEvent.target.closest('.leaflet-marker-icon')) return;
@@ -202,36 +206,43 @@ map.on('click', (e) => {
         autoClose: false
     });
 
-    sharedMarker.setPopupContent(buildPopup(sharedMarker));
-    sharedMarker.openPopup();
+    function openPopupWithHandler() {
+        sharedMarker.setPopupContent(buildPopup(sharedMarker, true));
+        sharedMarker.openPopup();
 
-    sharedMarker.on('popupopen', (ev) => {
-        const btn = ev.popup.getElement().querySelector('.copy-link');
-        if (!btn) return;
+        setTimeout(() => {
+            const btn = document.querySelector('.copy-link');
+            if (!btn) return;
 
-        btn.onclick = () => {
-            navigator.clipboard.writeText(btn.dataset.url);
-            btn.textContent = '✅ Скопировано';
-        };
-    });
+            btn.onclick = () => {
+                copyToClipboard(btn.dataset.url);
+                btn.textContent = '✅ Скопировано';
+            };
+        }, 0);
+    }
+
+    openPopupWithHandler();
 
     sharedMarker.on('dragstart', () => {
         sharedMarker.closePopup();
     });
 
     sharedMarker.on('dragend', () => {
-        sharedMarker.setPopupContent(buildPopup(sharedMarker));
-        sharedMarker.openPopup();
+        openPopupWithHandler();
     });
 });
+
 
 
 const params = new URLSearchParams(location.search);
 if (params.has('x') && params.has('y')) {
     const pos = sampToMap(+params.get('x'), +params.get('y'));
     map.setView(pos, +params.get('z') || 0, { animate: false });
-    createSharedMarker(pos[0], pos[1]);
+
+    sharedMarker = L.marker(pos, { draggable: false }).addTo(map);
+    sharedMarker.bindPopup(buildPopup(sharedMarker, false)).openPopup();
 }
+
 
 document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape' && sharedMarker) {
