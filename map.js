@@ -399,18 +399,26 @@ function updateRuler(pointB, fixed) {
 function bindPointDrag(layer, which) {
     layer.on('mousedown', (ev) => {
         if (!rulerActive || !rulerFinished) return;
+
+        // ❌ запрещаем нативный drag браузера
+        ev.originalEvent.preventDefault();
+        ev.originalEvent.stopPropagation();
+
         rulerDraggingPoint = which;
         map.dragging.disable();
-        L.DomEvent.stopPropagation(ev.originalEvent);
     });
 
     layer.on('touchstart', (ev) => {
         if (!rulerActive || !rulerFinished) return;
+
+        ev.originalEvent.preventDefault();
+        ev.originalEvent.stopPropagation();
+
         rulerDraggingPoint = which;
         map.dragging.disable();
-        L.DomEvent.stopPropagation(ev.originalEvent);
     });
 }
+
 
 // Клик по карте в режиме линейки
 function handleRulerClick(e) {
@@ -432,7 +440,7 @@ function handleRulerClick(e) {
         }).addTo(map);
 
         rulerLine = L.polyline([rulerPointA, rulerPointA], {
-            color: '#000',
+            color: '#ffcc00',
             weight: 2,
             dashArray: '6,4',
             interactive: false
