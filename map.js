@@ -20,6 +20,11 @@ const map = L.map('map', {
     maxBoundsViscosity: 0
 });
 
+let rulerActive = false;
+let rulerPointA = null;
+let rulerLine = null;
+let rulerLabel = null;
+
 L.imageOverlay('assets/map.jpg', imageBounds).addTo(map);
 map.fitBounds(imageBounds);
 
@@ -39,6 +44,72 @@ const BUSINESS_TYPES = {
     hotdog: { icon: 'assets/icons/hotdog.png' },
     canteen: { icon: 'assets/icons/canteen.png' }
 };
+
+function enableRuler() {
+    rulerActive = true;
+    rulerPointA = null;
+
+    if (rulerLine) map.removeLayer(rulerLine);
+    if (rulerLabel) map.removeLayer(rulerLabel);
+}
+
+map.on('click', (e) => {
+    if (!rulerActive) return;
+
+    if (!rulerPointA) {
+        rulerPointA = e.latlng;
+
+        rulerLine = L.polyline([rulerPointA, rulerPointA], {
+            color: '#7ab6ff',
+            weight: 2,
+            dashArray: '6,4'
+        }).addTo(map);
+
+        return;
+    }
+
+    // Второй клик — фиксируем
+    updateRuler(e.latlng, true);
+    rulerActive = false;
+});
+
+map.on('mousemove', (e) => {
+    if (!rulerActive || !rulerPointA || !rulerLine) return;
+
+    updateRuler(e.latlng, false);
+});
+
+function getDistanceMeters(a, b) {
+    const p1 = mapToSamp(a.lat, a.lng);
+    const p2 = mapToSamp(b.lat, b.lng);
+
+    const dx = p2.x - p1.x;
+    const dy = p2.y - p1.y;
+
+    return Math.sqrt(dx * dx + dy * dy);
+}
+
+function updateRuler(pointB, fixed) {
+    rulerLine.setLatLngs([rulerPointA, pointB]);
+
+    const dist = getDistanceMeters(rulerPointA, pointB).toFixed(2);
+
+    const mid = L.latLng(
+        (rulerPointA.lat + pointB.lat) / 2,
+        (rulerPointA.lng + pointB.lng) / 2
+    );
+
+    if (rulerLabel) map.removeLayer(rulerLabel);
+
+    rulerLabel = L.marker(mid, {
+        interactive: false,
+        icon: L.divIcon({
+            className: 'ruler-label',
+            html: `${dist} м`
+        })
+    }).addTo(map);
+}
+
 
 function sampToMap(x, y) {
     return [
@@ -269,5 +340,17 @@ document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape' && sharedMarker) {
         map.removeLayer(sharedMarker);
         sharedMarker = null;
+    }
+});
+
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+        if (rulerLine) map.removeLayer(rulerLine);
+        if (rulerLabel) map.removeLayer(rulerLabel);
+
+        rulerLine = null;
+        rulerLabel = null;
+        rulerPointA = null;
+        rulerActive = false;
     }
 });
