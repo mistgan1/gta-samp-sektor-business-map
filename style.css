@@ -145,15 +145,16 @@ body {
 }
 
 .ruler-point {
-    stroke: #7ab6ff;
-    fill: #7ab6ff;
+    stroke: #000;
+    fill: #000;
     fill-opacity: 1;
 }
 
 .ruler-distance {
-    color: #7ab6ff;
+    color: #000;
     font-size: 13px;
     font-weight: bold;
     white-space: nowrap;
     pointer-events: none;
 }
+

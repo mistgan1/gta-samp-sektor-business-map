@@ -62,7 +62,7 @@ map.on('click', (e) => {
         }).addTo(map);
 
         rulerLine = L.polyline([rulerPointA, rulerPointA], {
-            color: '#7ab6ff',
+            color: '#000',
             weight: 2,
             dashArray: '6,4'
         }).addTo(map);
@@ -71,15 +71,15 @@ map.on('click', (e) => {
     }
 
     // Вторая точка — фиксируем
+    rulerActive = false; // ⬅️ ВАЖНО: ДО всего остального
+    document.querySelector('.ruler-btn')?.classList.remove('active');
+
     rulerMarkerB = L.circleMarker(e.latlng, {
         radius: 5,
         className: 'ruler-point'
     }).addTo(map);
 
     updateRuler(e.latlng, true);
-
-    rulerActive = false;
-    document.querySelector('.ruler-btn')?.classList.remove('active');
 });
 
 
@@ -213,6 +213,21 @@ let rulerLabel = null;
 
 function toggleRuler(btn) {
     rulerActive = !rulerActive;
+
+    // ⬅️ ПРИНУДИТЕЛЬНО удаляем обычную метку
+    if (rulerActive && sharedMarker) {
+        map.removeLayer(sharedMarker);
+        sharedMarker = null;
+    }
+
+    if (!rulerActive) {
+        resetRuler();
+        btn.classList.remove('active');
+        return;
+    }
+
+    btn.classList.add('active');
+    rulerPointA = null;
 
     if (!rulerActive) {
         resetRuler();
