@@ -113,7 +113,7 @@ async function vote(itemId, value) {
         // ✅ УСПЕХ — ТОЛЬКО ТУТ ОБНОВЛЯЕМ РЕЙТИНГ
         ratingValue.textContent = data.rating;
         lockRating();
-        ratingHint.innerHTML = '<img src="assets/img/calendar.gif" alt=""> Голос учтён';
+        ratingHint.innerHTML = '<img src="assets/img/accept_vote.gif" alt=""> Голос учтён';
         ratingHint.classList.remove('hidden');
 
     } catch (err) {
