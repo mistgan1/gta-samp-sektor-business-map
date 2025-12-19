@@ -15,7 +15,10 @@ body {
     height: 100%;
 }
 
-/* Маркер бизнеса */
+/* =========================
+   МАРКЕРЫ БИЗНЕСОВ
+   ========================= */
+
 .business-marker {
     width: 14px;
     height: 14px;
@@ -38,13 +41,6 @@ body {
     pointer-events: none;
 }
 
-
-
-.leaflet-marker-icon:hover {
-    animation: pulse 0.6s ease-in-out;
-}
-
-/* Мобилка — крупнее */
 @media (max-width: 768px) {
     .leaflet-tooltip {
         font-size: 15px;
@@ -52,8 +48,6 @@ body {
     }
 }
 
-
-/* Анимация иконок бизнеса */
 .leaflet-marker-icon {
     transition: filter 0.2s ease;
 }
@@ -63,7 +57,6 @@ body {
     z-index: 1000;
 }
 
-/* Мобильные — без hover */
 @media (hover: none) {
     .leaflet-marker-icon:hover {
         filter: none;
@@ -74,27 +67,27 @@ body {
     background: #222;
 }
 
+/* =========================
+   COPY BUTTON
+   ========================= */
+
 .copy-icon {
     width: 24px;
     height: 24px;
     object-fit: contain;
-    pointer-events: none; 
+    pointer-events: none;
 }
 
 .copy-link {
     display: inline-flex;
     align-items: center;
     gap: 6px;
-
     padding: 6px 10px;
     font-size: 13px;
-
-    border-radius: 8px;      
+    border-radius: 8px;
     border: 1px solid rgba(255, 255, 255, 0.25);
-
     background: rgba(0, 0, 0, 0.6);
     color: #fff;
-
     cursor: pointer;
     transition: background 0.2s ease, transform 0.1s ease;
 }
@@ -106,42 +99,25 @@ body {
 .copy-link[data-copied="1"] {
     background: rgba(80, 200, 120, 0.35);
     border-color: rgba(80, 200, 120, 0.9);
-    color: #0b2f1a; 
+    color: #0b2f1a;
 }
 
 .copy-link[data-copied="1"]:hover {
     background: rgba(80, 200, 120, 0.55);
-    color: #071f12; 
+    color: #071f12;
 }
-
 
 .copy-link:active {
     transform: scale(0.96);
 }
 
-.ruler-label {
-    background: rgba(0, 0, 0, 0.75);
-    color: #7ab6ff;
-    padding: 4px 8px;
-    border-radius: 6px;
-    font-size: 13px;
-    white-space: nowrap;
-    pointer-events: none;
-}
+/* =========================
+   ЛИНЕЙКА
+   ========================= */
 
 .ruler-btn.active {
     background: #7ab6ff !important;
     color: #000;
-}
-
-.ruler-label {
-    background: rgba(0, 0, 0, 0.75);
-    color: #7ab6ff;
-    padding: 4px 8px;
-    border-radius: 6px;
-    font-size: 13px;
-    white-space: nowrap;
-    pointer-events: none;
 }
 
 .ruler-point {
@@ -149,8 +125,6 @@ body {
     fill: #ffcc00;
     fill-opacity: 1;
 }
-
-
 
 .ruler-distance {
     color: #ffcc00;
@@ -160,38 +134,25 @@ body {
     pointer-events: none;
 }
 
+/* =========================
+   КУРСОРЫ
+   ========================= */
 
-#map.ruler-mode {
-    cursor: crosshair;
-}
-
-
-
-
-/* ===== КУРСОРЫ ===== */
-
-/* Обычный режим */
 #map {
     cursor: default;
 }
 
-/* Когда Leaflet реально тащит карту */
 #map.leaflet-grabbing {
     cursor: grabbing;
 }
 
-/* Режим линейки — крестик */
-#map.ruler-mode {
-    cursor: crosshair;
-}
-
-/* В режиме линейки — крестик на всём содержимом */
+#map.ruler-mode,
 #map.ruler-mode * {
     cursor: crosshair;
 }
 
 /* =========================
-   INFO PANEL (карточка как в Genshin)
+   INFO PANEL (карточка)
    ========================= */
 
 .info-panel {
@@ -207,7 +168,6 @@ body {
     border: 1px solid rgba(255, 255, 255, 0.10);
     border-radius: 14px;
     box-shadow: 0 18px 60px rgba(0, 0, 0, 0.45);
-
     color: #fff;
     z-index: 2000;
 
@@ -215,10 +175,6 @@ body {
     opacity: 0;
     pointer-events: none;
     transition: opacity .18s ease, transform .18s ease;
-}
-
-.info-panel.hidden {
-    display: block;
 }
 
 .info-panel:not(.hidden) {
@@ -231,7 +187,6 @@ body {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 12px;
     padding: 12px 14px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.10);
 }
@@ -239,7 +194,6 @@ body {
 .info-panel__title {
     font-size: 16px;
     font-weight: 700;
-    line-height: 1.2;
 }
 
 .info-panel__close {
@@ -251,13 +205,13 @@ body {
     color: #fff;
     cursor: pointer;
     font-size: 18px;
-    line-height: 1;
 }
 
 .info-panel__close:hover {
     background: rgba(255, 255, 255, 0.10);
 }
 
+/* 🔑 УБРАН МИКРОСКРОЛЛ */
 .info-panel__body {
     padding: 12px 14px 14px;
     overflow-x: hidden;
@@ -266,24 +220,24 @@ body {
     box-sizing: border-box;
 }
 
-
+/* 🔑 КАРТИНКА — БЕЗ ВЫЛЕТОВ ЗА КОНТЕЙНЕР */
 .info-panel__image {
     display: block;
     width: 100%;
     height: auto;
+    max-width: 100%;
+    margin: 0;
+    padding: 0;
     box-sizing: border-box;
     cursor: zoom-in;
+    position: relative;
+    z-index: 1;
 }
-
 
 .info-panel__meta {
     font-size: 13px;
     color: rgba(255, 255, 255, 0.78);
     line-height: 1.5;
-}
-
-.info-panel__meta b {
-    color: rgba(255, 255, 255, 0.95);
 }
 
 .info-panel__desc {
@@ -297,13 +251,11 @@ body {
     display: none !important;
 }
 
-/* Мобилки — панель шире и ниже */
 @media (max-width: 768px) {
     .info-panel {
         top: 10px;
         right: 10px;
         width: calc(100vw - 20px);
-        border-radius: 12px;
     }
 }
 
@@ -340,7 +292,7 @@ body {
 }
 
 /* =========================
-   GALLERY (стрелки + счётчик)
+   GALLERY
    ========================= */
 
 .info-gallery {
@@ -351,10 +303,6 @@ body {
 
 .info-gallery > * {
     pointer-events: auto;
-}
-
-.info-gallery.hidden {
-    display: none !important;
 }
 
 .info-gallery__btn {
@@ -369,29 +317,14 @@ body {
     color: #fff;
     cursor: pointer;
     font-size: 22px;
-    line-height: 1;
     display: flex;
     align-items: center;
     justify-content: center;
-    user-select: none;
     z-index: 2;
-    pointer-events: auto;
-}
-
-.info-gallery__btn:hover {
-    background: rgba(255, 255, 255, 0.12);
-}
-
-.info-gallery__btn:active {
-    transform: translateY(-50%) scale(0.96);
 }
 
 .info-gallery__btn--left { left: 10px; }
 .info-gallery__btn--right { right: 10px; }
-
-.info-gallery__btn.hidden {
-    display: none !important;
-}
 
 .info-gallery__counter {
     position: absolute;
@@ -405,19 +338,4 @@ body {
     color: rgba(255, 255, 255, 0.92);
     border: 1px solid rgba(255, 255, 255, 0.10);
     z-index: 2;
-    user-select: none;
-}
-
-/* чтобы не появлялся микроскролл из-за пикселей */
-.info-panel__body {
-    overflow-x: hidden;
-    overflow-y: auto;
-    box-sizing: border-box;
-}
-
-.info-panel__image {
-    cursor: zoom-in;
-    box-sizing: border-box;
-    position: relative;
-    z-index: 1;
 }

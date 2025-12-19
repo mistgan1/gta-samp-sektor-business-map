@@ -3,7 +3,7 @@
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta charset="UTF-8">
-    <link rel="icon" type="image/png" href="assets/img/duckmap.svg" type="image/svg+xml">
+    <link rel="icon" href="assets/img/duckmap.svg" type="image/svg+xml">
     <title>Интерактивная карта GTA SAMP SEKTOR</title>
 
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css">
@@ -11,7 +11,6 @@
 </head>
 <body>
 
-<div id="map"></div>
 <div id="map"></div>
 
 <div id="info-panel" class="info-panel hidden" aria-hidden="true">
@@ -31,18 +30,16 @@
         <div id="info-counter" class="info-gallery__counter"></div>
     </div>
 
-
     <div id="info-meta" class="info-panel__meta"></div>
-
     <div id="info-desc" class="info-panel__desc hidden"></div>
   </div>
 </div>
 
-<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-<script src="map.js"></script>
-
 <div id="image-overlay" class="image-overlay">
   <img src="" alt="Просмотр изображения">
 </div>
+
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<script src="map.js"></script>
 </body>
 </html>

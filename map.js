@@ -54,31 +54,6 @@ const BUSINESS_TYPES = {
     canteen: { icon: 'assets/icons/canteen.png' }
 };
 
-fetch('./data/businesses.json')
-    .then(r => r.json())
-    .then(list => {
-        list.forEach(b => {
-            const type = BUSINESS_TYPES[b.type];
-            if (!type) return;
-
-            const marker = L.marker(sampToMap(b.x, b.y), {
-                icon: L.icon({
-                    iconUrl: type.icon,
-                    iconSize: [28, 28],
-                    iconAnchor: [14, 14]
-                })
-            }).addTo(map).bindTooltip(
-                `<b>${b.name}</b><br>Тип: Бизнес<br>Владелец: ${b.owner}`,
-                { direction: 'top', offset: [0, -10], sticky: true }
-            );
-
-            marker.on('click', () => {
-                const payload = { ...b, _latlng: marker.getLatLng() };
-                openInfoPanel(payload);
-            });
-        });
-    });
-
 
 /* =========================
    3) Утилиты координат SA:MP
@@ -130,7 +105,7 @@ function copyToClipboard(text) {
 
 
 /* =========================
-   INFO PANEL (открытие карточки по клику)
+   INFO PANEL + GALLERY
    ========================= */
 
 const infoPanel = document.getElementById('info-panel');
@@ -139,6 +114,7 @@ const infoClose = document.getElementById('info-close');
 const infoImage = document.getElementById('info-image');
 const infoMeta = document.getElementById('info-meta');
 const infoDesc = document.getElementById('info-desc');
+
 const infoGallery = document.getElementById('info-gallery');
 const infoPrev = document.getElementById('info-prev');
 const infoNext = document.getElementById('info-next');
@@ -162,9 +138,9 @@ function renderGallery() {
     }
 
     const multi = galleryImages.length > 1;
-    if (infoPrev) infoPrev.classList.toggle('hidden', !multi);
-    if (infoNext) infoNext.classList.toggle('hidden', !multi);
-    if (infoCounter) infoCounter.classList.toggle('hidden', !multi);
+    infoPrev?.classList.toggle('hidden', !multi);
+    infoNext?.classList.toggle('hidden', !multi);
+    infoCounter?.classList.toggle('hidden', !multi);
 }
 
 function prevImage() {
@@ -182,17 +158,13 @@ function nextImage() {
 infoPrev?.addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); prevImage(); });
 infoNext?.addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); nextImage(); });
 
-
 function openInfoPanel(data) {
     infoTitle.textContent = data.name || 'Объект';
 
-    // Галерея: поддержка data.images[] или одиночного data.image
     galleryImages = Array.isArray(data.images) ? data.images.slice() : [];
     if (!galleryImages.length && data.image) galleryImages = [data.image];
-
     galleryIndex = 0;
     renderGallery();
-
 
     const typeText = data.type ? data.type : '—';
     const ownerText = data.owner ? data.owner : '—';
@@ -225,10 +197,48 @@ infoClose?.addEventListener('click', closeInfoPanel);
 
 
 /* =========================
+   FULLSCREEN IMAGE (TOP-LEVEL, не внутри ESC!)
+   ========================= */
+
+const imageOverlay = document.getElementById('image-overlay');
+const imageOverlayImg = imageOverlay?.querySelector('img');
+
+function openFullscreen(src) {
+    if (!imageOverlay || !imageOverlayImg) return;
+    if (!src) return;
+    imageOverlayImg.src = src;
+    imageOverlay.classList.add('active');
+}
+
+function closeFullscreen() {
+    if (!imageOverlay || !imageOverlayImg) return false;
+    if (!imageOverlay.classList.contains('active')) return false;
+
+    imageOverlay.classList.remove('active');
+    imageOverlayImg.src = '';
+    return true;
+}
+
+// клик по картинке в карточке -> открыть fullscreen
+// (делегирование = не важно, меняется ли src/галерея)
+document.addEventListener('click', (e) => {
+    const img = e.target.closest('#info-image');
+    if (!img) return;
+    const src = img.getAttribute('src');
+    if (!src) return;
+    openFullscreen(src);
+}, true);
+
+// клик по фону fullscreen -> закрыть
+imageOverlay?.addEventListener('click', () => {
+    closeFullscreen();
+});
+
+
+/* =========================
    5) Контролы карты
    ========================= */
 
-// Центрирование
 const CenterControl = L.Control.extend({
     options: { position: 'topleft' },
     onAdd() {
@@ -280,7 +290,7 @@ function buildPopup(marker, withButton = true) {
 
 function handleSharedMarkerClick(e) {
     if (rulerActive || rulerClickLock) return;
-    if (e.originalEvent.target.closest('.leaflet-marker-icon')) return;
+    if (e.originalEvent?.target?.closest?.('.leaflet-marker-icon')) return;
 
     if (sharedMarker) {
         map.removeLayer(sharedMarker);
@@ -385,7 +395,6 @@ const RulerControl = L.Control.extend({
 
         L.DomEvent.disableClickPropagation(btn);
         btn.onclick = () => toggleRuler(btn);
-
         return btn;
     }
 });
@@ -490,7 +499,6 @@ function bindPointDrag(layer, which) {
     });
 }
 
-/* ✅ ВОТ ЭТОЙ ФУНКЦИИ НЕ ХВАТАЛО — из-за неё ломалось всё ниже */
 function stopRulerDrag() {
     if (!rulerDraggingPoint) return;
     rulerDraggingPoint = null;
@@ -569,54 +577,25 @@ map.on('mousemove', (e) => {
 
 
 /* =========================
-   8) ESC — удаление метки + сброс линейки
+   8) ESC — единый обработчик (fullscreen приоритетнее)
    ========================= */
 
 document.addEventListener('keydown', (e) => {
     if (e.key !== 'Escape') return;
 
-    // ✅ если открыт fullscreen — закрываем только его и выходим
-    if (imageOverlay?.classList.contains('active')) {
-        imageOverlay.classList.remove('active');
-        imageOverlayImg.src = '';
-        return;
-    }
+    // 1) fullscreen закрываем первым и выходим (карточка остаётся!)
+    if (closeFullscreen()) return;
 
+    // 2) закрываем карточку
     closeInfoPanel();
 
-    /* =========================
-   FULLSCREEN IMAGE LOGIC
-   ========================= */
-
-    const imageOverlay = document.getElementById('image-overlay');
-    const imageOverlayImg = imageOverlay?.querySelector('img');
-
-    infoImage.addEventListener('click', () => {
-        if (!infoImage.src) return;
-
-        imageOverlayImg.src = infoImage.src;
-        imageOverlay.classList.add('active');
-    });
-
-    // Закрытие по клику
-    imageOverlay.addEventListener('click', () => {
-        imageOverlay.classList.remove('active');
-        imageOverlayImg.src = '';
-    });
-
-    // Закрытие по Esc
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && imageOverlay.classList.contains('active')) {
-            imageOverlay.classList.remove('active');
-            imageOverlayImg.src = '';
-        }
-    });
-
+    // 3) удаляем обычную метку
     if (sharedMarker) {
         map.removeLayer(sharedMarker);
         sharedMarker = null;
     }
 
+    // 4) сбрасываем линейку
     if (rulerActive || rulerFinished) {
         resetRuler();
         rulerActive = false;
@@ -627,6 +606,39 @@ document.addEventListener('keydown', (e) => {
         map.getContainer().classList.remove('ruler-mode');
         setCursorMode();
     }
-});
+}, true); // capture=true, чтобы ESC работал стабильно
 
 setCursorMode();
+
+
+/* =========================
+   Бизнесы: загрузка ПОСЛЕ определения openInfoPanel
+   ========================= */
+
+fetch('./data/businesses.json')
+    .then(r => r.json())
+    .then(list => {
+        list.forEach(b => {
+            const type = BUSINESS_TYPES[b.type];
+            if (!type) return;
+
+            const marker = L.marker(sampToMap(b.x, b.y), {
+                icon: L.icon({
+                    iconUrl: type.icon,
+                    iconSize: [28, 28],
+                    iconAnchor: [14, 14]
+                })
+            }).addTo(map).bindTooltip(
+                `<b>${b.name}</b><br>Тип: Бизнес<br>Владелец: ${b.owner}`,
+                { direction: 'top', offset: [0, -10], sticky: true }
+            );
+
+            marker.on('click', (ev) => {
+                // чтобы клик по бизнесу не ставил обычную метку и не мешал линейке
+                if (ev?.originalEvent) L.DomEvent.stopPropagation(ev.originalEvent);
+
+                const payload = { ...b, _latlng: marker.getLatLng() };
+                openInfoPanel(payload);
+            });
+        });
+    });
