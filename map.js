@@ -1,4 +1,26 @@
 /* =========================
+   USER FINGERPRINT
+   ========================= */
+
+async function getUserFingerprint() {
+    const data = [
+        navigator.userAgent,
+        navigator.language,
+        screen.width + 'x' + screen.height,
+        screen.colorDepth,
+        Intl.DateTimeFormat().resolvedOptions().timeZone,
+        navigator.hardwareConcurrency || '',
+        navigator.deviceMemory || ''
+    ].join('::');
+
+    const encoder = new TextEncoder();
+    const hashBuffer = await crypto.subtle.digest('SHA-256', encoder.encode(data));
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+
+    return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+/* =========================
    0) Константы и параметры
    ========================= */
 
@@ -37,6 +59,44 @@ if (L.Browser.mobile) {
     map.touchZoom.enable();
     map.doubleClickZoom.disable();
 }
+
+let USER_HASH = null;
+
+getUserFingerprint().then(hash => {
+    USER_HASH = hash;
+    console.log('USER_HASH:', USER_HASH);
+});
+
+
+function vote(itemId, value) {
+    if (!USER_HASH) return;
+
+    const payload = {
+        item_id: itemId,          // id бизнеса / предмета
+        vote: value,              // +1 или -1
+        user_hash: USER_HASH,
+        user_agent: navigator.userAgent,
+        ts: Date.now()
+    };
+
+    console.log('VOTE PAYLOAD', payload);
+
+    // ⛔️ пока без сервера
+    // позже будет fetch('/vote', { method:'POST', body: JSON.stringify(payload) })
+}
+
+function canVote(itemId) {
+    if (!USER_HASH) return false;
+
+    const key = `vote_${itemId}_${USER_HASH}`;
+    const last = localStorage.getItem(key);
+
+    if (!last) return true;
+
+    const month = 1000 * 60 * 60 * 24 * 30;
+    return (Date.now() - Number(last)) > month;
+}
+
 
 
 /* =========================
