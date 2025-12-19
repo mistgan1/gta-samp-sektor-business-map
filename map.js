@@ -70,12 +70,7 @@ getUserFingerprint().then(hash => {
 
 
 async function vote(itemId, value) {
-    if (!USER_HASH) return;
-
-    if (!canVote(itemId)) {
-        alert('Вы уже голосовали. Повторно можно через месяц.');
-        return;
-    }
+    if (!USER_HASH || !itemId) return;
 
     const payload = {
         item_id: itemId,
@@ -85,35 +80,43 @@ async function vote(itemId, value) {
     };
 
     try {
-        const res = await fetch(`${API_BASE}/vote`, {
+        const res = await fetch('https://sektor-map-back.onrender.com/vote', {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(payload)
         });
 
-        if (!res.ok) {
-            const err = await res.json();
-            alert(err.message || 'Ошибка голосования');
+        const data = await res.json();
+
+        // ⛔ COOLDOWN
+        if (res.status === 429 && data.message === 'cooldown') {
+            lockRating();
+            ratingHint.textContent =
+                `Вы уже голосовали. Можно снова через ${Math.ceil(data.retry_after_ms / (1000*60*60*24))} дн.`;
+            ratingHint.classList.remove('hidden');
             return;
         }
 
-        const data = await res.json();
+        // ⛔ ЛЮБАЯ ДРУГАЯ ОШИБКА
+        if (!res.ok) {
+            ratingHint.textContent = 'Ошибка голосования';
+            ratingHint.classList.remove('hidden');
+            return;
+        }
 
-        // обновляем UI
+        // ✅ УСПЕХ — ТОЛЬКО ТУТ ОБНОВЛЯЕМ РЕЙТИНГ
         ratingValue.textContent = data.rating;
         lockRating();
+        ratingHint.textContent = 'Голос учтён';
+        ratingHint.classList.remove('hidden');
 
-        // сохраняем локальный cooldown
-        const key = `vote_${itemId}_${USER_HASH}`;
-        localStorage.setItem(key, Date.now());
-
-    } catch (e) {
-        console.error(e);
-        alert('Сервер недоступен');
+    } catch (err) {
+        console.error(err);
+        ratingHint.textContent = 'Ошибка сети';
+        ratingHint.classList.remove('hidden');
     }
 }
+
 
 
 function canVote(itemId) {
@@ -249,16 +252,13 @@ function lockRating() {
 ratingUp.addEventListener('click', () => {
     if (ratingLocked) return;
     vote(currentItemId, +1);
-    ratingValue.textContent = currentRating;
-    lockRating();
 });
 
 ratingDown.addEventListener('click', () => {
     if (ratingLocked) return;
     vote(currentItemId, -1);
-    ratingValue.textContent = currentRating;
-    lockRating();
 });
+
 
 
 
