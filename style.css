@@ -346,6 +346,11 @@ body {
 .info-gallery {
     position: relative;
     margin-bottom: 10px;
+    pointer-events: none;
+}
+
+.info-gallery > * {
+    pointer-events: auto;
 }
 
 .info-gallery.hidden {
@@ -370,6 +375,7 @@ body {
     justify-content: center;
     user-select: none;
     z-index: 2;
+    pointer-events: auto;
 }
 
 .info-gallery__btn:hover {
@@ -412,4 +418,6 @@ body {
 .info-panel__image {
     cursor: zoom-in;
     box-sizing: border-box;
+    position: relative;
+    z-index: 1;
 }
