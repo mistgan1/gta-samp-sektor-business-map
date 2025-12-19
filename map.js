@@ -146,8 +146,10 @@ async function loadRatingStatus(itemId) {
                 const days = Math.ceil(
                     data.cooldown_remaining / (1000 * 60 * 60 * 24)
                 );
-                ratingHint.textContent =
-                    `Вы уже голосовали. Можно снова через ${days} дн.`;
+                ratingHint.innerHTML = `
+                    <img src="assets/img/calendar.gif" alt="">
+                    Вы уже голосовали. Можно снова через ${days} дн.
+                `;
                 ratingHint.classList.remove('hidden');
             }
         } else {
