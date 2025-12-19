@@ -175,14 +175,38 @@ async function loadRatingStatus(itemId) {
    ========================= */
 
 const BUSINESS_TYPES = {
-    gas: { icon: 'assets/icons/gas.png' },
-    cafe: { icon: 'assets/icons/cafe.png' },
-    petshop: { icon: 'assets/icons/petshop.png' },
-    ranch: { icon: 'assets/icons/ranch.png' },
-    gold: { icon: 'assets/icons/gold.png' },
-    icecream: { icon: 'assets/icons/icecream.png' },
-    hotdog: { icon: 'assets/icons/hotdog.png' },
-    canteen: { icon: 'assets/icons/canteen.png' }
+    gas: {
+        title: 'АЗС',
+        icon: 'assets/icons/gas.png'
+    },
+    cafe: {
+        title: 'Кафе',
+        icon: 'assets/icons/cafe.png'
+    },
+    petshop: {
+        title: 'Зоомагазин',
+        icon: 'assets/icons/petshop.png'
+    },
+    ranch: {
+        title: 'Ранчо',
+        icon: 'assets/icons/ranch.png'
+    },
+    gold: {
+        title: 'Ювелирный магазин',
+        icon: 'assets/icons/gold.png'
+    },
+    icecream: {
+        title: 'Мороженое',
+        icon: 'assets/icons/icecream.png'
+    },
+    hotdog: {
+        title: 'Хот-доги',
+        icon: 'assets/icons/hotdog.png'
+    },
+    canteen: {
+        title: 'Столовая',
+        icon: 'assets/icons/canteen.png'
+    }
 };
 
 
@@ -345,7 +369,11 @@ function openInfoPanel(data) {
     galleryIndex = 0;
     renderGallery();
 
-    const typeText = data.type ? data.type : '—';
+    const typeInfo = BUSINESS_TYPES[data.type];
+    const typeText = typeInfo
+        ? typeInfo.title
+        : '—';
+
     const ownerText = data.owner ? data.owner : '—';
     const samp = mapToSamp(data._latlng?.lat ?? 0, data._latlng?.lng ?? 0);
 
@@ -825,7 +853,7 @@ fetch('./data/businesses.json')
                     iconAnchor: [14, 14]
                 })
             }).addTo(map).bindTooltip(
-                `<b>${b.name}</b><br>Тип: Бизнес<br>Владелец: ${b.owner}`,
+                `<b>${b.name}</b><br>Тип: ${typeData?.title || '—'}<br><br>Владелец: ${b.owner}`,
                 { direction: 'top', offset: [0, -10], sticky: true }
             );
 
