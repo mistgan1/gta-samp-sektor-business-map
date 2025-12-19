@@ -92,7 +92,8 @@ async function vote(itemId, value) {
         if (res.status === 429 && data.message === 'cooldown') {
             lockRating();
             ratingHint.textContent =
-                `Вы уже голосовали. Можно снова через ${Math.ceil(data.retry_after_ms / (1000*60*60*24))} дн.`;
+                `<img src="assets/img/calendar.gif" alt=""> 
+                Вы уже голосовали. Можно снова через ${Math.ceil(data.retry_after_ms / (1000*60*60*24))} дн.`;
             ratingHint.classList.remove('hidden');
             return;
         }
