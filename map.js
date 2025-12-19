@@ -139,18 +139,60 @@ const infoClose = document.getElementById('info-close');
 const infoImage = document.getElementById('info-image');
 const infoMeta = document.getElementById('info-meta');
 const infoDesc = document.getElementById('info-desc');
+const infoGallery = document.getElementById('info-gallery');
+const infoPrev = document.getElementById('info-prev');
+const infoNext = document.getElementById('info-next');
+const infoCounter = document.getElementById('info-counter');
+
+let galleryImages = [];
+let galleryIndex = 0;
+
+function renderGallery() {
+    if (!galleryImages.length) {
+        infoGallery.classList.add('hidden');
+        infoImage.src = '';
+        return;
+    }
+
+    infoGallery.classList.remove('hidden');
+    infoImage.src = galleryImages[galleryIndex];
+
+    if (infoCounter) {
+        infoCounter.textContent = `${galleryIndex + 1} / ${galleryImages.length}`;
+    }
+
+    const multi = galleryImages.length > 1;
+    if (infoPrev) infoPrev.classList.toggle('hidden', !multi);
+    if (infoNext) infoNext.classList.toggle('hidden', !multi);
+    if (infoCounter) infoCounter.classList.toggle('hidden', !multi);
+}
+
+function prevImage() {
+    if (galleryImages.length <= 1) return;
+    galleryIndex = (galleryIndex - 1 + galleryImages.length) % galleryImages.length;
+    renderGallery();
+}
+
+function nextImage() {
+    if (galleryImages.length <= 1) return;
+    galleryIndex = (galleryIndex + 1) % galleryImages.length;
+    renderGallery();
+}
+
+infoPrev?.addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); prevImage(); });
+infoNext?.addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); nextImage(); });
+
 
 function openInfoPanel(data) {
     infoTitle.textContent = data.name || 'Объект';
 
-    const img = (data.images && data.images.length ? data.images[0] : data.image) || '';
-    if (img) {
-        infoImage.src = img;
-        infoImage.classList.remove('hidden');
-    } else {
-        infoImage.src = '';
-        infoImage.classList.add('hidden');
-    }
+    // Галерея: поддержка data.images[] или одиночного data.image
+    galleryImages = Array.isArray(data.images) ? data.images.slice() : [];
+    if (!galleryImages.length && data.image) galleryImages = [data.image];
+
+    galleryIndex = 0;
+    renderGallery();
+
 
     const typeText = data.type ? data.type : '—';
     const ownerText = data.owner ? data.owner : '—';
@@ -532,6 +574,13 @@ map.on('mousemove', (e) => {
 
 document.addEventListener('keydown', (e) => {
     if (e.key !== 'Escape') return;
+
+    // ✅ если открыт fullscreen — закрываем только его и выходим
+    if (imageOverlay?.classList.contains('active')) {
+        imageOverlay.classList.remove('active');
+        imageOverlayImg.src = '';
+        return;
+    }
 
     closeInfoPanel();
 

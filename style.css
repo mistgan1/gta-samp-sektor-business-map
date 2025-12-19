@@ -338,3 +338,78 @@ body {
     box-shadow: 0 20px 80px rgba(0, 0, 0, 0.6);
     cursor: zoom-out;
 }
+
+/* =========================
+   GALLERY (стрелки + счётчик)
+   ========================= */
+
+.info-gallery {
+    position: relative;
+    margin-bottom: 10px;
+}
+
+.info-gallery.hidden {
+    display: none !important;
+}
+
+.info-gallery__btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 38px;
+    height: 38px;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    background: rgba(0, 0, 0, 0.35);
+    color: #fff;
+    cursor: pointer;
+    font-size: 22px;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    user-select: none;
+    z-index: 2;
+}
+
+.info-gallery__btn:hover {
+    background: rgba(255, 255, 255, 0.12);
+}
+
+.info-gallery__btn:active {
+    transform: translateY(-50%) scale(0.96);
+}
+
+.info-gallery__btn--left { left: 10px; }
+.info-gallery__btn--right { right: 10px; }
+
+.info-gallery__btn.hidden {
+    display: none !important;
+}
+
+.info-gallery__counter {
+    position: absolute;
+    left: 50%;
+    bottom: 10px;
+    transform: translateX(-50%);
+    padding: 4px 8px;
+    border-radius: 10px;
+    font-size: 12px;
+    background: rgba(0, 0, 0, 0.35);
+    color: rgba(255, 255, 255, 0.92);
+    border: 1px solid rgba(255, 255, 255, 0.10);
+    z-index: 2;
+    user-select: none;
+}
+
+/* чтобы не появлялся микроскролл из-за пикселей */
+.info-panel__body {
+    overflow-x: hidden;
+    overflow-y: auto;
+    box-sizing: border-box;
+}
+
+.info-panel__image {
+    cursor: zoom-in;
+    box-sizing: border-box;
+}

@@ -21,7 +21,16 @@
   </div>
 
   <div class="info-panel__body">
-    <img id="info-image" class="info-panel__image hidden" src="" alt="Скриншот места">
+    <div id="info-gallery" class="info-gallery hidden">
+        <button id="info-prev" class="info-gallery__btn info-gallery__btn--left" type="button" aria-label="Предыдущий">‹</button>
+
+        <img id="info-image" class="info-panel__image" src="" alt="Скриншот места">
+
+        <button id="info-next" class="info-gallery__btn info-gallery__btn--right" type="button" aria-label="Следующий">›</button>
+
+        <div id="info-counter" class="info-gallery__counter"></div>
+    </div>
+
 
     <div id="info-meta" class="info-panel__meta"></div>
 
