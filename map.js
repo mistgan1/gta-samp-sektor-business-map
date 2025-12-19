@@ -218,6 +218,7 @@ let galleryIndex = 0;
    RATING (frontend only)
    ========================= */
 
+let currentItemId = null; // ✅ ГЛОБАЛЬНО
 const ratingBlock = document.getElementById('info-rating');
 const ratingUp = document.getElementById('rating-up');
 const ratingDown = document.getElementById('rating-down');
@@ -297,7 +298,6 @@ infoPrev?.addEventListener('click', (e) => { e.preventDefault(); e.stopPropagati
 infoNext?.addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); nextImage(); });
 
 
-let currentItemId = null;
 function openInfoPanel(data) {
     currentItemId = data.id;
 
