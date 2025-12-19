@@ -874,7 +874,7 @@ fetch('./data/businesses.json')
             ).addTo(map);
 
             marker.bindTooltip(
-                `<b>${b.name}</b><br>${CATEGORIES[b.category].title}`,
+                `<b>${b.name}</b><br>${CATEGORIES[b.category] || b.category || '—'}`,
                 { direction: 'top', offset: [0, -10], sticky: true }
             );
 
