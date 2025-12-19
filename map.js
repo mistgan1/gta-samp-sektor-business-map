@@ -194,8 +194,8 @@ const CATEGORY_TYPES = {
     ranch: 'Ранчо',
     gold: 'Золотая шахта',
     icecream: 'Фабрика мороженого',
-    hotdog: 'Хот-доги',
-    canteen: 'Столовая'
+    hotdog: 'Фабрика сосисок',
+    canteen: 'Тюремная столовая'
   },
 
   landmark: {
