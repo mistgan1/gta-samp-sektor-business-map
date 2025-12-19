@@ -339,3 +339,57 @@ body {
     border: 1px solid rgba(255, 255, 255, 0.10);
     z-index: 2;
 }
+
+/* =========================
+   RATING (Wowhead-style)
+   ========================= */
+
+.info-rating {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 8px 0 10px;
+    user-select: none;
+}
+
+.rating-btn {
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    background: rgba(0, 0, 0, 0.35);
+    color: #fff;
+    font-size: 18px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background .15s ease, transform .1s ease;
+}
+
+.rating-btn:hover {
+    background: rgba(255, 255, 255, 0.12);
+}
+
+.rating-btn:active {
+    transform: scale(0.94);
+}
+
+.rating-btn.disabled {
+    opacity: 0.4;
+    pointer-events: none;
+}
+
+.rating-value {
+    min-width: 34px;
+    text-align: center;
+    font-size: 15px;
+    font-weight: 700;
+    color: #ffcc00;
+}
+
+.rating-hint {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.6);
+    margin-left: 6px;
+}

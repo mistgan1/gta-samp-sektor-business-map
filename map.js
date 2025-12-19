@@ -123,6 +123,53 @@ const infoCounter = document.getElementById('info-counter');
 let galleryImages = [];
 let galleryIndex = 0;
 
+/* =========================
+   RATING (frontend only)
+   ========================= */
+
+const ratingBlock = document.getElementById('info-rating');
+const ratingUp = document.getElementById('rating-up');
+const ratingDown = document.getElementById('rating-down');
+const ratingValue = document.getElementById('rating-value');
+const ratingHint = document.getElementById('rating-hint');
+
+// локальное состояние (потом заменим на сервер)
+let currentRating = 0;
+let ratingLocked = false;
+
+function resetRating() {
+    currentRating = 0;
+    ratingLocked = false;
+
+    ratingValue.textContent = currentRating;
+    ratingHint.classList.add('hidden');
+    ratingUp.classList.remove('disabled');
+    ratingDown.classList.remove('disabled');
+}
+
+function lockRating() {
+    ratingLocked = true;
+    ratingUp.classList.add('disabled');
+    ratingDown.classList.add('disabled');
+    ratingHint.classList.remove('hidden');
+}
+
+ratingUp.addEventListener('click', () => {
+    if (ratingLocked) return;
+    currentRating += 1;
+    ratingValue.textContent = currentRating;
+    lockRating();
+});
+
+ratingDown.addEventListener('click', () => {
+    if (ratingLocked) return;
+    currentRating -= 1;
+    ratingValue.textContent = currentRating;
+    lockRating();
+});
+
+
+
 function renderGallery() {
     if (!galleryImages.length) {
         infoGallery.classList.add('hidden');
@@ -184,6 +231,15 @@ function openInfoPanel(data) {
         infoDesc.classList.add('hidden');
     }
 
+    // === рейтинг ===
+    resetRating();
+    ratingBlock.classList.remove('hidden');
+
+    // В будущем тут будет:
+    // currentRating = data.rating
+    // ratingLocked = data.userVoted
+
+
     infoPanel.classList.remove('hidden');
     infoPanel.setAttribute('aria-hidden', 'false');
 }
@@ -191,6 +247,8 @@ function openInfoPanel(data) {
 function closeInfoPanel() {
     infoPanel.classList.add('hidden');
     infoPanel.setAttribute('aria-hidden', 'true');
+    ratingBlock.classList.add('hidden');
+
 }
 
 infoClose?.addEventListener('click', closeInfoPanel);
