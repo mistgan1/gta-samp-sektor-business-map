@@ -91,12 +91,17 @@ async function vote(itemId, value) {
         // ⛔ COOLDOWN
         if (res.status === 429 && data.message === 'cooldown') {
             lockRating();
-            ratingHint.textContent =
-                `<img src="assets/img/calendar.gif" alt=""> 
-                Вы уже голосовали. Можно снова через ${Math.ceil(data.retry_after_ms / (1000*60*60*24))} дн.`;
+
+            ratingHint.innerHTML = `
+                <img src="assets/img/calendar.gif" alt="">
+                Вы уже голосовали. Можно снова через 
+                ${Math.ceil(data.retry_after_ms / (1000 * 60 * 60 * 24))} дн.
+            `;
+
             ratingHint.classList.remove('hidden');
             return;
         }
+
 
         // ⛔ ЛЮБАЯ ДРУГАЯ ОШИБКА
         if (!res.ok) {
