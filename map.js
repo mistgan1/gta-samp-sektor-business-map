@@ -1,3 +1,4 @@
+const API_BASE = 'https://sektor-map-back.onrender.com';
 /* =========================
    USER FINGERPRINT
    ========================= */
@@ -68,22 +69,52 @@ getUserFingerprint().then(hash => {
 });
 
 
-function vote(itemId, value) {
+async function vote(itemId, value) {
     if (!USER_HASH) return;
 
+    if (!canVote(itemId)) {
+        alert('Вы уже голосовали. Повторно можно через месяц.');
+        return;
+    }
+
     const payload = {
-        item_id: itemId,          // id бизнеса / предмета
-        vote: value,              // +1 или -1
+        item_id: itemId,
+        vote: value,
         user_hash: USER_HASH,
-        user_agent: navigator.userAgent,
-        ts: Date.now()
+        user_agent: navigator.userAgent
     };
 
-    console.log('VOTE PAYLOAD', payload);
+    try {
+        const res = await fetch(`${API_BASE}/vote`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(payload)
+        });
 
-    // ⛔️ пока без сервера
-    // позже будет fetch('/vote', { method:'POST', body: JSON.stringify(payload) })
+        if (!res.ok) {
+            const err = await res.json();
+            alert(err.message || 'Ошибка голосования');
+            return;
+        }
+
+        const data = await res.json();
+
+        // обновляем UI
+        ratingValue.textContent = data.rating;
+        lockRating();
+
+        // сохраняем локальный cooldown
+        const key = `vote_${itemId}_${USER_HASH}`;
+        localStorage.setItem(key, Date.now());
+
+    } catch (e) {
+        console.error(e);
+        alert('Сервер недоступен');
+    }
 }
+
 
 function canVote(itemId) {
     if (!USER_HASH) return false;
@@ -216,14 +247,14 @@ function lockRating() {
 
 ratingUp.addEventListener('click', () => {
     if (ratingLocked) return;
-    currentRating += 1;
+    vote(currentItemId, +1);
     ratingValue.textContent = currentRating;
     lockRating();
 });
 
 ratingDown.addEventListener('click', () => {
     if (ratingLocked) return;
-    currentRating -= 1;
+    vote(currentItemId, -1);
     ratingValue.textContent = currentRating;
     lockRating();
 });
@@ -266,6 +297,9 @@ infoPrev?.addEventListener('click', (e) => { e.preventDefault(); e.stopPropagati
 infoNext?.addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); nextImage(); });
 
 function openInfoPanel(data) {
+    let currentItemId = null;
+    currentItemId = data.id;
+    
     infoTitle.textContent = data.name || 'Объект';
 
     galleryImages = Array.isArray(data.images) ? data.images.slice() : [];
@@ -302,7 +336,29 @@ function openInfoPanel(data) {
 
     infoPanel.classList.remove('hidden');
     infoPanel.setAttribute('aria-hidden', 'false');
+
+    loadRating(data.id);
 }
+
+async function loadRating(itemId) {
+    try {
+        const res = await fetch(`${API_BASE}/rating/${itemId}`);
+        const data = await res.json();
+
+        ratingValue.textContent = data.rating;
+
+        if (!canVote(itemId)) {
+            lockRating();
+        } else {
+            resetRating();
+            ratingValue.textContent = data.rating;
+        }
+
+    } catch (e) {
+        console.error('Ошибка загрузки рейтинга', e);
+    }
+}
+
 
 function closeInfoPanel() {
     infoPanel.classList.add('hidden');
