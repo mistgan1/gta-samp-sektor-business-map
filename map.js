@@ -164,12 +164,6 @@ async function loadRatingStatus(itemId) {
     }
 }
 
-
-
-
-
-
-
 /* =========================
    2) Типы бизнесов + загрузка
    ========================= */
@@ -180,9 +174,9 @@ const BUSINESS_TYPES = {
     petshop: { icon: 'assets/icons/petshop.png', title: 'Зоомагазин' },
     ranch: { icon: 'assets/icons/ranch.png', title: 'Ранчо' },
     gold: { icon: 'assets/icons/gold.png', title: 'Золотая шахта' },
-    icecream: { icon: 'assets/icons/icecream.png', title: 'Мороженое' },
-    hotdog: { icon: 'assets/icons/hotdog.png', title: 'Хот-доги' },
-    canteen: { icon: 'assets/icons/canteen.png', title: 'Столовая' }
+    icecream: { icon: 'assets/icons/icecream.png', title: 'Фабрика мороженого' },
+    hotdog: { icon: 'assets/icons/hotdog.png', title: 'Фабрика сосисок' },
+    canteen: { icon: 'assets/icons/canteen.png', title: 'Тюремная столовая' }
 };
 
 
