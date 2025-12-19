@@ -187,16 +187,34 @@ const BUSINESS_TYPES = {
 
 
 const CATEGORIES = {
-    business: {
-        title: 'Бизнес'
-    },
-    landmark: {
-        title: 'Достопримечательность'
-    },
-    interior: {
-        title: 'Интерьер'
-    }
+  business: 'Бизнес',
+  landmark: 'Достопримечательность',
+  resource: 'Ресурс',
 };
+
+const CATEGORY_TYPES = {
+  business: {
+    gas: 'АЗС',
+    cafe: 'Кафе',
+    petshop: 'Зоомагазин',
+    ranch: 'Ранчо',
+    gold: 'Золотая шахта',
+    icecream: 'Фабрика мороженого',
+    hotdog: 'Хот-доги',
+    canteen: 'Столовая'
+  },
+
+  landmark: {
+    monument: 'Памятник',
+    view: 'Смотровая площадка'
+  },
+
+  resource: {
+    ore: 'Руда',
+    wood: 'Лес'
+  }
+};
+
 
 
 
@@ -365,18 +383,19 @@ function openInfoPanel(data) {
     const samp = mapToSamp(data._latlng?.lat ?? 0, data._latlng?.lng ?? 0);
     
     
-    const categoryTitle = CATEGORIES[data.category]?.title || '—';
+    const categoryTitle =
+    CATEGORIES[data.category] || data.category || '—';
+
     const typeTitle =
-        data.category === 'business'
-            ? BUSINESS_TYPES[data.type]?.title || data.type
-            : data.type;
+    CATEGORY_TYPES[data.category]?.[data.type] || data.type || '—';
+
 
     infoMeta.innerHTML = `
-        <div><b>Категория:</b> ${categoryTitle}</div>
-        <div><b>Тип:</b> ${typeTitle}</div>
-        <div><b>Владелец:</b> ${data.owner ?? '—'}</div>
-        <div><b>X:</b> ${samp.x} <b>Y:</b> ${samp.y}</div>
+    <div><b>Категория:</b> ${categoryTitle}</div>
+    <div><b>Тип:</b> ${typeTitle}</div>
+    <div><b>X:</b> ${samp.x} <b>Y:</b> ${samp.y}</div>
     `;
+
 
     if (data.description) {
         infoDesc.textContent = data.description;
