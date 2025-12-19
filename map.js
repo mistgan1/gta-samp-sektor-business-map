@@ -175,15 +175,30 @@ async function loadRatingStatus(itemId) {
    ========================= */
 
 const BUSINESS_TYPES = {
-    gas: { icon: 'assets/icons/gas.png' },
-    cafe: { icon: 'assets/icons/cafe.png' },
-    petshop: { icon: 'assets/icons/petshop.png' },
-    ranch: { icon: 'assets/icons/ranch.png' },
-    gold: { icon: 'assets/icons/gold.png' },
-    icecream: { icon: 'assets/icons/icecream.png' },
-    hotdog: { icon: 'assets/icons/hotdog.png' },
-    canteen: { icon: 'assets/icons/canteen.png' }
+    gas: { icon: 'assets/icons/gas.png', title: 'АЗС' },
+    cafe: { icon: 'assets/icons/cafe.png', title: 'Кафе' },
+    petshop: { icon: 'assets/icons/petshop.png', title: 'Зоомагазин' },
+    ranch: { icon: 'assets/icons/ranch.png', title: 'Ранчо' },
+    gold: { icon: 'assets/icons/gold.png', title: 'Золотая шахта' },
+    icecream: { icon: 'assets/icons/icecream.png', title: 'Мороженое' },
+    hotdog: { icon: 'assets/icons/hotdog.png', title: 'Хот-доги' },
+    canteen: { icon: 'assets/icons/canteen.png', title: 'Столовая' }
 };
+
+
+const CATEGORIES = {
+    business: {
+        title: 'Бизнес'
+    },
+    landmark: {
+        title: 'Достопримечательность'
+    },
+    interior: {
+        title: 'Интерьер'
+    }
+};
+
+
 
 
 /* =========================
@@ -348,10 +363,18 @@ function openInfoPanel(data) {
     const typeText = data.type ? data.type : '—';
     const ownerText = data.owner ? data.owner : '—';
     const samp = mapToSamp(data._latlng?.lat ?? 0, data._latlng?.lng ?? 0);
+    
+    
+    const categoryTitle = CATEGORIES[data.category]?.title || '—';
+    const typeTitle =
+        data.category === 'business'
+            ? BUSINESS_TYPES[data.type]?.title || data.type
+            : data.type;
 
     infoMeta.innerHTML = `
-        <div><b>Тип:</b> ${typeText}</div>
-        <div><b>Владелец:</b> ${ownerText}</div>
+        <div><b>Категория:</b> ${categoryTitle}</div>
+        <div><b>Тип:</b> ${typeTitle}</div>
+        <div><b>Владелец:</b> ${data.owner ?? '—'}</div>
         <div><b>X:</b> ${samp.x} <b>Y:</b> ${samp.y}</div>
     `;
 
@@ -815,26 +838,34 @@ fetch('./data/businesses.json')
     .then(r => r.json())
     .then(list => {
         list.forEach(b => {
+            if (b.category !== 'business') return;
+
             const type = BUSINESS_TYPES[b.type];
             if (!type) return;
 
-            const marker = L.marker(sampToMap(b.x, b.y), {
-                icon: L.icon({
-                    iconUrl: type.icon,
-                    iconSize: [28, 28],
-                    iconAnchor: [14, 14]
-                })
-            }).addTo(map).bindTooltip(
-                `<b>${b.name}</b><br>Тип: Бизнес<br>Владелец: ${b.owner}`,
+            const marker = L.marker(
+                sampToMap(b.x, b.y),
+                {
+                    icon: L.icon({
+                        iconUrl: type.icon,
+                        iconSize: [28, 28],
+                        iconAnchor: [14, 14]
+                    })
+                }
+            ).addTo(map);
+
+            marker.bindTooltip(
+                `<b>${b.name}</b><br>${CATEGORIES[b.category].title}`,
                 { direction: 'top', offset: [0, -10], sticky: true }
             );
 
             marker.on('click', (ev) => {
-                // чтобы клик по бизнесу не ставил обычную метку и не мешал линейке
-                if (ev?.originalEvent) L.DomEvent.stopPropagation(ev.originalEvent);
-
-                const payload = { ...b, _latlng: marker.getLatLng() };
-                openInfoPanel(payload);
+                if (ev.originalEvent) L.DomEvent.stopPropagation(ev.originalEvent);
+                openInfoPanel({
+                    ...b,
+                    _latlng: marker.getLatLng()
+                });
             });
         });
     });
+

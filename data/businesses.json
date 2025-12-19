@@ -2,6 +2,7 @@
   {
     "id": 1,
     "name": "АЗС Заливайка",
+    "category": "business",
     "type": "gas",
     "owner": "Gan",
     "x": 70.3031,
@@ -15,6 +16,7 @@
   {
     "id": 2,
     "name": "АЗС Рублёвка",
+    "category": "business",
     "type": "gas",
     "owner": "Romych_RUS",
     "x": 2147.8176,
@@ -23,6 +25,7 @@
   {
     "id": 3,
     "name": "АЗС Горная",
+    "category": "business",
     "type": "gas",
     "owner": "Frenkli_Rawling",
     "x": -737.0583,
@@ -31,6 +34,7 @@
   {
     "id": 4,
     "name": "АЗС Боевая",
+    "category": "business",
     "type": "gas",
     "owner": "Graff_Rawling",
     "x": 612.2660,
@@ -39,6 +43,7 @@
   {
     "id": 5,
     "name": "АЗС Придорожная",
+    "category": "business",
     "type": "gas",
     "owner": "Neznayka",
     "x": -1472.4331,
@@ -47,6 +52,7 @@
   {
     "id": 6,
     "name": "АЗС Рыбацкая",
+    "category": "business",
     "type": "gas",
     "owner": "Alex_Dirol",
     "x": -1328.9629,
@@ -55,6 +61,7 @@
   {
     "id": 7,
     "name": "АЗС Приграничная",
+    "category": "business",
     "type": "gas",
     "owner": "WKOLbNIK",
     "x": 1381.3662,
@@ -63,6 +70,7 @@
   {
     "id": 8,
     "name": "АЗС Фермерская",
+    "category": "business",
     "type": "gas",
     "owner": "LostEvil",
     "x": -1031.8265,
@@ -71,6 +79,7 @@
   {
     "id": 9,
     "name": "АЗС Сектор",
+    "category": "business",
     "type": "gas",
     "owner": "Daisuke_Sato",
     "x": 260.9763,
@@ -79,6 +88,7 @@
   {
     "id": 10,
     "name": "Фабрика сосисок",
+    "category": "business",
     "type": "hotdog",
     "owner": "Gan",
     "x": 172.5056,
@@ -87,6 +97,7 @@
   {
     "id": 11,
     "name": "Ранчо картофельное",
+    "category": "business",
     "type": "ranch",
     "owner": "fugo",
     "x": -62.1823,
@@ -95,6 +106,7 @@
   {
     "id": 12,
     "name": "Ранчо капустное",
+    "category": "business",
     "type": "ranch",
     "owner": "Dorifto_Uchiha",
     "x": -24.4513,
@@ -103,6 +115,7 @@
   {
     "id": 13,
     "name": "Ранчо подсолнухов",
+    "category": "business",
     "type": "ranch",
     "owner": "LooDrive",
     "x": -85.5835,
@@ -111,6 +124,7 @@
   {
     "id": 14,
     "name": "Ранчо зерновое",
+    "category": "business",
     "type": "ranch",
     "owner": "Gan",
     "x": -93.4511,
@@ -119,6 +133,7 @@
   {
     "id": 15,
     "name": "Тюремная столовая",
+    "category": "business",
     "type": "canteen",
     "owner": "Denz",
     "x": -9.2246,
@@ -127,6 +142,7 @@
   {
     "id": 16,
     "name": "Фабрика мороженого",
+    "category": "business",
     "type": "icecream",
     "owner": "Jekich",
     "x": 2216.1611,
@@ -135,6 +151,7 @@
   {
     "id": 17,
     "name": "Золотая шахта",
+    "category": "business",
     "type": "gold",
     "owner": "Faster",
     "x": 585.2769,
@@ -143,6 +160,7 @@
   {
     "id": 18,
     "name": "Кафе у ранчо",
+    "category": "business",
     "type": "cafe",
     "owner": "Denz",
     "x": 203.6543,
@@ -151,6 +169,7 @@
   {
     "id": 19,
     "name": "Кафе на ферме",
+    "category": "business",
     "type": "cafe",
     "owner": "Echpochmak",
     "x": -1025.7316,
@@ -159,6 +178,7 @@
   {
     "id": 20,
     "name": "Кафе в главном городке",
+    "category": "business",
     "type": "cafe",
     "owner": "toshnotic",
     "x": -54.2191,
@@ -167,6 +187,7 @@
   {
     "id": 21,
     "name": "Кафе в порту",
+    "category": "business",
     "type": "cafe",
     "owner": "Lia",
     "x": -2478.9360,
@@ -175,6 +196,7 @@
   {
     "id": 22,
     "name": "Кафе на старой рублёвке",
+    "category": "business",
     "type": "cafe",
     "owner": "BOJK",
     "x": 1146.5814,
@@ -183,6 +205,7 @@
   {
     "id": 23,
     "name": "Кафе на новой рублёвке",
+    "category": "business",
     "type": "cafe",
     "owner": "Dima_MMO",
     "x": 2170.8386,
@@ -191,6 +214,7 @@
   {
     "id": 24,
     "name": "Зоомагазин у больницы",
+    "category": "business",
     "type": "petshop",
     "owner": "Frenkli_Rawling",
     "x": -1271.7217,
@@ -199,6 +223,7 @@
   {
     "id": 25,
     "name": "Зоомагазин у Сектора",
+    "category": "business",
     "type": "petshop",
     "owner": "Vinni",
     "x": 662.3885,
