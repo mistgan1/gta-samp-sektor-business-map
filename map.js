@@ -296,10 +296,11 @@ function nextImage() {
 infoPrev?.addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); prevImage(); });
 infoNext?.addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); nextImage(); });
 
+
+let currentItemId = null;
 function openInfoPanel(data) {
-    let currentItemId = null;
     currentItemId = data.id;
-    
+
     infoTitle.textContent = data.name || 'Объект';
 
     galleryImages = Array.isArray(data.images) ? data.images.slice() : [];
