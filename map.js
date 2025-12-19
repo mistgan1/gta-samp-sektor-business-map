@@ -117,19 +117,48 @@ async function vote(itemId, value) {
     }
 }
 
+async function loadRatingStatus(itemId) {
+    if (!USER_HASH || !itemId) return;
 
+    try {
+        const res = await fetch(
+            `${API_BASE}/rating-status/${itemId}` +
+            `?user_hash=${encodeURIComponent(USER_HASH)}` +
+            `&user_agent=${encodeURIComponent(navigator.userAgent)}`
+        );
 
-function canVote(itemId) {
-    if (!USER_HASH) return false;
+        const data = await res.json();
 
-    const key = `vote_${itemId}_${USER_HASH}`;
-    const last = localStorage.getItem(key);
+        // рейтинг
+        currentRating = data.rating;
+        ratingValue.textContent = data.rating;
 
-    if (!last) return true;
+        if (data.user_voted) {
+            lockRating();
 
-    const month = 1000 * 60 * 60 * 24 * 30;
-    return (Date.now() - Number(last)) > month;
+            if (data.cooldown_remaining > 0) {
+                const days = Math.ceil(
+                    data.cooldown_remaining / (1000 * 60 * 60 * 24)
+                );
+                ratingHint.textContent =
+                    `Вы уже голосовали. Можно снова через ${days} дн.`;
+                ratingHint.classList.remove('hidden');
+            }
+        } else {
+            ratingLocked = false;
+            ratingUp.classList.remove('disabled');
+            ratingDown.classList.remove('disabled');
+            ratingHint.classList.add('hidden');
+        }
+
+    } catch (e) {
+        console.error('Ошибка загрузки статуса рейтинга', e);
+    }
 }
+
+
+
+
 
 
 
@@ -338,27 +367,10 @@ function openInfoPanel(data) {
     infoPanel.classList.remove('hidden');
     infoPanel.setAttribute('aria-hidden', 'false');
 
-    loadRating(data.id);
+    loadRatingStatus(data.id);
+
 }
 
-async function loadRating(itemId) {
-    try {
-        const res = await fetch(`${API_BASE}/rating/${itemId}`);
-        const data = await res.json();
-
-        ratingValue.textContent = data.rating;
-
-        if (!canVote(itemId)) {
-            lockRating();
-        } else {
-            resetRating();
-            ratingValue.textContent = data.rating;
-        }
-
-    } catch (e) {
-        console.error('Ошибка загрузки рейтинга', e);
-    }
-}
 
 
 function closeInfoPanel() {
@@ -554,6 +566,7 @@ let rulerMarkerB = null;
 let rulerLabel = null;
 
 let rulerDraggingPoint = null;
+
 
 const RulerControl = L.Control.extend({
     options: { position: 'topleft' },
