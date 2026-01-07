@@ -52,6 +52,12 @@ const map = L.map('map', {
     maxBoundsViscosity: 0
 });
 
+map.attributionControl.setPrefix(false);
+map.attributionControl.addAttribution(
+    'Sektor Map © 2026 | js © Leaflet'
+);
+
+
 L.imageOverlay('assets/map.jpg', imageBounds).addTo(map);
 map.fitBounds(imageBounds);
 
