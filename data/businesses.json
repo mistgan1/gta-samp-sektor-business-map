@@ -8,10 +8,9 @@
     "x": 70.3031,
     "y": 1218.3302,
     "images": [
-    "assets/screens/1.png",
-    "assets/screens/2.png"
+    "assets/screens/azs_zaliv.png"
   ],
-  "description": "Первая заправка на сектора, которая появилась в далеком 2013 году"
+  "description": "Первая заправка на секторе, которая появилась в далеком 2013 году"
   },
   {
     "id": 2,
@@ -20,7 +19,10 @@
     "type": "gas",
     "owner": "Romych_RUS",
     "x": 2147.8176,
-    "y": 2748.1768
+    "y": 2748.1768,
+    "images": [
+    "assets/screens/azs_rub.png"
+  ]
   },
   {
     "id": 3,
@@ -29,7 +31,10 @@
     "type": "gas",
     "owner": "Frenkli_Rawling",
     "x": -737.0583,
-    "y": 2742.9075
+    "y": 2742.9075,
+    "images": [
+    "assets/screens/azs_gor.png"
+  ]
   },
   {
     "id": 4,
@@ -38,7 +43,10 @@
     "type": "gas",
     "owner": "Graff_Rawling",
     "x": 612.2660,
-    "y": 1694.8407
+    "y": 1694.8407,
+    "images": [
+    "assets/screens/azs_boev.png"
+  ]
   },
   {
     "id": 5,
@@ -56,7 +64,10 @@
     "type": "gas",
     "owner": "Alex_Dirol",
     "x": -1328.9629,
-    "y": 2677.4341
+    "y": 2677.4341,
+    "images": [
+    "assets/screens/azs_riba.png"
+  ]
   },
   {
     "id": 7,
@@ -83,7 +94,10 @@
     "type": "gas",
     "owner": "Daisuke_Sato",
     "x": 260.9763,
-    "y": 1917.3563
+    "y": 1917.3563,
+    "images": [
+    "assets/screens/azs_sektor.png"
+  ]
   }, 
   {
     "id": 10,
@@ -146,7 +160,10 @@
     "type": "icecream",
     "owner": "Jekich",
     "x": 2216.1611,
-    "y": 2715.2627
+    "y": 2715.2627,
+    "images": [
+    "assets/screens/ice_fab.png"
+  ]
   },
   {
     "id": 17,
@@ -191,7 +208,10 @@
     "type": "cafe",
     "owner": "Lia",
     "x": -2478.9360,
-    "y": 2318.7109
+    "y": 2318.7109,
+    "images": [
+    "assets/screens/cafe_port.png"
+  ]
   }, 
   {
     "id": 22,
@@ -218,7 +238,10 @@
     "type": "petshop",
     "owner": "Frenkli_Rawling",
     "x": -1271.7217,
-    "y": 2712.9929
+    "y": 2712.9929,
+    "images": [
+    "assets/screens/zoo_bolka.png"
+  ]
   },
   {
     "id": 25,
