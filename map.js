@@ -1,1 +1,969 @@
-const _0x25ba65=_0x1f85;(function(_0x520b39,_0x1a5198){const _0x16fe42=_0x1f85,_0x586667=_0x520b39();while(!![]){try{const _0x545f66=parseInt(_0x16fe42(0x193))/0x1*(-parseInt(_0x16fe42(0x109))/0x2)+-parseInt(_0x16fe42(0xbb))/0x3*(-parseInt(_0x16fe42(0xd0))/0x4)+parseInt(_0x16fe42(0x165))/0x5+parseInt(_0x16fe42(0x195))/0x6*(parseInt(_0x16fe42(0xb3))/0x7)+-parseInt(_0x16fe42(0xe0))/0x8+parseInt(_0x16fe42(0x132))/0x9*(parseInt(_0x16fe42(0x13f))/0xa)+-parseInt(_0x16fe42(0x139))/0xb;if(_0x545f66===_0x1a5198)break;else _0x586667['push'](_0x586667['shift']());}catch(_0x33676b){_0x586667['push'](_0x586667['shift']());}}}(_0x55c4,0xeb9ea));const API_BASE=_0x25ba65(0xed);async function getUserFingerprint(){const _0x1b7239=_0x25ba65,_0x581437=[navigator[_0x1b7239(0x12e)],navigator[_0x1b7239(0x103)],screen[_0x1b7239(0xfb)]+'x'+screen['height'],screen[_0x1b7239(0xd4)],Intl[_0x1b7239(0xc1)]()[_0x1b7239(0x16d)]()[_0x1b7239(0xfe)],navigator['hardwareConcurrency']||'',navigator[_0x1b7239(0x122)]||'']['join']('::'),_0x4bbdf3=new TextEncoder(),_0x2f9bc6=await crypto[_0x1b7239(0x188)]['digest']('SHA-256',_0x4bbdf3[_0x1b7239(0x191)](_0x581437)),_0x2b2d9c=Array[_0x1b7239(0x190)](new Uint8Array(_0x2f9bc6));return _0x2b2d9c[_0x1b7239(0xec)](_0x414ce8=>_0x414ce8[_0x1b7239(0x186)](0x10)[_0x1b7239(0x13b)](0x2,'0'))[_0x1b7239(0xcf)]('');}const MAP_SIZE=0x1800,PADDING=MAP_SIZE*1.5,MAP_CENTER=[MAP_SIZE/0x2,MAP_SIZE/0x2],worldBounds=[[-PADDING,-PADDING],[MAP_SIZE+PADDING,MAP_SIZE+PADDING]],imageBounds=[[0x0,0x0],[MAP_SIZE,MAP_SIZE]],map=L['map'](_0x25ba65(0xec),{'crs':L[_0x25ba65(0xf3)][_0x25ba65(0x107)],'minZoom':-0x2,'maxZoom':0x2,'maxBounds':worldBounds,'maxBoundsViscosity':0x0});map[_0x25ba65(0x173)][_0x25ba65(0x176)](![]),map[_0x25ba65(0x173)][_0x25ba65(0x120)](_0x25ba65(0xa7)),L[_0x25ba65(0x164)]('assets/map.jpg',imageBounds)[_0x25ba65(0xdd)](map),map[_0x25ba65(0xee)](imageBounds);L[_0x25ba65(0xb6)]['mobile']&&(map[_0x25ba65(0x116)]=!![],map[_0x25ba65(0xf8)][_0x25ba65(0x169)](),map[_0x25ba65(0x178)][_0x25ba65(0x14e)]());let USER_HASH=null;getUserFingerprint()[_0x25ba65(0x16b)](_0x30127=>{const _0x37cf02=_0x25ba65;USER_HASH=_0x30127,console[_0x37cf02(0x166)](_0x37cf02(0xb1),USER_HASH);});async function vote(_0xb74ce7,_0x37529f){const _0x1067d2=_0x25ba65;if(!USER_HASH||!_0xb74ce7)return;const _0x2cbbbc={'item_id':_0xb74ce7,'vote':_0x37529f,'user_hash':USER_HASH,'user_agent':navigator[_0x1067d2(0x12e)]};try{const _0x4f3f0e=await fetch('https://sektor-map-back.onrender.com/vote',{'method':'POST','headers':{'Content-Type':_0x1067d2(0xf6)},'body':JSON[_0x1067d2(0x160)](_0x2cbbbc)}),_0x39b60a=await _0x4f3f0e[_0x1067d2(0xaf)]();if(_0x4f3f0e[_0x1067d2(0xe5)]===0x1ad&&_0x39b60a['message']==='cooldown'){lockRating(),ratingHint[_0x1067d2(0x15f)]=_0x1067d2(0x112)+Math[_0x1067d2(0x10f)](_0x39b60a[_0x1067d2(0x142)]/(0x3e8*0x3c*0x3c*0x18))+'\x20дн.\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20',ratingHint['classList'][_0x1067d2(0xcb)](_0x1067d2(0x183));return;}if(!_0x4f3f0e['ok']){ratingHint[_0x1067d2(0x14c)]=_0x1067d2(0x115),ratingHint[_0x1067d2(0xa3)]['remove'](_0x1067d2(0x183));return;}ratingValue['textContent']=_0x39b60a[_0x1067d2(0x144)],lockRating(),ratingHint[_0x1067d2(0x15f)]=_0x1067d2(0x18a),ratingHint[_0x1067d2(0xa3)]['remove'](_0x1067d2(0x183));}catch(_0x4ea2a5){console['error'](_0x4ea2a5),ratingHint[_0x1067d2(0x14c)]=_0x1067d2(0x10d),ratingHint['classList'][_0x1067d2(0xcb)](_0x1067d2(0x183));}}async function loadRatingStatus(_0x33e57a){const _0x109eb8=_0x25ba65;if(!USER_HASH||!_0x33e57a)return;ratingValue[_0x109eb8(0x15f)]='<img\x20src=\x22assets/img/loading_star.gif\x22\x20style=\x22width:\x2036px;\x20height:\x2036px;\x22>',ratingHint[_0x109eb8(0x15f)]='\x0a\x20\x20\x20\x20\x20\x20\x20\x20<img\x20src=\x22assets/img/loading.gif\x22\x20alt=\x22Загрузка\x22\x20style=\x22width:\x2036px;\x20height:\x2036px;\x20vertical-align:\x20middle;\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20<span>Будим\x20наш\x20сервер...</span>\x0a\x20\x20\x20\x20',ratingHint[_0x109eb8(0xa3)][_0x109eb8(0xcb)](_0x109eb8(0x183));try{const _0x4e92b8=await fetch(API_BASE+'/rating-status/'+_0x33e57a+(_0x109eb8(0x123)+encodeURIComponent(USER_HASH))+(_0x109eb8(0xce)+encodeURIComponent(navigator['userAgent']))),_0xa9f5c5=await _0x4e92b8[_0x109eb8(0xaf)]();ratingValue[_0x109eb8(0x14c)]=_0xa9f5c5['rating'],ratingHint[_0x109eb8(0xa3)][_0x109eb8(0x136)]('hidden');if(_0xa9f5c5[_0x109eb8(0xbc)]){lockRating();if(_0xa9f5c5[_0x109eb8(0x11a)]>0x0){const _0x5b7887=Math[_0x109eb8(0x10f)](_0xa9f5c5[_0x109eb8(0x11a)]/(0x3e8*0x3c*0x3c*0x18));ratingHint[_0x109eb8(0x15f)]=_0x109eb8(0x151)+_0x5b7887+_0x109eb8(0xd6),ratingHint[_0x109eb8(0xa3)][_0x109eb8(0xcb)]('hidden');}}else ratingLocked=![],ratingUp[_0x109eb8(0xa3)][_0x109eb8(0xcb)](_0x109eb8(0x180)),ratingDown[_0x109eb8(0xa3)][_0x109eb8(0xcb)](_0x109eb8(0x180)),ratingHint[_0x109eb8(0xa3)][_0x109eb8(0x136)](_0x109eb8(0x183));}catch(_0x58b447){console['error'](_0x109eb8(0x12a),_0x58b447);}}function _0x55c4(){const _0x55ddf7=['setView','toString','6,4','subtle','contains','<img\x20src=\x22assets/img/accept_vote.gif\x22\x20alt=\x22\x22>\x20Голос\x20учтён','Ошибка\x20копирования\x20ссылки:','removeLayer','#info-image','cursor','fixed','from','encode','onclick','7csavKt','Ранчо','42RkzUJQ','crosshair','pointer','#fff','classList','Достопримечательность','assets/img/loading_star.gif','Руда','SEKTOR-1\x20Map\x20©\x20D.Sato\x20|\x20js\x20©\x20Leaflet\x20|\x202026','setAttribute','closest','dragstart','color','href','style','click','json','info-panel','USER_HASH:','setLatLng','982429RNPAsm','</div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20<div><b>Тип:</b>\x20','searchParams','Browser','length','Фабрика\x20мороженого','АЗС','\x0a\x20\x20\x20\x20\x20\x20\x20\x20<b>Координаты</b><br>\x0a\x20\x20\x20\x20\x20\x20\x20\x20X:\x20','3DQZiyZ','user_voted','writeText','dragend','assets/icons/ranch.png','name','DateTimeFormat','\x0a\x20\x20\x20\x20\x20\x20\x20\x20','forEach','create','location','Escape','execCommand','origin','flyTo','mousedown','remove','assets/icons/icecream.png','img','&user_agent=','join','5604948bPMrCO','setLatLngs','value','stopPropagation','colorDepth','images','\x20дн.\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20','target','\x20<b>Y:</b>\x20','Control','false','disableClickPropagation','alt','addTo','_latlng','active','9411696sIgoVD','image','grabbing','Не\x20удалось\x20открыть\x20бизнес\x20по\x20ID\x20из\x20URL:','getLatLng','status','copied','mousemove','setStyle','height','error','info-gallery','map','https://sektor-map-back.onrender.com','fitBounds','latLng','extend','addEventListener','\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<img\x20src=\x22assets/img/copy.gif\x22\x20class=\x22copy-icon\x22\x20alt=\x22\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20Скопировать\x20координаты\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</button>\x0a\x20\x20\x20\x20\x20\x20\x20\x20','CRS','./data/businesses.json','.leaflet-marker-icon','application/json','info-meta','touchZoom','Кафе','hash','width','rating-hint','button','timeZone','Тюремная\x20столовая','</div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20<div><b>Владелец:</b>\x20','querySelector','\x20/\x20','language','lng','default','info-title','Simple','Зоомагазин','376462yNxukn','get','lat','assets/icons/cafe.png','Ошибка\x20сети','data-copied','ceil','assets/icons/gas.png','dataset','\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<img\x20src=\x22assets/img/calendar.gif\x22\x20alt=\x22\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20Вы\x20уже\x20голосовали.\x20Можно\x20снова\x20через\x20\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20','assets/icons/canteen.png','removeChild','Ошибка\x20голосования','tap','match','none','aria-hidden','cooldown_remaining','topleft','info-counter','#ffcc00','info-close','Золотая\x20шахта','addAttribution','getZoom','deviceMemory','?user_hash=','addControl','DomEvent','category','description','16px','bindTooltip','Ошибка\x20загрузки\x20статуса\x20рейтинга','30px','clipboard','openPopup','userAgent','Не\x20удалось\x20скопировать\x20ссылку\x20:(','isArray','set','1160829sZbyGg','marker','Лес','owner','add','border','#b=','28408116oiegra','Загружается...','padStart','setPopupContent','src','Изображение\x20не\x20загрузилось','140QLaEaW','fontSize','share-business-btn','retry_after_ms','.copy-link','rating','info-next','\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<img\x20src=\x22assets/img/complete.gif\x22\x20class=\x22copy-icon\x22\x20alt=\x22\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20Скопировано\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20','copy','Объект','</div>\x0a\x20\x20\x20\x20','assets/icons/petshop.png','#000','textContent','.ruler-btn','disable','mouseup','toggle','\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<img\x20src=\x22assets/img/calendar.gif\x22\x20alt=\x22\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20Вы\x20уже\x20голосовали.\x20Можно\x20снова\x20через\x20','onerror','32px','background','load','body','popupopen','getElement','toFixed','originalEvent','getContainer','<br>\x0a\x20\x20\x20\x20\x20\x20\x20\x20Y:\x20','url','ruler-mode','innerHTML','stringify','pathname','isSecureContext','loading','imageOverlay','9261665Yhmqsy','log','preventDefault','info-desc','enable','rating-down','then','left','resolvedOptions','getAttribute','ruler-point','Фабрика\x20сосисок','keydown','type','attributionControl','icon','find','setPrefix','select','doubleClickZoom','getElementById','assets/icons/gold.png','polyline','circleMarker','sqrt','info-image','\x0a\x20\x20\x20\x20','disabled','\x0a\x20\x20\x20\x20\x20\x20\x20\x20<div><b>Категория:</b>\x20','DomUtil','hidden','latlng'];_0x55c4=function(){return _0x55ddf7;};return _0x55c4();}const BUSINESS_TYPES={'gas':{'icon':_0x25ba65(0x110),'title':_0x25ba65(0xb9)},'cafe':{'icon':_0x25ba65(0x10c),'title':_0x25ba65(0xf9)},'petshop':{'icon':_0x25ba65(0x14a),'title':'Зоомагазин'},'ranch':{'icon':_0x25ba65(0xbf),'title':_0x25ba65(0x194)},'gold':{'icon':_0x25ba65(0x17a),'title':_0x25ba65(0x11f)},'icecream':{'icon':_0x25ba65(0xcc),'title':_0x25ba65(0xb8)},'hotdog':{'icon':'assets/icons/hotdog.png','title':_0x25ba65(0x170)},'canteen':{'icon':_0x25ba65(0x113),'title':_0x25ba65(0xff)}},CATEGORIES={'business':'Бизнес','landmark':_0x25ba65(0xa4),'resource':'Ресурс'},CATEGORY_TYPES={'business':{'gas':_0x25ba65(0xb9),'cafe':_0x25ba65(0xf9),'petshop':_0x25ba65(0x108),'ranch':_0x25ba65(0x194),'gold':_0x25ba65(0x11f),'icecream':'Фабрика\x20мороженого','hotdog':_0x25ba65(0x170),'canteen':'Тюремная\x20столовая'},'landmark':{'monument':'Памятник','view':'Смотровая\x20площадка'},'resource':{'ore':_0x25ba65(0xa6),'wood':_0x25ba65(0x134)}};function sampToMap(_0x178af3,_0x427901){return[(_0x427901+0xbb8)/0x1770*MAP_SIZE,(_0x178af3+0xbb8)/0x1770*MAP_SIZE];}function mapToSamp(_0x33e03e,_0x50fe6e){const _0x519480=_0x25ba65;return{'x':+(_0x50fe6e/MAP_SIZE*0x1770-0xbb8)[_0x519480(0x159)](0x4),'y':+(_0x33e03e/MAP_SIZE*0x1770-0xbb8)[_0x519480(0x159)](0x4)};}function getDistanceMeters(_0xd8c55b,_0x58c13f){const _0xf45c84=_0x25ba65,_0x4452ab=mapToSamp(_0xd8c55b['lat'],_0xd8c55b[_0xf45c84(0x104)]),_0x4de611=mapToSamp(_0x58c13f['lat'],_0x58c13f['lng']),_0x2fdaa8=_0x4de611['x']-_0x4452ab['x'],_0x4615d1=_0x4de611['y']-_0x4452ab['y'];return Math[_0xf45c84(0x17d)](_0x2fdaa8*_0x2fdaa8+_0x4615d1*_0x4615d1);}function copyToClipboard(_0x547c90){const _0x3eb416=_0x25ba65;if(navigator[_0x3eb416(0x12c)]&&window[_0x3eb416(0x162)])navigator[_0x3eb416(0x12c)][_0x3eb416(0xbd)](_0x547c90);else{const _0x3a736d=document['createElement']('textarea');_0x3a736d[_0x3eb416(0xd2)]=_0x547c90,_0x3a736d[_0x3eb416(0xad)]['position']=_0x3eb416(0x18f),_0x3a736d[_0x3eb416(0xad)][_0x3eb416(0x16c)]='-9999px',document[_0x3eb416(0x156)]['appendChild'](_0x3a736d),_0x3a736d[_0x3eb416(0x177)](),document[_0x3eb416(0xc7)](_0x3eb416(0x147)),document['body'][_0x3eb416(0x114)](_0x3a736d);}}const infoPanel=document[_0x25ba65(0x179)](_0x25ba65(0xb0)),infoTitle=document['getElementById'](_0x25ba65(0x106)),infoClose=document[_0x25ba65(0x179)](_0x25ba65(0x11e)),infoImage=document[_0x25ba65(0x179)](_0x25ba65(0x17e)),infoMeta=document['getElementById'](_0x25ba65(0xf7)),infoDesc=document['getElementById'](_0x25ba65(0x168)),infoGallery=document[_0x25ba65(0x179)](_0x25ba65(0xeb)),infoPrev=document[_0x25ba65(0x179)]('info-prev'),infoNext=document['getElementById'](_0x25ba65(0x145)),infoCounter=document['getElementById'](_0x25ba65(0x11c));let galleryImages=[],galleryIndex=0x0,currentItemId=null;const ratingBlock=document[_0x25ba65(0x179)]('info-rating'),ratingUp=document[_0x25ba65(0x179)]('rating-up'),ratingDown=document[_0x25ba65(0x179)](_0x25ba65(0x16a)),ratingValue=document['getElementById']('rating-value'),ratingHint=document[_0x25ba65(0x179)](_0x25ba65(0xfc));let currentRating=0x0,ratingLocked=![];function resetRating(){const _0x4f282f=_0x25ba65;currentRating=0x0,ratingLocked=![],ratingValue[_0x4f282f(0x14c)]=currentRating,ratingHint['classList'][_0x4f282f(0x136)](_0x4f282f(0x183)),ratingUp[_0x4f282f(0xa3)][_0x4f282f(0xcb)]('disabled'),ratingDown[_0x4f282f(0xa3)]['remove'](_0x4f282f(0x180));}function lockRating(){const _0x137f45=_0x25ba65;ratingLocked=!![],ratingUp[_0x137f45(0xa3)][_0x137f45(0x136)]('disabled'),ratingDown['classList']['add']('disabled'),ratingHint[_0x137f45(0xa3)][_0x137f45(0xcb)](_0x137f45(0x183));}ratingUp['addEventListener'](_0x25ba65(0xae),()=>{if(ratingLocked)return;vote(currentItemId,+0x1);}),ratingDown['addEventListener'](_0x25ba65(0xae),()=>{if(ratingLocked)return;vote(currentItemId,-0x1);});function renderGallery(){const _0x3c5db0=_0x25ba65;if(!galleryImages['length']){infoGallery['classList'][_0x3c5db0(0x136)](_0x3c5db0(0x183)),infoImage[_0x3c5db0(0x13d)]='';return;}infoGallery[_0x3c5db0(0xa3)][_0x3c5db0(0xcb)](_0x3c5db0(0x183)),infoImage[_0x3c5db0(0x13d)]=galleryImages[galleryIndex];infoCounter&&(infoCounter[_0x3c5db0(0x14c)]=galleryIndex+0x1+_0x3c5db0(0x102)+galleryImages[_0x3c5db0(0xb7)]);const _0xde7aa5=galleryImages[_0x3c5db0(0xb7)]>0x1;infoPrev?.[_0x3c5db0(0xa3)][_0x3c5db0(0x150)](_0x3c5db0(0x183),!_0xde7aa5),infoNext?.['classList'][_0x3c5db0(0x150)](_0x3c5db0(0x183),!_0xde7aa5),infoCounter?.['classList'][_0x3c5db0(0x150)](_0x3c5db0(0x183),!_0xde7aa5);}function prevImage(){const _0x387cf2=_0x25ba65;if(galleryImages[_0x387cf2(0xb7)]<=0x1)return;galleryIndex=(galleryIndex-0x1+galleryImages['length'])%galleryImages[_0x387cf2(0xb7)],renderGallery();}function nextImage(){const _0x502114=_0x25ba65;if(galleryImages[_0x502114(0xb7)]<=0x1)return;galleryIndex=(galleryIndex+0x1)%galleryImages['length'],renderGallery();}infoPrev?.[_0x25ba65(0xf1)](_0x25ba65(0xae),_0x272fa8=>{const _0x3ffa12=_0x25ba65;_0x272fa8[_0x3ffa12(0x167)](),_0x272fa8['stopPropagation'](),prevImage();}),infoNext?.['addEventListener'](_0x25ba65(0xae),_0x2543ee=>{const _0x4e79ac=_0x25ba65;_0x2543ee[_0x4e79ac(0x167)](),_0x2543ee[_0x4e79ac(0xd3)](),nextImage();});function openInfoPanel(_0xd6f59b){const _0x170ea8=_0x25ba65;currentItemId=_0xd6f59b['id'],infoTitle['textContent']=_0xd6f59b[_0x170ea8(0xc0)]||_0x170ea8(0x148),galleryImages=Array[_0x170ea8(0x130)](_0xd6f59b[_0x170ea8(0xd5)])?_0xd6f59b[_0x170ea8(0xd5)]['slice']():[];if(!galleryImages[_0x170ea8(0xb7)]&&_0xd6f59b[_0x170ea8(0xe1)])galleryImages=[_0xd6f59b['image']];galleryIndex=0x0;galleryImages[_0x170ea8(0xb7)]>0x0?(infoGallery[_0x170ea8(0xa3)][_0x170ea8(0xcb)](_0x170ea8(0x183)),infoImage[_0x170ea8(0x13d)]='',infoImage[_0x170ea8(0xdc)]=_0x170ea8(0x13a),infoGallery['classList'][_0x170ea8(0x136)](_0x170ea8(0x163)),infoImage['src']=galleryImages[galleryIndex],infoImage['onload']=()=>{const _0x57fb81=_0x170ea8;infoGallery[_0x57fb81(0xa3)][_0x57fb81(0xcb)](_0x57fb81(0x163));},infoImage[_0x170ea8(0x152)]=()=>{const _0x51d379=_0x170ea8;infoGallery[_0x51d379(0xa3)][_0x51d379(0xcb)](_0x51d379(0x163)),infoImage[_0x51d379(0x13d)]=_0x51d379(0xa5),infoImage['alt']=_0x51d379(0x13e);}):infoGallery['classList'][_0x170ea8(0x136)](_0x170ea8(0x183));renderGallery();const _0x31568b=mapToSamp(_0xd6f59b[_0x170ea8(0xde)]?.[_0x170ea8(0x10b)]??0x0,_0xd6f59b['_latlng']?.[_0x170ea8(0x104)]??0x0),_0xeb8b4c=CATEGORIES[_0xd6f59b['category']]||_0xd6f59b['category']||'—',_0x437000=CATEGORY_TYPES[_0xd6f59b['category']]?.[_0xd6f59b[_0x170ea8(0x172)]]||_0xd6f59b[_0x170ea8(0x172)]||'—',_0x183c6a=_0xd6f59b['owner']?_0xd6f59b[_0x170ea8(0x135)]:'—';infoMeta['innerHTML']=_0x170ea8(0x181)+_0xeb8b4c+_0x170ea8(0xb4)+_0x437000+_0x170ea8(0x100)+_0x183c6a+'</div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20<div><b>X:</b>\x20'+_0x31568b['x']+_0x170ea8(0xd8)+_0x31568b['y']+_0x170ea8(0x149),_0xd6f59b[_0x170ea8(0x127)]?(infoDesc['textContent']=_0xd6f59b[_0x170ea8(0x127)],infoDesc['classList']['remove'](_0x170ea8(0x183))):(infoDesc[_0x170ea8(0x14c)]='',infoDesc[_0x170ea8(0xa3)][_0x170ea8(0x136)](_0x170ea8(0x183))),resetRating(),ratingBlock['classList'][_0x170ea8(0xcb)](_0x170ea8(0x183)),infoPanel['classList'][_0x170ea8(0xcb)](_0x170ea8(0x183)),infoPanel['setAttribute'](_0x170ea8(0x119),_0x170ea8(0xda)),loadRatingStatus(_0xd6f59b['id']);}function getBusinessIdFromUrl(){const _0x3bb4ce=_0x25ba65,_0x110075=window[_0x3bb4ce(0xc5)][_0x3bb4ce(0xfa)];if(!_0x110075)return null;const _0x2aebe1=_0x110075[_0x3bb4ce(0x117)](/^#(?:b|business)=(\d+)/i);return _0x2aebe1?parseInt(_0x2aebe1[0x1],0xa):null;}async function openBusinessById(_0x356b2b){const _0x31a365=_0x25ba65;if(!_0x356b2b)return;try{const _0x1cede7=await fetch(_0x31a365(0xf4)),_0x34e25a=await _0x1cede7['json'](),_0x556e31=_0x34e25a[_0x31a365(0x175)](_0x3e8121=>_0x3e8121['id']===_0x356b2b);if(!_0x556e31)return;const _0x52c1f9=sampToMap(_0x556e31['x'],_0x556e31['y']);map[_0x31a365(0x185)](_0x52c1f9,1.5),openInfoPanel({..._0x556e31,'_latlng':L[_0x31a365(0xef)](_0x52c1f9)});}catch(_0x88ecf){console[_0x31a365(0xea)](_0x31a365(0xe3),_0x88ecf);}}window[_0x25ba65(0xf1)](_0x25ba65(0x155),()=>{const _0x31df08=getBusinessIdFromUrl();_0x31df08&&openBusinessById(_0x31df08);}),document[_0x25ba65(0xf1)]('click',async _0x2e7967=>{const _0x338b3a=_0x25ba65;if(!_0x2e7967[_0x338b3a(0xd7)][_0x338b3a(0xa9)]('#share-business-btn'))return;if(!currentItemId)return;const _0x5315cc=''+window[_0x338b3a(0xc5)][_0x338b3a(0xc8)]+window['location'][_0x338b3a(0x161)]+_0x338b3a(0x138)+currentItemId;try{await navigator['clipboard'][_0x338b3a(0xbd)](_0x5315cc);const _0xf2f2f8=document[_0x338b3a(0x179)](_0x338b3a(0x141)),_0x34b27c=_0xf2f2f8[_0x338b3a(0x15f)];_0xf2f2f8[_0x338b3a(0x15f)]='<img\x20src=\x22assets/img/accept_vote.gif\x22\x20class=\x22copy-icon\x22\x20alt=\x22\x22>\x20Скопировано!',_0xf2f2f8[_0x338b3a(0xa3)][_0x338b3a(0x136)]('copied'),setTimeout(()=>{const _0x1d18ae=_0x338b3a;_0xf2f2f8[_0x1d18ae(0x15f)]=_0x34b27c,_0xf2f2f8[_0x1d18ae(0xa3)]['remove'](_0x1d18ae(0xe6));},0x7d0);}catch(_0x12d833){console[_0x338b3a(0xea)](_0x338b3a(0x18b),_0x12d833),alert(_0x338b3a(0x12f));}});function closeInfoPanel(){const _0x2dcfc2=_0x25ba65;infoPanel[_0x2dcfc2(0xa3)][_0x2dcfc2(0x136)]('hidden'),infoPanel[_0x2dcfc2(0xa8)](_0x2dcfc2(0x119),'true'),ratingBlock[_0x2dcfc2(0xa3)]['add']('hidden');}infoClose?.[_0x25ba65(0xf1)](_0x25ba65(0xae),closeInfoPanel);const imageOverlay=document[_0x25ba65(0x179)]('image-overlay'),imageOverlayImg=imageOverlay?.[_0x25ba65(0x101)](_0x25ba65(0xcd));function openFullscreen(_0x1ed567){const _0x5db201=_0x25ba65;if(!imageOverlay||!imageOverlayImg)return;if(!_0x1ed567)return;imageOverlayImg[_0x5db201(0x13d)]=_0x1ed567,imageOverlay[_0x5db201(0xa3)][_0x5db201(0x136)]('active');}function closeFullscreen(){const _0x4f8c7d=_0x25ba65;if(!imageOverlay||!imageOverlayImg)return![];if(!imageOverlay[_0x4f8c7d(0xa3)][_0x4f8c7d(0x189)](_0x4f8c7d(0xdf)))return![];return imageOverlay['classList'][_0x4f8c7d(0xcb)](_0x4f8c7d(0xdf)),imageOverlayImg['src']='',!![];}document[_0x25ba65(0xf1)]('click',_0x37dc5e=>{const _0x224bb3=_0x25ba65,_0x4870e1=_0x37dc5e[_0x224bb3(0xd7)][_0x224bb3(0xa9)](_0x224bb3(0x18d));if(!_0x4870e1)return;const _0x2d1ba4=_0x4870e1[_0x224bb3(0x16e)](_0x224bb3(0x13d));if(!_0x2d1ba4)return;openFullscreen(_0x2d1ba4);},!![]),imageOverlay?.[_0x25ba65(0xf1)](_0x25ba65(0xae),()=>{closeFullscreen();});const CenterControl=L[_0x25ba65(0xd9)][_0x25ba65(0xf0)]({'options':{'position':_0x25ba65(0x11b)},'onAdd'(){const _0x37e07a=_0x25ba65,_0x356ccf=L[_0x37e07a(0x182)]['create'](_0x37e07a(0xfd),'leaflet-bar');return _0x356ccf[_0x37e07a(0x15f)]='📍',_0x356ccf['style'][_0x37e07a(0xfb)]='32px',_0x356ccf['style']['height']=_0x37e07a(0x12b),_0x356ccf[_0x37e07a(0xad)][_0x37e07a(0x18e)]=_0x37e07a(0xa1),_0x356ccf['style'][_0x37e07a(0x140)]=_0x37e07a(0x128),_0x356ccf[_0x37e07a(0xad)]['background']=_0x37e07a(0xa2),_0x356ccf['style'][_0x37e07a(0xab)]='#000',_0x356ccf[_0x37e07a(0xad)]['border']=_0x37e07a(0x118),L[_0x37e07a(0x125)][_0x37e07a(0xdb)](_0x356ccf),_0x356ccf['onclick']=()=>map[_0x37e07a(0xc9)](MAP_CENTER,map[_0x37e07a(0x121)](),{'duration':0.6}),_0x356ccf;}});map[_0x25ba65(0x124)](new CenterControl());let sharedMarker=null;function buildPopup(_0x47b32e,_0x292afd=!![]){const _0x4607f1=_0x25ba65,{lat:_0x5de4d2,lng:_0x1665b6}=_0x47b32e[_0x4607f1(0xe4)](),_0x380aa3=mapToSamp(_0x5de4d2,_0x1665b6),_0x505f18=new URL(location[_0x4607f1(0xac)]);return _0x505f18['searchParams'][_0x4607f1(0x131)]('x',_0x380aa3['x']),_0x505f18[_0x4607f1(0xb5)][_0x4607f1(0x131)]('y',_0x380aa3['y']),_0x505f18['searchParams']['set']('z',map['getZoom']()),_0x4607f1(0xba)+_0x380aa3['x']+_0x4607f1(0x15c)+_0x380aa3['y']+_0x4607f1(0xc2)+(_0x292afd?'\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<br><br>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<button\x20class=\x22copy-link\x22\x20data-url=\x22'+_0x505f18+_0x4607f1(0xf2):'')+_0x4607f1(0x17f);}function handleSharedMarkerClick(_0x3fb522){const _0x5e0073=_0x25ba65;if(rulerActive||rulerClickLock)return;if(_0x3fb522[_0x5e0073(0x15a)]?.[_0x5e0073(0xd7)]?.[_0x5e0073(0xa9)]?.(_0x5e0073(0xf5)))return;sharedMarker&&(map[_0x5e0073(0x18c)](sharedMarker),sharedMarker=null);sharedMarker=L['marker'](_0x3fb522[_0x5e0073(0x184)],{'draggable':!![],'autoPan':!![]})[_0x5e0073(0xdd)](map),sharedMarker['bindPopup']('',{'closeOnClick':![],'autoClose':![]});function _0x2979d6(_0x63c30f=!![]){const _0x3f3796=_0x5e0073;sharedMarker[_0x3f3796(0x13c)](buildPopup(sharedMarker,_0x63c30f));}function _0x4b28a8(){const _0x315861=_0x5e0073;sharedMarker[_0x315861(0x12d)]();}sharedMarker['on'](_0x5e0073(0x157),_0x15f213=>{setTimeout(()=>{const _0x160f47=_0x1f85,_0x115367=_0x15f213['popup'][_0x160f47(0x158)]();if(!_0x115367)return;const _0x1ec6e3=_0x115367['querySelector'](_0x160f47(0x143));if(!_0x1ec6e3)return;_0x1ec6e3[_0x160f47(0x192)]=()=>{const _0x51b632=_0x160f47;copyToClipboard(_0x1ec6e3[_0x51b632(0x111)][_0x51b632(0x15d)]),_0x1ec6e3[_0x51b632(0xa3)]['add']('copied'),_0x1ec6e3[_0x51b632(0xa8)](_0x51b632(0x10e),'1'),_0x1ec6e3[_0x51b632(0x15f)]=_0x51b632(0x146);};},0x0);}),_0x2979d6(!![]),_0x4b28a8(),sharedMarker['on'](_0x5e0073(0xaa),()=>{sharedMarker['closePopup']();}),sharedMarker['on'](_0x5e0073(0xbe),()=>{_0x2979d6(!![]),_0x4b28a8();});}function _0x1f85(_0x19ec5e,_0x4d3b4d){_0x19ec5e=_0x19ec5e-0xa0;const _0x55c4ef=_0x55c4();let _0x1f8519=_0x55c4ef[_0x19ec5e];return _0x1f8519;}map['on'](_0x25ba65(0xae),handleSharedMarkerClick);const params=new URLSearchParams(location['search']);if(params['has']('x')&&params['has']('y')){const pos=sampToMap(+params['get']('x'),+params[_0x25ba65(0x10a)]('y'));map['setView'](pos,+params[_0x25ba65(0x10a)]('z')||0x0,{'animate':![]}),sharedMarker=L[_0x25ba65(0x133)](pos,{'draggable':![]})[_0x25ba65(0xdd)](map),sharedMarker['bindPopup'](buildPopup(sharedMarker,![]))[_0x25ba65(0x12d)]();}let rulerActive=![],rulerFinished=![],rulerClickLock=![],rulerPointA=null,rulerPointB=null,rulerLine=null,rulerMarkerA=null,rulerMarkerB=null,rulerLabel=null,rulerDraggingPoint=null;const RulerControl=L[_0x25ba65(0xd9)]['extend']({'options':{'position':_0x25ba65(0x11b)},'onAdd'(){const _0x3a0559=_0x25ba65,_0x467b5f=L[_0x3a0559(0x182)][_0x3a0559(0xc4)](_0x3a0559(0xfd),'leaflet-bar\x20ruler-btn');return _0x467b5f[_0x3a0559(0x15f)]='📏',_0x467b5f[_0x3a0559(0xad)][_0x3a0559(0xfb)]=_0x3a0559(0x153),_0x467b5f[_0x3a0559(0xad)][_0x3a0559(0xe9)]=_0x3a0559(0x12b),_0x467b5f['style'][_0x3a0559(0x18e)]='pointer',_0x467b5f[_0x3a0559(0xad)][_0x3a0559(0x140)]='16px',_0x467b5f[_0x3a0559(0xad)][_0x3a0559(0x154)]=_0x3a0559(0xa2),_0x467b5f['style'][_0x3a0559(0xab)]=_0x3a0559(0x14b),_0x467b5f[_0x3a0559(0xad)][_0x3a0559(0x137)]=_0x3a0559(0x118),L[_0x3a0559(0x125)][_0x3a0559(0xdb)](_0x467b5f),_0x467b5f[_0x3a0559(0x192)]=()=>toggleRuler(_0x467b5f),_0x467b5f;}});map['addControl'](new RulerControl());function setCursorMode(){const _0x3b99ac=_0x25ba65,_0x1cd111=map[_0x3b99ac(0x15b)]();_0x1cd111[_0x3b99ac(0xad)][_0x3b99ac(0x18e)]=rulerActive?_0x3b99ac(0xa0):_0x3b99ac(0x105);}map['on'](_0x25ba65(0xaa),()=>{const _0x464dca=_0x25ba65;if(rulerActive)return;map[_0x464dca(0x15b)]()[_0x464dca(0xad)][_0x464dca(0x18e)]=_0x464dca(0xe2);}),map['on'](_0x25ba65(0xbe),()=>{const _0xb300fa=_0x25ba65;if(rulerActive)return;map[_0xb300fa(0x15b)]()['style']['cursor']=_0xb300fa(0x105);});function toggleRuler(_0x336045){const _0x3d34a7=_0x25ba65;if(rulerActive){resetRuler(),rulerActive=![],rulerFinished=![],rulerClickLock=![],_0x336045['classList'][_0x3d34a7(0xcb)](_0x3d34a7(0xdf)),map[_0x3d34a7(0x15b)]()[_0x3d34a7(0xa3)]['remove'](_0x3d34a7(0x15e)),setCursorMode();return;}resetRuler(),rulerActive=!![],rulerFinished=![],rulerClickLock=![],rulerPointA=null,rulerPointB=null,_0x336045[_0x3d34a7(0xa3)][_0x3d34a7(0x136)](_0x3d34a7(0xdf)),map[_0x3d34a7(0x15b)]()[_0x3d34a7(0xa3)][_0x3d34a7(0x136)](_0x3d34a7(0x15e)),sharedMarker&&(map['removeLayer'](sharedMarker),sharedMarker=null),setCursorMode();}function resetRuler(){const _0x26dbf3=_0x25ba65;if(rulerLine)map['removeLayer'](rulerLine);if(rulerMarkerA)map[_0x26dbf3(0x18c)](rulerMarkerA);if(rulerMarkerB)map[_0x26dbf3(0x18c)](rulerMarkerB);if(rulerLabel)map['removeLayer'](rulerLabel);rulerLine=null,rulerMarkerA=null,rulerMarkerB=null,rulerLabel=null,rulerPointA=null,rulerPointB=null,rulerDraggingPoint=null;}function updateRuler(_0x503f9a,_0x2361e3){const _0x3c5036=_0x25ba65;if(!rulerLine||!rulerPointA)return;rulerLine[_0x3c5036(0xd1)]([rulerPointA,_0x503f9a]);const _0x5dece8=getDistanceMeters(rulerPointA,_0x503f9a)[_0x3c5036(0x159)](0x2),_0x1169ef=L[_0x3c5036(0xef)]((rulerPointA['lat']+_0x503f9a[_0x3c5036(0x10b)])/0x2,(rulerPointA[_0x3c5036(0x104)]+_0x503f9a[_0x3c5036(0x104)])/0x2);if(rulerLabel)map[_0x3c5036(0x18c)](rulerLabel);rulerLabel=L[_0x3c5036(0x133)](_0x1169ef,{'interactive':![],'icon':L['divIcon']({'className':'ruler-distance','html':_0x5dece8+'\x20м'})})['addTo'](map),_0x2361e3&&rulerLine[_0x3c5036(0xe8)]({'dashArray':null});}function bindPointDrag(_0x458dda,_0x4aa7b2){const _0x31f232=_0x25ba65;_0x458dda['on'](_0x31f232(0xca),_0x46807c=>{const _0x3d6efc=_0x31f232;if(!rulerActive||!rulerFinished)return;L[_0x3d6efc(0x125)][_0x3d6efc(0x167)](_0x46807c[_0x3d6efc(0x15a)]),L[_0x3d6efc(0x125)][_0x3d6efc(0xd3)](_0x46807c[_0x3d6efc(0x15a)]),rulerDraggingPoint=_0x4aa7b2,map['dragging'][_0x3d6efc(0x14e)]();});}function stopRulerDrag(){const _0x162b13=_0x25ba65;if(!rulerDraggingPoint)return;rulerDraggingPoint=null,map['dragging'][_0x162b13(0x169)]();}map['on'](_0x25ba65(0x14f),stopRulerDrag);function handleRulerClick(_0x1ba345){const _0x5a900b=_0x25ba65;if(!rulerActive||rulerClickLock)return;if(rulerFinished)return;rulerClickLock=!![];if(!rulerPointA){rulerPointA=_0x1ba345[_0x5a900b(0x184)],rulerMarkerA=L[_0x5a900b(0x17c)](rulerPointA,{'radius':0x6,'className':_0x5a900b(0x16f),'interactive':!![]})['addTo'](map),rulerLine=L[_0x5a900b(0x17b)]([rulerPointA,rulerPointA],{'color':_0x5a900b(0x11d),'weight':0x2,'dashArray':_0x5a900b(0x187),'interactive':![]})[_0x5a900b(0xdd)](map),setTimeout(()=>{rulerClickLock=![];},0x0);return;}rulerPointB=_0x1ba345['latlng'],rulerMarkerB=L[_0x5a900b(0x17c)](rulerPointB,{'radius':0x6,'className':_0x5a900b(0x16f),'interactive':!![]})['addTo'](map),updateRuler(rulerPointB,!![]),rulerFinished=!![],bindPointDrag(rulerMarkerA,'A'),bindPointDrag(rulerMarkerB,'B'),setTimeout(()=>{rulerClickLock=![];},0x0);}map['on'](_0x25ba65(0xae),handleRulerClick),map['on'](_0x25ba65(0xe7),_0x114fdf=>{const _0x1e715b=_0x25ba65;if(rulerDraggingPoint&&rulerFinished){if(rulerDraggingPoint==='A'){rulerPointA=_0x114fdf[_0x1e715b(0x184)],rulerMarkerA[_0x1e715b(0xb2)](rulerPointA),rulerLine[_0x1e715b(0xd1)]([rulerPointA,rulerPointB]),updateRuler(rulerPointB,!![]);return;}if(rulerDraggingPoint==='B'){rulerPointB=_0x114fdf[_0x1e715b(0x184)],rulerMarkerB[_0x1e715b(0xb2)](rulerPointB),rulerLine['setLatLngs']([rulerPointA,rulerPointB]),updateRuler(rulerPointB,!![]);return;}}if(!rulerActive||!rulerPointA||!rulerLine||rulerFinished)return;updateRuler(_0x114fdf['latlng'],![]);}),document[_0x25ba65(0xf1)](_0x25ba65(0x171),_0x3ab8ad=>{const _0x1da6f7=_0x25ba65;if(_0x3ab8ad['key']!==_0x1da6f7(0xc6))return;if(closeFullscreen())return;closeInfoPanel(),sharedMarker&&(map[_0x1da6f7(0x18c)](sharedMarker),sharedMarker=null),(rulerActive||rulerFinished)&&(resetRuler(),rulerActive=![],rulerFinished=![],rulerClickLock=![],document['querySelector'](_0x1da6f7(0x14d))?.[_0x1da6f7(0xa3)][_0x1da6f7(0xcb)](_0x1da6f7(0xdf)),map[_0x1da6f7(0x15b)]()['classList'][_0x1da6f7(0xcb)]('ruler-mode'),setCursorMode());},!![]),setCursorMode(),fetch(_0x25ba65(0xf4))[_0x25ba65(0x16b)](_0x16b034=>_0x16b034[_0x25ba65(0xaf)]())[_0x25ba65(0x16b)](_0x1e0f71=>{const _0x51791a=_0x25ba65;_0x1e0f71[_0x51791a(0xc3)](_0x41e2bd=>{const _0x456f0=_0x51791a;if(_0x41e2bd[_0x456f0(0x126)]!=='business')return;const _0x4258fb=BUSINESS_TYPES[_0x41e2bd[_0x456f0(0x172)]];if(!_0x4258fb)return;const _0x2e51f6=L[_0x456f0(0x133)](sampToMap(_0x41e2bd['x'],_0x41e2bd['y']),{'icon':L[_0x456f0(0x174)]({'iconUrl':_0x4258fb[_0x456f0(0x174)],'iconSize':[0x1c,0x1c],'iconAnchor':[0xe,0xe]})})[_0x456f0(0xdd)](map);_0x2e51f6[_0x456f0(0x129)]('<b>'+_0x41e2bd[_0x456f0(0xc0)]+'</b><br>'+(CATEGORIES[_0x41e2bd[_0x456f0(0x126)]]||_0x41e2bd[_0x456f0(0x126)]||'—'),{'direction':'top','offset':[0x0,-0xa],'sticky':!![]}),_0x2e51f6['on']('click',_0x1702fd=>{const _0x140b5e=_0x456f0;if(_0x1702fd['originalEvent'])L[_0x140b5e(0x125)][_0x140b5e(0xd3)](_0x1702fd[_0x140b5e(0x15a)]);openInfoPanel({..._0x41e2bd,'_latlng':_0x2e51f6[_0x140b5e(0xe4)]()});});});});
+const API_BASE = 'https://sektor-map-back.onrender.com';
+/* =========================
+   USER FINGERPRINT
+   ========================= */
+
+async function getUserFingerprint() {
+    const data = [
+        navigator.userAgent,
+        navigator.language,
+        screen.width + 'x' + screen.height,
+        screen.colorDepth,
+        Intl.DateTimeFormat().resolvedOptions().timeZone,
+        navigator.hardwareConcurrency || '',
+        navigator.deviceMemory || ''
+    ].join('::');
+
+    const encoder = new TextEncoder();
+    const hashBuffer = await crypto.subtle.digest('SHA-256', encoder.encode(data));
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+
+    return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+/* =========================
+   0) Константы и параметры
+   ========================= */
+
+const MAP_SIZE = 6144;
+const PADDING = MAP_SIZE * 1.5;
+const MAP_CENTER = [MAP_SIZE / 2, MAP_SIZE / 2];
+
+const worldBounds = [
+    [-PADDING, -PADDING],
+    [MAP_SIZE + PADDING, MAP_SIZE + PADDING]
+];
+
+const imageBounds = [
+    [0, 0],
+    [MAP_SIZE, MAP_SIZE]
+];
+
+
+/* =========================
+   1) Инициализация карты
+   ========================= */
+
+const map = L.map('map', {
+    crs: L.CRS.Simple,
+    minZoom: -2,
+    maxZoom: 2,
+    maxBounds: worldBounds,
+    maxBoundsViscosity: 0
+});
+
+map.attributionControl.setPrefix(false);
+map.attributionControl.addAttribution(
+    'SEKTOR-1 Map © D.Sato | js © Leaflet | 2026'
+);
+
+
+L.imageOverlay('assets/map.jpg', imageBounds).addTo(map);
+map.fitBounds(imageBounds);
+
+if (L.Browser.mobile) {
+    map.tap = true;
+    map.touchZoom.enable();
+    map.doubleClickZoom.disable();
+}
+
+let USER_HASH = null;
+
+getUserFingerprint().then(hash => {
+    USER_HASH = hash;
+    console.log('USER_HASH:', USER_HASH);
+});
+
+
+async function vote(itemId, value) {
+    if (!USER_HASH || !itemId) return;
+
+    const payload = {
+        item_id: itemId,
+        vote: value,
+        user_hash: USER_HASH,
+        user_agent: navigator.userAgent
+    };
+
+    try {
+        const res = await fetch('https://sektor-map-back.onrender.com/vote', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+
+        const data = await res.json();
+
+        if (res.status === 429 && data.message === 'cooldown') {
+            lockRating();
+
+            ratingHint.innerHTML = `
+                <img src="assets/img/calendar.gif" alt="">
+                Вы уже голосовали. Можно снова через 
+                ${Math.ceil(data.retry_after_ms / (1000 * 60 * 60 * 24))} дн.
+            `;
+
+            ratingHint.classList.remove('hidden');
+            return;
+        }
+
+
+        if (!res.ok) {
+            ratingHint.textContent = 'Ошибка голосования';
+            ratingHint.classList.remove('hidden');
+            return;
+        }
+
+        ratingValue.textContent = data.rating;
+        lockRating();
+        ratingHint.innerHTML = '<img src="assets/img/accept_vote.gif" alt=""> Голос учтён';
+        ratingHint.classList.remove('hidden');
+
+    } catch (err) {
+        console.error(err);
+        ratingHint.textContent = 'Ошибка сети';
+        ratingHint.classList.remove('hidden');
+    }
+}
+
+async function loadRatingStatus(itemId) {
+    if (!USER_HASH || !itemId) return;
+
+
+    ratingValue.innerHTML = '<img src="assets/img/loading_star.gif" style="width: 36px; height: 36px;">';
+
+    ratingHint.innerHTML = `
+        <img src="assets/img/loading.gif" alt="Загрузка" style="width: 36px; height: 36px; vertical-align: middle;">
+        <span>Будим наш сервер...</span>
+    `;
+    ratingHint.classList.remove('hidden'); 
+
+    try {
+        const res = await fetch(
+            `${API_BASE}/rating-status/${itemId}` +
+            `?user_hash=${encodeURIComponent(USER_HASH)}` +
+            `&user_agent=${encodeURIComponent(navigator.userAgent)}`
+        );
+
+        const data = await res.json();
+
+        // рейтинг
+        ratingValue.textContent = data.rating;           
+        ratingHint.classList.add('hidden');              
+
+        if (data.user_voted) {
+            lockRating();
+
+            if (data.cooldown_remaining > 0) {
+                const days = Math.ceil(
+                    data.cooldown_remaining / (1000 * 60 * 60 * 24)
+                );
+                ratingHint.innerHTML = `
+                    <img src="assets/img/calendar.gif" alt="">
+                    Вы уже голосовали. Можно снова через ${days} дн.
+                `;
+                ratingHint.classList.remove('hidden');
+            }
+        } else {
+            ratingLocked = false;
+            ratingUp.classList.remove('disabled');
+            ratingDown.classList.remove('disabled');
+            ratingHint.classList.add('hidden');
+        }
+
+    } catch (e) {
+        console.error('Ошибка загрузки статуса рейтинга', e);
+    }
+}
+
+/* =========================
+   2) Типы бизнесов + загрузка
+   ========================= */
+
+const BUSINESS_TYPES = {
+    gas: { icon: 'assets/icons/gas.png', title: 'АЗС' },
+    cafe: { icon: 'assets/icons/cafe.png', title: 'Кафе' },
+    petshop: { icon: 'assets/icons/petshop.png', title: 'Зоомагазин' },
+    ranch: { icon: 'assets/icons/ranch.png', title: 'Ранчо' },
+    gold: { icon: 'assets/icons/gold.png', title: 'Золотая шахта' },
+    icecream: { icon: 'assets/icons/icecream.png', title: 'Фабрика мороженого' },
+    hotdog: { icon: 'assets/icons/hotdog.png', title: 'Фабрика сосисок' },
+    canteen: { icon: 'assets/icons/canteen.png', title: 'Тюремная столовая' }
+};
+
+
+const CATEGORIES = {
+  business: 'Бизнес',
+  landmark: 'Достопримечательность',
+  resource: 'Ресурс',
+};
+
+const CATEGORY_TYPES = {
+  business: {
+    gas: 'АЗС',
+    cafe: 'Кафе',
+    petshop: 'Зоомагазин',
+    ranch: 'Ранчо',
+    gold: 'Золотая шахта',
+    icecream: 'Фабрика мороженого',
+    hotdog: 'Фабрика сосисок',
+    canteen: 'Тюремная столовая'
+  },
+
+  landmark: {
+    monument: 'Памятник',
+    view: 'Смотровая площадка'
+  },
+
+  resource: {
+    ore: 'Руда',
+    wood: 'Лес'
+  }
+};
+
+
+
+/* =========================
+   3) Утилиты координат SA:MP
+   ========================= */
+
+function sampToMap(x, y) {
+    return [
+        (y + 3000) / 6000 * MAP_SIZE,
+        (x + 3000) / 6000 * MAP_SIZE
+    ];
+}
+
+function mapToSamp(lat, lng) {
+    return {
+        x: +((lng / MAP_SIZE) * 6000 - 3000).toFixed(4),
+        y: +((lat / MAP_SIZE) * 6000 - 3000).toFixed(4)
+    };
+}
+
+function getDistanceMeters(latlngA, latlngB) {
+    const p1 = mapToSamp(latlngA.lat, latlngA.lng);
+    const p2 = mapToSamp(latlngB.lat, latlngB.lng);
+
+    const dx = p2.x - p1.x;
+    const dy = p2.y - p1.y;
+
+    return Math.sqrt(dx * dx + dy * dy);
+}
+
+
+/* =========================
+   4) Clipboard helper
+   ========================= */
+
+function copyToClipboard(text) {
+    if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(text);
+    } else {
+        const t = document.createElement('textarea');
+        t.value = text;
+        t.style.position = 'fixed';
+        t.style.left = '-9999px';
+        document.body.appendChild(t);
+        t.select();
+        document.execCommand('copy');
+        document.body.removeChild(t);
+    }
+}
+
+
+/* =========================
+   INFO PANEL + GALLERY
+   ========================= */
+
+const infoPanel = document.getElementById('info-panel');
+const infoTitle = document.getElementById('info-title');
+const infoClose = document.getElementById('info-close');
+const infoImage = document.getElementById('info-image');
+const infoMeta = document.getElementById('info-meta');
+const infoDesc = document.getElementById('info-desc');
+
+const infoGallery = document.getElementById('info-gallery');
+const infoPrev = document.getElementById('info-prev');
+const infoNext = document.getElementById('info-next');
+const infoCounter = document.getElementById('info-counter');
+
+let galleryImages = [];
+let galleryIndex = 0;
+
+/* =========================
+   RATING (frontend only)
+   ========================= */
+
+let currentItemId = null; 
+const ratingBlock = document.getElementById('info-rating');
+const ratingUp = document.getElementById('rating-up');
+const ratingDown = document.getElementById('rating-down');
+const ratingValue = document.getElementById('rating-value');
+const ratingHint = document.getElementById('rating-hint');
+
+let currentRating = 0;
+let ratingLocked = false;
+
+function resetRating() {
+    currentRating = 0;
+    ratingLocked = false;
+
+    ratingValue.textContent = currentRating;
+    ratingHint.classList.add('hidden');
+    ratingUp.classList.remove('disabled');
+    ratingDown.classList.remove('disabled');
+}
+
+function lockRating() {
+    ratingLocked = true;
+    ratingUp.classList.add('disabled');
+    ratingDown.classList.add('disabled');
+    ratingHint.classList.remove('hidden');
+}
+
+ratingUp.addEventListener('click', () => {
+    if (ratingLocked) return;
+    vote(currentItemId, +1);
+});
+
+ratingDown.addEventListener('click', () => {
+    if (ratingLocked) return;
+    vote(currentItemId, -1);
+});
+
+
+
+
+function renderGallery() {
+    if (!galleryImages.length) {
+        infoGallery.classList.add('hidden');
+        infoImage.src = '';
+        return;
+    }
+
+    infoGallery.classList.remove('hidden');
+    infoImage.src = galleryImages[galleryIndex];
+
+    if (infoCounter) {
+        infoCounter.textContent = `${galleryIndex + 1} / ${galleryImages.length}`;
+    }
+
+    const multi = galleryImages.length > 1;
+    infoPrev?.classList.toggle('hidden', !multi);
+    infoNext?.classList.toggle('hidden', !multi);
+    infoCounter?.classList.toggle('hidden', !multi);
+}
+
+function prevImage() {
+    if (galleryImages.length <= 1) return;
+    galleryIndex = (galleryIndex - 1 + galleryImages.length) % galleryImages.length;
+    renderGallery();
+}
+
+function nextImage() {
+    if (galleryImages.length <= 1) return;
+    galleryIndex = (galleryIndex + 1) % galleryImages.length;
+    renderGallery();
+}
+
+infoPrev?.addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); prevImage(); });
+infoNext?.addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); nextImage(); });
+
+
+function openInfoPanel(data) {
+    currentItemId = data.id;
+
+    infoTitle.textContent = data.name || 'Объект';
+
+    galleryImages = Array.isArray(data.images) ? data.images.slice() : [];
+    if (!galleryImages.length && data.image) galleryImages = [data.image];
+    galleryIndex = 0;
+
+    if (galleryImages.length > 0) {
+        infoGallery.classList.remove('hidden');
+        
+        infoImage.src = '';
+        infoImage.alt = 'Загружается...';
+        
+        infoGallery.classList.add('loading');
+        
+        infoImage.src = galleryImages[galleryIndex];
+        
+        infoImage.onload = () => {
+            infoGallery.classList.remove('loading');
+        };
+        
+        infoImage.onerror = () => {
+            infoGallery.classList.remove('loading');
+            infoImage.src = 'assets/img/loading_star.gif';
+            infoImage.alt = 'Изображение не загрузилось';
+        };
+    } else {
+        infoGallery.classList.add('hidden');
+    }
+
+    renderGallery();
+
+    const samp = mapToSamp(data._latlng?.lat ?? 0, data._latlng?.lng ?? 0);
+    
+    const categoryTitle = CATEGORIES[data.category] || data.category || '—';
+    const typeTitle     = CATEGORY_TYPES[data.category]?.[data.type] || data.type || '—';
+    const ownerText     = data.owner ? data.owner : '—';
+
+    infoMeta.innerHTML = `
+        <div><b>Категория:</b> ${categoryTitle}</div>
+        <div><b>Тип:</b> ${typeTitle}</div>
+        <div><b>Владелец:</b> ${ownerText}</div>
+        <div><b>X:</b> ${samp.x} <b>Y:</b> ${samp.y}</div>
+    `;
+
+    if (data.description) {
+        infoDesc.textContent = data.description;
+        infoDesc.classList.remove('hidden');
+    } else {
+        infoDesc.textContent = '';
+        infoDesc.classList.add('hidden');
+    }
+
+    // === рейтинг ===
+    resetRating();
+    ratingBlock.classList.remove('hidden');
+
+    infoPanel.classList.remove('hidden');
+    infoPanel.setAttribute('aria-hidden', 'false');
+
+    loadRatingStatus(data.id);
+}
+
+// =============================================
+// Поддержка deep linking по бизнесу
+// =============================================
+
+function getBusinessIdFromUrl() {
+    const hash = window.location.hash;
+    if (!hash) return null;
+    
+    const match = hash.match(/^#(?:b|business)=(\d+)/i);
+    return match ? parseInt(match[1], 10) : null;
+}
+
+async function openBusinessById(id) {
+    if (!id) return;
+    
+    try {
+        const response = await fetch('./data/businesses.json');
+        const businesses = await response.json();
+        
+        const business = businesses.find(b => b.id === id);
+        if (!business) return;
+        
+        const latlng = sampToMap(business.x, business.y);
+        map.setView(latlng, 1.5); 
+        
+        openInfoPanel({
+            ...business,
+            _latlng: L.latLng(latlng)
+        });
+    } catch (err) {
+        console.error('Не удалось открыть бизнес по ID из URL:', err);
+    }
+}
+
+// Проверяем URL при загрузке страницы
+window.addEventListener('load', () => {
+    const id = getBusinessIdFromUrl();
+    if (id) {
+        openBusinessById(id);
+    }
+});
+
+// Обработчик кнопки "Поделиться"
+document.addEventListener('click', async (e) => {
+    if (!e.target.closest('#share-business-btn')) return;
+    
+    if (!currentItemId) return;
+    
+    const shareUrl = `${window.location.origin}${window.location.pathname}#b=${currentItemId}`;
+    
+    try {
+        await navigator.clipboard.writeText(shareUrl);
+        
+        const btn = document.getElementById('share-business-btn');
+        const originalText = btn.innerHTML;
+        
+        btn.innerHTML = '<img src="assets/img/accept_vote.gif" class="copy-icon" alt=""> Скопировано!';
+        btn.classList.add('copied');
+        
+        setTimeout(() => {
+            btn.innerHTML = originalText;
+            btn.classList.remove('copied');
+        }, 2000);
+        
+    } catch (err) {
+        console.error('Ошибка копирования ссылки:', err);
+        alert('Не удалось скопировать ссылку :(');
+    }
+});
+
+
+function closeInfoPanel() {
+    infoPanel.classList.add('hidden');
+    infoPanel.setAttribute('aria-hidden', 'true');
+    ratingBlock.classList.add('hidden');
+
+}
+
+infoClose?.addEventListener('click', closeInfoPanel);
+
+
+/* =========================
+   FULLSCREEN IMAGE (TOP-LEVEL, не внутри ESC!)
+   ========================= */
+
+const imageOverlay = document.getElementById('image-overlay');
+const imageOverlayImg = imageOverlay?.querySelector('img');
+
+function openFullscreen(src) {
+    if (!imageOverlay || !imageOverlayImg) return;
+    if (!src) return;
+    imageOverlayImg.src = src;
+    imageOverlay.classList.add('active');
+}
+
+function closeFullscreen() {
+    if (!imageOverlay || !imageOverlayImg) return false;
+    if (!imageOverlay.classList.contains('active')) return false;
+
+    imageOverlay.classList.remove('active');
+    imageOverlayImg.src = '';
+    return true;
+}
+
+
+document.addEventListener('click', (e) => {
+    const img = e.target.closest('#info-image');
+    if (!img) return;
+    const src = img.getAttribute('src');
+    if (!src) return;
+    openFullscreen(src);
+}, true);
+
+// клик по фону fullscreen -> закрыть
+imageOverlay?.addEventListener('click', () => {
+    closeFullscreen();
+});
+
+
+/* =========================
+   5) Контролы карты
+   ========================= */
+
+const CenterControl = L.Control.extend({
+    options: { position: 'topleft' },
+    onAdd() {
+        const b = L.DomUtil.create('button', 'leaflet-bar');
+        b.innerHTML = '📍';
+        b.style.width = '32px';
+        b.style.height = '30px';
+        b.style.cursor = 'pointer';
+        b.style.fontSize = '16px';
+        b.style.background = '#fff';
+        b.style.color = '#000';
+        b.style.border = 'none';
+        L.DomEvent.disableClickPropagation(b);
+        b.onclick = () => map.flyTo(MAP_CENTER, map.getZoom(), { duration: 0.6 });
+        return b;
+    }
+});
+map.addControl(new CenterControl());
+
+
+/* =========================
+   6) Обычная метка (координаты + копирование)
+   ========================= */
+
+let sharedMarker = null;
+
+function buildPopup(marker, withButton = true) {
+    const { lat, lng } = marker.getLatLng();
+    const samp = mapToSamp(lat, lng);
+
+    const url = new URL(location.href);
+    url.searchParams.set('x', samp.x);
+    url.searchParams.set('y', samp.y);
+    url.searchParams.set('z', map.getZoom());
+
+    return `
+        <b>Координаты</b><br>
+        X: ${samp.x}<br>
+        Y: ${samp.y}
+        ${withButton ? `
+            <br><br>
+            <button class="copy-link" data-url="${url}">
+                <img src="assets/img/copy.gif" class="copy-icon" alt="">
+                Скопировать координаты
+            </button>
+        ` : ``}
+    `;
+}
+
+function handleSharedMarkerClick(e) {
+    if (rulerActive || rulerClickLock) return;
+    if (e.originalEvent?.target?.closest?.('.leaflet-marker-icon')) return;
+
+    if (sharedMarker) {
+        map.removeLayer(sharedMarker);
+        sharedMarker = null;
+    }
+
+    sharedMarker = L.marker(e.latlng, {
+        draggable: true,
+        autoPan: true
+    }).addTo(map);
+
+    sharedMarker.bindPopup('', {
+        closeOnClick: false,
+        autoClose: false
+    });
+
+    function setPopup(withButton = true) {
+        sharedMarker.setPopupContent(buildPopup(sharedMarker, withButton));
+    }
+
+    function openPopup() {
+        sharedMarker.openPopup();
+    }
+
+    sharedMarker.on('popupopen', (ev) => {
+        setTimeout(() => {
+            const root = ev.popup.getElement();
+            if (!root) return;
+
+            const btn = root.querySelector('.copy-link');
+            if (!btn) return;
+
+            btn.onclick = () => {
+                copyToClipboard(btn.dataset.url);
+
+                btn.classList.add('copied');
+                btn.setAttribute('data-copied', '1');
+
+                btn.innerHTML = `
+                    <img src="assets/img/complete.gif" class="copy-icon" alt="">
+                    Скопировано
+                `;
+            };
+        }, 0);
+    });
+
+    setPopup(true);
+    openPopup();
+
+    sharedMarker.on('dragstart', () => {
+        sharedMarker.closePopup();
+    });
+
+    sharedMarker.on('dragend', () => {
+        setPopup(true);
+        openPopup();
+    });
+}
+
+map.on('click', handleSharedMarkerClick);
+
+const params = new URLSearchParams(location.search);
+if (params.has('x') && params.has('y')) {
+    const pos = sampToMap(+params.get('x'), +params.get('y'));
+    map.setView(pos, +params.get('z') || 0, { animate: false });
+
+    sharedMarker = L.marker(pos, { draggable: false }).addTo(map);
+    sharedMarker.bindPopup(buildPopup(sharedMarker, false)).openPopup();
+}
+
+
+/* =========================
+   7) Линейка (отрезок A-B + расстояние) + Drag точек
+   ========================= */
+
+let rulerActive = false;
+let rulerFinished = false;
+let rulerClickLock = false;
+
+let rulerPointA = null;
+let rulerPointB = null;
+
+let rulerLine = null;
+let rulerMarkerA = null;
+let rulerMarkerB = null;
+let rulerLabel = null;
+
+let rulerDraggingPoint = null;
+
+
+const RulerControl = L.Control.extend({
+    options: { position: 'topleft' },
+    onAdd() {
+        const btn = L.DomUtil.create('button', 'leaflet-bar ruler-btn');
+        btn.innerHTML = '📏';
+        btn.style.width = '32px';
+        btn.style.height = '30px';
+        btn.style.cursor = 'pointer';
+        btn.style.fontSize = '16px';
+        btn.style.background = '#fff';
+        btn.style.color = '#000';
+        btn.style.border = 'none';
+
+        L.DomEvent.disableClickPropagation(btn);
+        btn.onclick = () => toggleRuler(btn);
+        return btn;
+    }
+});
+
+map.addControl(new RulerControl());
+
+function setCursorMode() {
+    const el = map.getContainer();
+    el.style.cursor = rulerActive ? 'crosshair' : 'default';
+}
+
+map.on('dragstart', () => {
+    if (rulerActive) return;
+    map.getContainer().style.cursor = 'grabbing';
+});
+map.on('dragend', () => {
+    if (rulerActive) return;
+    map.getContainer().style.cursor = 'default';
+});
+
+function toggleRuler(btn) {
+    if (rulerActive) {
+        resetRuler();
+        rulerActive = false;
+        rulerFinished = false;
+        rulerClickLock = false;
+        btn.classList.remove('active');
+        map.getContainer().classList.remove('ruler-mode');
+        setCursorMode();
+        return;
+    }
+
+    resetRuler();
+    rulerActive = true;
+    rulerFinished = false;
+    rulerClickLock = false;
+    rulerPointA = null;
+    rulerPointB = null;
+
+    btn.classList.add('active');
+    map.getContainer().classList.add('ruler-mode');
+
+    if (sharedMarker) {
+        map.removeLayer(sharedMarker);
+        sharedMarker = null;
+    }
+
+    setCursorMode();
+}
+
+function resetRuler() {
+    if (rulerLine) map.removeLayer(rulerLine);
+    if (rulerMarkerA) map.removeLayer(rulerMarkerA);
+    if (rulerMarkerB) map.removeLayer(rulerMarkerB);
+    if (rulerLabel) map.removeLayer(rulerLabel);
+
+    rulerLine = null;
+    rulerMarkerA = null;
+    rulerMarkerB = null;
+    rulerLabel = null;
+
+    rulerPointA = null;
+    rulerPointB = null;
+    rulerDraggingPoint = null;
+}
+
+function updateRuler(pointB, fixed) {
+    if (!rulerLine || !rulerPointA) return;
+
+    rulerLine.setLatLngs([rulerPointA, pointB]);
+
+    const dist = getDistanceMeters(rulerPointA, pointB).toFixed(2);
+    const mid = L.latLng(
+        (rulerPointA.lat + pointB.lat) / 2,
+        (rulerPointA.lng + pointB.lng) / 2
+    );
+
+    if (rulerLabel) map.removeLayer(rulerLabel);
+
+    rulerLabel = L.marker(mid, {
+        interactive: false,
+        icon: L.divIcon({
+            className: 'ruler-distance',
+            html: `${dist} м`
+        })
+    }).addTo(map);
+
+    if (fixed) {
+        rulerLine.setStyle({ dashArray: null });
+    }
+}
+
+function bindPointDrag(layer, which) {
+    layer.on('mousedown', (ev) => {
+        if (!rulerActive || !rulerFinished) return;
+
+        L.DomEvent.preventDefault(ev.originalEvent);
+        L.DomEvent.stopPropagation(ev.originalEvent);
+
+        rulerDraggingPoint = which;
+        map.dragging.disable();
+    });
+}
+
+function stopRulerDrag() {
+    if (!rulerDraggingPoint) return;
+    rulerDraggingPoint = null;
+    map.dragging.enable();
+}
+
+map.on('mouseup', stopRulerDrag);
+
+function handleRulerClick(e) {
+    if (!rulerActive || rulerClickLock) return;
+    if (rulerFinished) return;
+
+    rulerClickLock = true;
+
+    if (!rulerPointA) {
+        rulerPointA = e.latlng;
+
+        rulerMarkerA = L.circleMarker(rulerPointA, {
+            radius: 6,
+            className: 'ruler-point',
+            interactive: true,
+        }).addTo(map);
+
+        rulerLine = L.polyline([rulerPointA, rulerPointA], {
+            color: '#ffcc00',
+            weight: 2,
+            dashArray: '6,4',
+            interactive: false
+        }).addTo(map);
+
+        setTimeout(() => { rulerClickLock = false; }, 0);
+        return;
+    }
+
+    rulerPointB = e.latlng;
+
+    rulerMarkerB = L.circleMarker(rulerPointB, {
+        radius: 6,
+        className: 'ruler-point',
+        interactive: true,
+    }).addTo(map);
+
+    updateRuler(rulerPointB, true);
+    rulerFinished = true;
+
+    bindPointDrag(rulerMarkerA, 'A');
+    bindPointDrag(rulerMarkerB, 'B');
+
+    setTimeout(() => { rulerClickLock = false; }, 0);
+}
+
+map.on('click', handleRulerClick);
+
+map.on('mousemove', (e) => {
+    if (rulerDraggingPoint && rulerFinished) {
+        if (rulerDraggingPoint === 'A') {
+            rulerPointA = e.latlng;
+            rulerMarkerA.setLatLng(rulerPointA);
+            rulerLine.setLatLngs([rulerPointA, rulerPointB]);
+            updateRuler(rulerPointB, true);
+            return;
+        }
+
+        if (rulerDraggingPoint === 'B') {
+            rulerPointB = e.latlng;
+            rulerMarkerB.setLatLng(rulerPointB);
+            rulerLine.setLatLngs([rulerPointA, rulerPointB]);
+            updateRuler(rulerPointB, true);
+            return;
+        }
+    }
+
+    if (!rulerActive || !rulerPointA || !rulerLine || rulerFinished) return;
+    updateRuler(e.latlng, false);
+});
+
+
+/* =========================
+   8) ESC — единый обработчик (fullscreen приоритетнее)
+   ========================= */
+
+document.addEventListener('keydown', (e) => {
+    if (e.key !== 'Escape') return;
+
+    if (closeFullscreen()) return;
+ 
+    closeInfoPanel();
+
+    if (sharedMarker) {
+        map.removeLayer(sharedMarker);
+        sharedMarker = null;
+    }
+
+    if (rulerActive || rulerFinished) {
+        resetRuler();
+        rulerActive = false;
+        rulerFinished = false;
+        rulerClickLock = false;
+
+        document.querySelector('.ruler-btn')?.classList.remove('active');
+        map.getContainer().classList.remove('ruler-mode');
+        setCursorMode();
+    }
+}, true); 
+
+setCursorMode();
+
+
+/* =========================
+   Бизнесы: загрузка ПОСЛЕ определения openInfoPanel
+   ========================= */
+
+fetch('./data/businesses.json')
+    .then(r => r.json())
+    .then(list => {
+        list.forEach(b => {
+            if (b.category !== 'business') return;
+
+            const type = BUSINESS_TYPES[b.type];
+            if (!type) return;
+
+            const marker = L.marker(
+                sampToMap(b.x, b.y),
+                {
+                    icon: L.icon({
+                        iconUrl: type.icon,
+                        iconSize: [28, 28],
+                        iconAnchor: [14, 14]
+                    })
+                }
+            ).addTo(map);
+
+            marker.bindTooltip(
+                `<b>${b.name}</b><br>${CATEGORIES[b.category] || b.category || '—'}`,
+                { direction: 'top', offset: [0, -10], sticky: true }
+            );
+
+            marker.on('click', (ev) => {
+                if (ev.originalEvent) L.DomEvent.stopPropagation(ev.originalEvent);
+                openInfoPanel({
+                    ...b,
+                    _latlng: marker.getLatLng()
+                });
+            });
+        });
+    });
+
