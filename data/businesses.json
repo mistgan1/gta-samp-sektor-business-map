@@ -229,7 +229,10 @@
     "type": "cafe",
     "owner": "Dima_MMO",
     "x": 2170.8386,
-    "y": 2795.6770
+    "y": 2795.6770,
+    "images": [
+    "assets/screens/cafe_rub.png"
+  ]  
   }, 
   {
     "id": 24,
