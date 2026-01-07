@@ -134,7 +134,11 @@ async function loadRatingStatus(itemId) {
 
 
     // Показываем гифку загрузки перед запросом
-    ratingValue.innerHTML = '<img src="assets/img/loading.gif" alt="Будим наш сервер..." style="width: 24px; height: 24px;">';
+    ratingValue.innerHTML = '<img src="assets/img/loading_star.gif" style="width: 36px; height: 36px;">';
+    ratingHint.innerHTML = `
+                <img src="assets/img/loading.gif" style="width: 36px; height: 36px;">
+                Будим наш сервер...
+                `;
 
     try {
         const res = await fetch(
