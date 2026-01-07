@@ -386,26 +386,50 @@ function openInfoPanel(data) {
     galleryImages = Array.isArray(data.images) ? data.images.slice() : [];
     if (!galleryImages.length && data.image) galleryImages = [data.image];
     galleryIndex = 0;
-    renderGallery();
+
+    
+    if (galleryImages.length > 0) {
+        infoGallery.classList.remove('hidden');
+        
+        
+        infoImage.src = '';
+        infoImage.alt = 'Загружается...';
+        
+        
+        infoGallery.classList.add('loading');
+        
+        
+        infoImage.src = galleryImages[galleryIndex];
+        
+        
+        infoImage.onload = () => {
+            infoGallery.classList.remove('loading');
+        };
+        
+        
+        infoImage.onerror = () => {
+            infoGallery.classList.remove('loading');
+            infoImage.src = 'assets/img/loading_star.gif'; 
+            infoImage.alt = 'Изображение не загрузилось';
+        };
+    } else {
+        infoGallery.classList.add('hidden');
+    }
+
+    renderGallery();  
 
     const typeText = data.type ? data.type : '—';
     const ownerText = data.owner ? data.owner : '—';
     const samp = mapToSamp(data._latlng?.lat ?? 0, data._latlng?.lng ?? 0);
     
-    
-    const categoryTitle =
-    CATEGORIES[data.category] || data.category || '—';
-
-    const typeTitle =
-    CATEGORY_TYPES[data.category]?.[data.type] || data.type || '—';
-
+    const categoryTitle = CATEGORIES[data.category] || data.category || '—';
+    const typeTitle = CATEGORY_TYPES[data.category]?.[data.type] || data.type || '—';
 
     infoMeta.innerHTML = `
-    <div><b>Категория:</b> ${categoryTitle}</div>
-    <div><b>Тип:</b> ${typeTitle}</div>
-    <div><b>X:</b> ${samp.x} <b>Y:</b> ${samp.y}</div>
+        <div><b>Категория:</b> ${categoryTitle}</div>
+        <div><b>Тип:</b> ${typeTitle}</div>
+        <div><b>X:</b> ${samp.x} <b>Y:</b> ${samp.y}</div>
     `;
-
 
     if (data.description) {
         infoDesc.textContent = data.description;
@@ -423,12 +447,10 @@ function openInfoPanel(data) {
     // currentRating = data.rating
     // ratingLocked = data.userVoted
 
-
     infoPanel.classList.remove('hidden');
     infoPanel.setAttribute('aria-hidden', 'false');
 
     loadRatingStatus(data.id);
-
 }
 
 
