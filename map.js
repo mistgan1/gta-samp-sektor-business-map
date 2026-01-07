@@ -387,47 +387,43 @@ function openInfoPanel(data) {
     if (!galleryImages.length && data.image) galleryImages = [data.image];
     galleryIndex = 0;
 
-    
+    // Подготавливаем галерею
     if (galleryImages.length > 0) {
         infoGallery.classList.remove('hidden');
         
-        
+        // Очищаем старое изображение
         infoImage.src = '';
         infoImage.alt = 'Загружается...';
         
-        
         infoGallery.classList.add('loading');
         
-        
         infoImage.src = galleryImages[galleryIndex];
-        
         
         infoImage.onload = () => {
             infoGallery.classList.remove('loading');
         };
         
-        
         infoImage.onerror = () => {
             infoGallery.classList.remove('loading');
-            infoImage.src = 'assets/img/loading_star.gif'; 
+            infoImage.src = 'assets/img/loading_star.gif';
             infoImage.alt = 'Изображение не загрузилось';
         };
     } else {
         infoGallery.classList.add('hidden');
     }
 
-    renderGallery();  
+    renderGallery();
 
-    const typeText = data.type ? data.type : '—';
-    const ownerText = data.owner ? data.owner : '—';
     const samp = mapToSamp(data._latlng?.lat ?? 0, data._latlng?.lng ?? 0);
     
     const categoryTitle = CATEGORIES[data.category] || data.category || '—';
-    const typeTitle = CATEGORY_TYPES[data.category]?.[data.type] || data.type || '—';
+    const typeTitle     = CATEGORY_TYPES[data.category]?.[data.type] || data.type || '—';
+    const ownerText     = data.owner ? data.owner : '—';
 
     infoMeta.innerHTML = `
         <div><b>Категория:</b> ${categoryTitle}</div>
         <div><b>Тип:</b> ${typeTitle}</div>
+        <div><b>Владелец:</b> ${ownerText}</div>
         <div><b>X:</b> ${samp.x} <b>Y:</b> ${samp.y}</div>
     `;
 
@@ -442,10 +438,6 @@ function openInfoPanel(data) {
     // === рейтинг ===
     resetRating();
     ratingBlock.classList.remove('hidden');
-
-    // В будущем тут будет:
-    // currentRating = data.rating
-    // ratingLocked = data.userVoted
 
     infoPanel.classList.remove('hidden');
     infoPanel.setAttribute('aria-hidden', 'false');
