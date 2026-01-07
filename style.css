@@ -417,3 +417,32 @@ body {
     opacity: 0.85;
 }
 
+.share-block {
+    margin-top: 12px;
+    text-align: center;
+}
+
+#share-business-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    background: rgba(100, 180, 255, 0.15);
+    border: 1px solid rgba(100, 180, 255, 0.4);
+    border-radius: 10px;
+    color: #a0d0ff;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+#share-business-btn:hover {
+    background: rgba(100, 180, 255, 0.3);
+    color: #fff;
+}
+
+#share-business-btn.copied {
+    background: rgba(80, 220, 120, 0.3);
+    border-color: rgba(80, 220, 120, 0.7);
+    color: #e0ffe0;
+}

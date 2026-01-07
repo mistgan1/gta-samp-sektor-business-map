@@ -445,6 +445,78 @@ function openInfoPanel(data) {
     loadRatingStatus(data.id);
 }
 
+// =============================================
+// Поддержка deep linking по бизнесу
+// =============================================
+
+function getBusinessIdFromUrl() {
+    const hash = window.location.hash;
+    if (!hash) return null;
+    
+    const match = hash.match(/^#(?:b|business)=(\d+)/i);
+    return match ? parseInt(match[1], 10) : null;
+}
+
+async function openBusinessById(id) {
+    if (!id) return;
+    
+    try {
+        const response = await fetch('./data/businesses.json');
+        const businesses = await response.json();
+        
+        const business = businesses.find(b => b.id === id);
+        if (!business) return;
+        
+        // Центрируем карту на бизнесе
+        const latlng = sampToMap(business.x, business.y);
+        map.setView(latlng, 1.5); // 1.0–2.0 — комфортный зум
+        
+        // Открываем карточку
+        openInfoPanel({
+            ...business,
+            _latlng: L.latLng(latlng)
+        });
+    } catch (err) {
+        console.error('Не удалось открыть бизнес по ID из URL:', err);
+    }
+}
+
+// Проверяем URL при загрузке страницы
+window.addEventListener('load', () => {
+    const id = getBusinessIdFromUrl();
+    if (id) {
+        openBusinessById(id);
+    }
+});
+
+// Обработчик кнопки "Поделиться"
+document.addEventListener('click', async (e) => {
+    if (!e.target.closest('#share-business-btn')) return;
+    
+    if (!currentItemId) return;
+    
+    const shareUrl = `${window.location.origin}${window.location.pathname}#b=${currentItemId}`;
+    
+    try {
+        await navigator.clipboard.writeText(shareUrl);
+        
+        // Визуальная обратная связь
+        const btn = document.getElementById('share-business-btn');
+        const originalText = btn.innerHTML;
+        
+        btn.innerHTML = '<img src="assets/img/accept_vote.gif" class="copy-icon" alt=""> Скопировано!';
+        btn.classList.add('copied');
+        
+        setTimeout(() => {
+            btn.innerHTML = originalText;
+            btn.classList.remove('copied');
+        }, 2000);
+        
+    } catch (err) {
+        console.error('Ошибка копирования ссылки:', err);
+        alert('Не удалось скопировать ссылку :(');
+    }
+});
 
 
 function closeInfoPanel() {
