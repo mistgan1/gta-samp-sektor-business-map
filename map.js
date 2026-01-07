@@ -54,7 +54,7 @@ const map = L.map('map', {
 
 map.attributionControl.setPrefix(false);
 map.attributionControl.addAttribution(
-    'Sektor Map © 2026 | js © Leaflet'
+    'SEKTOR-1 Map © D.Sato | js © Leaflet | 2026'
 );
 
 
@@ -133,12 +133,14 @@ async function loadRatingStatus(itemId) {
     if (!USER_HASH || !itemId) return;
 
 
-    // Показываем гифку загрузки перед запросом
+    // Показываем гифку загрузки + текст
     ratingValue.innerHTML = '<img src="assets/img/loading_star.gif" style="width: 36px; height: 36px;">';
+
     ratingHint.innerHTML = `
-                <img src="assets/img/loading.gif" style="width: 36px; height: 36px;">
-                Будим наш сервер...
-                `;
+        <img src="assets/img/loading.gif" alt="Загрузка" style="width: 36px; height: 36px; vertical-align: middle;">
+        <span>Будим наш сервер...</span>
+    `;
+    ratingHint.classList.remove('hidden'); 
 
     try {
         const res = await fetch(
@@ -150,8 +152,8 @@ async function loadRatingStatus(itemId) {
         const data = await res.json();
 
         // рейтинг
-        currentRating = data.rating;
-        ratingValue.textContent = data.rating;
+        ratingValue.textContent = data.rating;           
+        ratingHint.classList.add('hidden');              
 
         if (data.user_voted) {
             lockRating();
