@@ -1,7 +1,7 @@
 const API_BASE = 'https://sektor-map-back.onrender.com';
 /* =========================
    USER FINGERPRINT
-   ========================= */
+   ========================= test*/
 
 async function getUserFingerprint() {
     const data = [
