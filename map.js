@@ -61,6 +61,12 @@ map.attributionControl.addAttribution(
 L.imageOverlay('assets/map.jpg', imageBounds).addTo(map);
 map.fitBounds(imageBounds);
 
+const markerLayers = {
+    business: L.layerGroup().addTo(map),
+    landmark: L.layerGroup().addTo(map),
+    resource: L.layerGroup().addTo(map)
+};
+
 if (L.Browser.mobile) {
     map.tap = true;
     map.touchZoom.enable();
@@ -258,6 +264,87 @@ function getDistanceMeters(latlngA, latlngB) {
     return Math.sqrt(dx * dx + dy * dy);
 }
 
+/* =========================
+   Функция создания маркера
+   ========================= */
+
+function createMarker(item) {
+    const category = item.category;
+    let typeConfig;
+
+    if (category === 'business')      typeConfig = BUSINESS_TYPES[item.type];
+    else if (category === 'landmark') typeConfig = LANDMARK_TYPES[item.type];
+    else if (category === 'resource') typeConfig = RESOURCE_TYPES[item.type];
+
+    if (!typeConfig || !markerLayers[category]) return null;
+
+    const marker = L.marker(
+        sampToMap(item.x, item.y),
+        {
+            icon: L.icon({
+                iconUrl: typeConfig.icon,
+                iconSize: [28, 28],
+                iconAnchor: [14, 14]
+            })
+        }
+    );
+
+    const tooltipText = `<b>${item.name}</b><br>${CATEGORIES[category] || category || '—'}`;
+    marker.bindTooltip(tooltipText, { direction: 'top', offset: [0, -10], sticky: true });
+
+    marker.on('click', (ev) => {
+        if (ev.originalEvent) L.DomEvent.stopPropagation(ev.originalEvent);
+        openInfoPanel({
+            ...item,
+            _latlng: marker.getLatLng()
+        });
+    });
+
+    return marker;
+}
+
+/* =========================
+   Загрузка всех точек и добавление в слои
+   ========================= */
+
+fetch('./data/businesses.json')
+    .then(r => r.json())
+    .then(list => {
+        list.forEach(item => {
+            const marker = createMarker(item);
+            if (marker) {
+                marker.addTo(markerLayers[item.category]);
+            }
+        });
+    })
+    .catch(err => console.error('Ошибка загрузки businesses.json:', err));
+
+/* =========================
+   Инициализация фильтров
+   ========================= */
+
+function initFilters() {
+    const checkboxes = document.querySelectorAll('#filter-panel input[type="checkbox"]');
+    
+    checkboxes.forEach(checkbox => {
+        // Начальное состояние (checked = visible)
+        const category = checkbox.dataset.category;
+        if (checkbox.checked) {
+            map.addLayer(markerLayers[category]);
+        } else {
+            map.removeLayer(markerLayers[category]);
+        }
+
+        checkbox.addEventListener('change', (e) => {
+            const cat = e.target.dataset.category;
+            if (e.target.checked) {
+                map.addLayer(markerLayers[cat]);
+            } else {
+                map.removeLayer(markerLayers[cat]);
+            }
+        });
+    });
+}
 
 /* =========================
    4) Clipboard helper
@@ -961,53 +1048,4 @@ document.addEventListener('keydown', (e) => {
 
 setCursorMode();
 
-
-/* =========================
-   Бизнесы: загрузка ПОСЛЕ определения openInfoPanel
-   ========================= */
-
-fetch('./data/businesses.json')
-    .then(r => r.json())
-    .then(list => {
-        list.forEach(b => {
-            let typeConfig;
-            let iconUrl;
-            let title = CATEGORIES[b.category] || b.category || '—';
-
-            if (b.category === 'business') {
-                typeConfig = BUSINESS_TYPES[b.type];
-            } else if (b.category === 'landmark') {
-                typeConfig = LANDMARK_TYPES[b.type];
-            } else if (b.category === 'resource') {
-                typeConfig = RESOURCE_TYPES[b.type];
-            }
-
-            if (!typeConfig) return;  
-
-            iconUrl = typeConfig.icon;
-            title = `<b>${b.name}</b><br>${CATEGORIES[b.category] || b.category || '—'}`;
-
-            const marker = L.marker(
-                sampToMap(b.x, b.y),
-                {
-                    icon: L.icon({
-                        iconUrl: iconUrl,
-                        iconSize: [28, 28],
-                        iconAnchor: [14, 14],
-                        className: b.category === 'landmark' ? 'marker-landmark' : 'marker-business'
-                    })
-                }
-            ).addTo(map);
-
-            marker.bindTooltip(title, { direction: 'top', offset: [0, -10], sticky: true });
-
-            marker.on('click', (ev) => {
-                if (ev.originalEvent) L.DomEvent.stopPropagation(ev.originalEvent);
-                openInfoPanel({
-                    ...b,
-                    _latlng: marker.getLatLng()
-                });
-            });
-        });
-    });
 

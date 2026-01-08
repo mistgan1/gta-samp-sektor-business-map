@@ -433,3 +433,55 @@ body {
     border-color: rgba(80, 220, 120, 0.7);
     color: #e0ffe0;
 }
+
+/* =========================
+   FILTER PANEL
+   ========================= */
+
+.filter-panel {
+    position: fixed;
+    top: 18px;
+    left: 18px;
+    width: 200px;
+    background: rgba(35, 42, 52, 0.92);
+    border: 1px solid rgba(255, 255, 255, 0.10);
+    border-radius: 14px;
+    box-shadow: 0 18px 60px rgba(0, 0, 0, 0.45);
+    color: #fff;
+    z-index: 2000;
+    padding: 10px;
+}
+
+.filter-panel__header {
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.10);
+    padding-bottom: 6px;
+}
+
+.filter-panel__body {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.filter-panel__body label {
+    display: flex;
+    align-items: center;
+    font-size: 13px;
+    cursor: pointer;
+}
+
+.filter-panel__body input {
+    margin-right: 8px;
+}
+
+@media (max-width: 768px) {
+    .filter-panel {
+        top: 10px;
+        left: 10px;
+        width: calc(100vw - 40px);
+        max-width: 200px;
+    }
+}
