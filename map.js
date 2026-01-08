@@ -346,20 +346,40 @@ function renderGallery() {
     if (!galleryImages.length) {
         infoGallery.classList.add('hidden');
         infoImage.src = '';
+        infoCounter?.classList.add('hidden');
         return;
     }
 
     infoGallery.classList.remove('hidden');
-    infoImage.src = galleryImages[galleryIndex];
+    infoGallery.classList.add('loading'); 
 
-    if (infoCounter) {
-        infoCounter.textContent = `${galleryIndex + 1} / ${galleryImages.length}`;
-    }
+    /
+    infoImage.src = '';
+    infoImage.src = galleryImages[galleryIndex] + '?v=' + Date.now();
+
+    infoImage.onload = () => {
+        infoGallery.classList.remove('loading');
+    };
+
+    infoImage.onerror = () => {
+        infoGallery.classList.remove('loading');
+        infoImage.src = 'assets/img/loading_star.gif';
+        infoImage.alt = 'Изображение не загрузилось';
+    };
 
     const multi = galleryImages.length > 1;
+
+    if (infoCounter) {
+        if (multi) {
+            infoCounter.textContent = `${galleryIndex + 1} / ${galleryImages.length}`;
+            infoCounter.classList.remove('hidden');
+        } else {
+            infoCounter.classList.add('hidden');
+        }
+    }
+
     infoPrev?.classList.toggle('hidden', !multi);
     infoNext?.classList.toggle('hidden', !multi);
-    infoCounter?.classList.toggle('hidden', !multi);
 }
 
 function prevImage() {
