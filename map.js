@@ -188,10 +188,17 @@ const BUSINESS_TYPES = {
     gold: { icon: 'assets/icons/gold.png', title: 'Золотая шахта' },
     icecream: { icon: 'assets/icons/icecream.png', title: 'Фабрика мороженого' },
     hotdog: { icon: 'assets/icons/hotdog.png', title: 'Фабрика сосисок' },
-    canteen: { icon: 'assets/icons/canteen.png', title: 'Тюремная столовая' },
+    canteen: { icon: 'assets/icons/canteen.png', title: 'Тюремная столовая' } 
+};
+
+const LANDMARK_TYPES = {
     monument: { icon: 'assets/icons/statue.png', title: 'Алтарь' }
 };
 
+const RESOURCE_TYPES = {
+    ore: { icon: 'assets/icons/ore.png', title: 'Руда' },
+    wood: { icon: 'assets/icons/wood.png', title: 'Лес' }
+};
 
 const CATEGORIES = {
   business: 'Бизнес',
@@ -936,26 +943,35 @@ fetch('./data/businesses.json')
     .then(r => r.json())
     .then(list => {
         list.forEach(b => {
-            if (b.category !== 'business') return;
+            let typeConfig;
+            let iconUrl;
+            let title = CATEGORIES[b.category] || b.category || '—';
 
-            const type = BUSINESS_TYPES[b.type];
-            if (!type) return;
+            if (b.category === 'business') {
+                typeConfig = BUSINESS_TYPES[b.type];
+            } else if (b.category === 'landmark') {
+                typeConfig = LANDMARK_TYPES[b.type];
+            } else if (b.category === 'resource') {
+                typeConfig = RESOURCE_TYPES[b.type];
+            }
+
+            if (!typeConfig) return;  
+
+            iconUrl = typeConfig.icon;
+            title = `<b>${b.name}</b><br>${typeConfig.title || title}`;
 
             const marker = L.marker(
                 sampToMap(b.x, b.y),
                 {
                     icon: L.icon({
-                        iconUrl: type.icon,
+                        iconUrl: iconUrl,
                         iconSize: [28, 28],
                         iconAnchor: [14, 14]
                     })
                 }
             ).addTo(map);
 
-            marker.bindTooltip(
-                `<b>${b.name}</b><br>${CATEGORIES[b.category] || b.category || '—'}`,
-                { direction: 'top', offset: [0, -10], sticky: true }
-            );
+            marker.bindTooltip(title, { direction: 'top', offset: [0, -10], sticky: true });
 
             marker.on('click', (ev) => {
                 if (ev.originalEvent) L.DomEvent.stopPropagation(ev.originalEvent);
