@@ -8,7 +8,7 @@
     "x": 70.3031,
     "y": 1218.3302,
     "images": [
-    "assets/screens/azs_zaliv.png"
+    "assets/screens/biz/azs_zaliv.png"
   ],
   "description": "Первая заправка на секторе, которая появилась в далеком 2013 году"
   },
@@ -17,11 +17,11 @@
     "name": "АЗС Рублёвка",
     "category": "business",
     "type": "gas",
-    "owner": "Romych_RUS",
+    "owner": "Red_Skull",
     "x": 2147.8176,
     "y": 2748.1768,
     "images": [
-    "assets/screens/azs_rub.png"
+    "assets/screens/biz/azs_rub.png"
   ]
   },
   {
@@ -33,7 +33,7 @@
     "x": -737.0583,
     "y": 2742.9075,
     "images": [
-    "assets/screens/azs_gor.png"
+    "assets/screens/biz/azs_gor.png"
   ]
   },
   {
@@ -45,7 +45,7 @@
     "x": 612.2660,
     "y": 1694.8407,
     "images": [
-    "assets/screens/azs_boev.png"
+    "assets/screens/biz/azs_boev.png"
   ]
   },
   {
@@ -55,7 +55,10 @@
     "type": "gas",
     "owner": "Neznayka",
     "x": -1472.4331,
-    "y": 1864.0865
+    "y": 1864.0865,
+    "images": [
+    "assets/screens/biz/azs_pridorog.png"
+  ] 
   },
   {
     "id": 6,
@@ -66,7 +69,7 @@
     "x": -1328.9629,
     "y": 2677.4341,
     "images": [
-    "assets/screens/azs_riba.png"
+    "assets/screens/biz/azs_riba.png"
   ]
   },
   {
@@ -76,7 +79,10 @@
     "type": "gas",
     "owner": "WKOLbNIK",
     "x": 1381.3662,
-    "y": 457.1632
+    "y": 457.1632,
+    "images": [
+    "assets/screens/biz/azs_pogran.png"
+  ]
   },
   {
     "id": 8,
@@ -85,7 +91,10 @@
     "type": "gas",
     "owner": "LostEvil",
     "x": -1031.8265,
-    "y": -1383.2386
+    "y": -1383.2386,
+    "images": [
+    "assets/screens/biz/azs_ferma.png"
+  ]
   },
   {
     "id": 9,
@@ -96,7 +105,7 @@
     "x": 260.9763,
     "y": 1917.3563,
     "images": [
-    "assets/screens/azs_sektor.png"
+    "assets/screens/biz/azs_sektor.png"
   ]
   }, 
   {
@@ -106,7 +115,10 @@
     "type": "hotdog",
     "owner": "Gan",
     "x": 172.5056,
-    "y": 1176.5912
+    "y": 1176.5912,
+    "images": [
+    "assets/screens/biz/hotdog.png"
+  ]
   },
   {
     "id": 11,
@@ -115,7 +127,10 @@
     "type": "ranch",
     "owner": "fugo",
     "x": -62.1823,
-    "y": 76.2746
+    "y": 76.2746,
+    "images": [
+    "assets/screens/biz/ranch_cartof.png"
+  ]
   },
   {
     "id": 12,
@@ -124,7 +139,10 @@
     "type": "ranch",
     "owner": "Dorifto_Uchiha",
     "x": -24.4513,
-    "y": 74.7147
+    "y": 74.7147,
+    "images": [
+    "assets/screens/biz/ranch_capust.png"
+  ]
   },
   {
     "id": 13,
@@ -133,7 +151,10 @@
     "type": "ranch",
     "owner": "LooDrive",
     "x": -85.5835,
-    "y": 2.5986
+    "y": 2.5986,
+    "images": [
+    "assets/screens/biz/ranch_pods.png"
+  ]
   },
   {
     "id": 14,
@@ -142,7 +163,10 @@
     "type": "ranch",
     "owner": "Gan",
     "x": -93.4511,
-    "y": -16.9252
+    "y": -16.9252,
+    "images": [
+    "assets/screens/biz/ranch_zerno.png"
+  ]
   },
   {
     "id": 15,
@@ -151,7 +175,10 @@
     "type": "canteen",
     "owner": "Denz",
     "x": -9.2246,
-    "y": -308.9008
+    "y": -308.9008,
+    "images": [
+    "assets/screens/biz/canteen.png"
+  ]
   },
   {
     "id": 16,
@@ -162,7 +189,7 @@
     "x": 2216.1611,
     "y": 2715.2627,
     "images": [
-    "assets/screens/ice_fab.png"
+    "assets/screens/biz/ice_fab.png"
   ]
   },
   {
@@ -172,7 +199,10 @@
     "type": "gold",
     "owner": "Faster",
     "x": 585.2769,
-    "y": 872.7442
+    "y": 872.7442,
+    "images": [
+    "assets/screens/biz/goldmine.png"
+  ]
   },
   {
     "id": 18,
@@ -181,7 +211,10 @@
     "type": "cafe",
     "owner": "Denz",
     "x": 203.6543,
-    "y": -203.1193
+    "y": -203.1193,
+    "images": [
+    "assets/screens/biz/cafe_ranch.png"
+  ]
   }, 
   {
     "id": 19,
@@ -190,7 +223,10 @@
     "type": "cafe",
     "owner": "Echpochmak",
     "x": -1025.7316,
-    "y": -1393.5006
+    "y": -1393.5006,
+    "images": [
+    "assets/screens/biz/cafe_ferma.png"
+  ]
   },
   {
     "id": 20,
@@ -199,7 +235,10 @@
     "type": "cafe",
     "owner": "toshnotic",
     "x": -54.2191,
-    "y": 1189.3341
+    "y": 1189.3341,
+    "images": [
+    "assets/screens/biz/cafe_town.png"
+  ]
   },   
   {
     "id": 21,
@@ -210,7 +249,7 @@
     "x": -2478.9360,
     "y": 2318.7109,
     "images": [
-    "assets/screens/cafe_port.png"
+    "assets/screens/biz/cafe_port.png"
   ]
   }, 
   {
@@ -220,7 +259,10 @@
     "type": "cafe",
     "owner": "BOJK",
     "x": 1146.5814,
-    "y": 2073.8970
+    "y": 2073.8970,
+    "images": [
+    "assets/screens/biz/cafe_old_rubl.png"
+  ]
   }, 
   {
     "id": 23,
@@ -231,7 +273,7 @@
     "x": 2170.8386,
     "y": 2795.6770,
     "images": [
-    "assets/screens/cafe_rub.png"
+    "assets/screens/biz/cafe_rub.png"
   ]  
   }, 
   {
@@ -243,7 +285,7 @@
     "x": -1271.7217,
     "y": 2712.9929,
     "images": [
-    "assets/screens/zoo_bolka.png"
+    "assets/screens/biz/zoo_bolka.png"
   ]
   },
   {
@@ -253,6 +295,23 @@
     "type": "petshop",
     "owner": "Vinni",
     "x": 662.3885,
-    "y": 1716.7479
-  }               
+    "y": 1716.7479,
+    "images": [
+    "assets/screens/biz/zoo_boev.png"
+  ]  
+  },
+  {
+    "id": 26,
+    "name": "Алтарь Коргау",
+    "category": "landmark",
+    "type": "monument",
+    "owner": "",
+    "x": -2092.6130,
+    "y": 2313.9482,
+    "images": [
+    "assets/screens/korgau1.png",
+    "assets/screens/korgau2.png"
+  ],
+    "description": "Старый алтарь Коргау - древнего божества защиты. Статуя, окруженная цветами.\nПозволяет получить благословение Коргау, в обмен на 50 единиц сырой рыбы.\nБлагославение Коргау защищает от изгнания."
+  }                   
 ]

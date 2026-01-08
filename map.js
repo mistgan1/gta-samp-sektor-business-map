@@ -1,7 +1,7 @@
 const API_BASE = 'https://sektor-map-back.onrender.com';
 /* =========================
    USER FINGERPRINT
-   ========================= */
+   ========================= test*/
 
 async function getUserFingerprint() {
     const data = [
@@ -188,9 +188,17 @@ const BUSINESS_TYPES = {
     gold: { icon: 'assets/icons/gold.png', title: 'Золотая шахта' },
     icecream: { icon: 'assets/icons/icecream.png', title: 'Фабрика мороженого' },
     hotdog: { icon: 'assets/icons/hotdog.png', title: 'Фабрика сосисок' },
-    canteen: { icon: 'assets/icons/canteen.png', title: 'Тюремная столовая' }
+    canteen: { icon: 'assets/icons/canteen.png', title: 'Тюремная столовая' } 
 };
 
+const LANDMARK_TYPES = {
+    monument: { icon: 'assets/icons/statue.png', title: 'Алтарь' }
+};
+
+const RESOURCE_TYPES = {
+    ore: { icon: 'assets/icons/ore.png', title: 'Руда' },
+    wood: { icon: 'assets/icons/wood.png', title: 'Лес' }
+};
 
 const CATEGORIES = {
   business: 'Бизнес',
@@ -211,8 +219,7 @@ const CATEGORY_TYPES = {
   },
 
   landmark: {
-    monument: 'Памятник',
-    view: 'Смотровая площадка'
+    monument: 'Активная точка'
   },
 
   resource: {
@@ -339,20 +346,40 @@ function renderGallery() {
     if (!galleryImages.length) {
         infoGallery.classList.add('hidden');
         infoImage.src = '';
+        infoCounter?.classList.add('hidden');
         return;
     }
 
     infoGallery.classList.remove('hidden');
-    infoImage.src = galleryImages[galleryIndex];
+    infoGallery.classList.add('loading'); 
 
-    if (infoCounter) {
-        infoCounter.textContent = `${galleryIndex + 1} / ${galleryImages.length}`;
-    }
+    
+    infoImage.src = '';
+    infoImage.src = galleryImages[galleryIndex] + '?v=' + Date.now();
+
+    infoImage.onload = () => {
+        infoGallery.classList.remove('loading');
+    };
+
+    infoImage.onerror = () => {
+        infoGallery.classList.remove('loading');
+        infoImage.src = 'assets/img/loading_star.gif';
+        infoImage.alt = 'Изображение не загрузилось';
+    };
 
     const multi = galleryImages.length > 1;
+
+    if (infoCounter) {
+        if (multi) {
+            infoCounter.textContent = `${galleryIndex + 1} / ${galleryImages.length}`;
+            infoCounter.classList.remove('hidden');
+        } else {
+            infoCounter.classList.add('hidden');
+        }
+    }
+
     infoPrev?.classList.toggle('hidden', !multi);
     infoNext?.classList.toggle('hidden', !multi);
-    infoCounter?.classList.toggle('hidden', !multi);
 }
 
 function prevImage() {
@@ -409,14 +436,21 @@ function openInfoPanel(data) {
     
     const categoryTitle = CATEGORIES[data.category] || data.category || '—';
     const typeTitle     = CATEGORY_TYPES[data.category]?.[data.type] || data.type || '—';
-    const ownerText     = data.owner ? data.owner : '—';
 
-    infoMeta.innerHTML = `
+    let metaHTML = `
         <div><b>Категория:</b> ${categoryTitle}</div>
         <div><b>Тип:</b> ${typeTitle}</div>
-        <div><b>Владелец:</b> ${ownerText}</div>
+    `;
+
+    if (data.owner && data.owner.trim() !== '') {
+        metaHTML += `<div><b>Владелец:</b> ${data.owner}</div>`;
+    }
+
+    metaHTML += `
         <div><b>X:</b> ${samp.x} <b>Y:</b> ${samp.y}</div>
     `;
+
+    infoMeta.innerHTML = metaHTML;
 
     if (data.description) {
         infoDesc.textContent = data.description;
@@ -936,26 +970,36 @@ fetch('./data/businesses.json')
     .then(r => r.json())
     .then(list => {
         list.forEach(b => {
-            if (b.category !== 'business') return;
+            let typeConfig;
+            let iconUrl;
+            let title = CATEGORIES[b.category] || b.category || '—';
 
-            const type = BUSINESS_TYPES[b.type];
-            if (!type) return;
+            if (b.category === 'business') {
+                typeConfig = BUSINESS_TYPES[b.type];
+            } else if (b.category === 'landmark') {
+                typeConfig = LANDMARK_TYPES[b.type];
+            } else if (b.category === 'resource') {
+                typeConfig = RESOURCE_TYPES[b.type];
+            }
+
+            if (!typeConfig) return;  
+
+            iconUrl = typeConfig.icon;
+            title = `<b>${b.name}</b><br>${CATEGORIES[b.category] || b.category || '—'}`;
 
             const marker = L.marker(
                 sampToMap(b.x, b.y),
                 {
                     icon: L.icon({
-                        iconUrl: type.icon,
+                        iconUrl: iconUrl,
                         iconSize: [28, 28],
-                        iconAnchor: [14, 14]
+                        iconAnchor: [14, 14],
+                        className: b.category === 'landmark' ? 'marker-landmark' : 'marker-business'
                     })
                 }
             ).addTo(map);
 
-            marker.bindTooltip(
-                `<b>${b.name}</b><br>${CATEGORIES[b.category] || b.category || '—'}`,
-                { direction: 'top', offset: [0, -10], sticky: true }
-            );
+            marker.bindTooltip(title, { direction: 'top', offset: [0, -10], sticky: true });
 
             marker.on('click', (ev) => {
                 if (ev.originalEvent) L.DomEvent.stopPropagation(ev.originalEvent);
