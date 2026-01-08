@@ -416,14 +416,21 @@ function openInfoPanel(data) {
     
     const categoryTitle = CATEGORIES[data.category] || data.category || '—';
     const typeTitle     = CATEGORY_TYPES[data.category]?.[data.type] || data.type || '—';
-    const ownerText     = data.owner ? data.owner : '—';
 
-    infoMeta.innerHTML = `
+    let metaHTML = `
         <div><b>Категория:</b> ${categoryTitle}</div>
         <div><b>Тип:</b> ${typeTitle}</div>
-        <div><b>Владелец:</b> ${ownerText}</div>
+    `;
+
+    if (data.owner && data.owner.trim() !== '') {
+        metaHTML += `<div><b>Владелец:</b> ${data.owner}</div>`;
+    }
+
+    metaHTML += `
         <div><b>X:</b> ${samp.x} <b>Y:</b> ${samp.y}</div>
     `;
+
+    infoMeta.innerHTML = metaHTML;
 
     if (data.description) {
         infoDesc.textContent = data.description;
@@ -966,7 +973,8 @@ fetch('./data/businesses.json')
                     icon: L.icon({
                         iconUrl: iconUrl,
                         iconSize: [28, 28],
-                        iconAnchor: [14, 14]
+                        iconAnchor: [14, 14],
+                        className: b.category === 'landmark' ? 'marker-landmark' : 'marker-business'
                     })
                 }
             ).addTo(map);

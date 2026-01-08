@@ -309,8 +309,8 @@
     "x": -2092.6130,
     "y": 2313.9482,
     "images": [
-    "assets/screens/biz/korgau1.png",
-    "assets/screens/biz/korgau2.png"
+    "assets/screens/korgau1.png",
+    "assets/screens/korgau2.png"
   ],
     "description": "Старый алтарь Коргау - древнего божества защиты. Статуя, окруженная цветами.\nПозволяет получить благословение Коргау, в обмен на 50 единиц сырой рыбы.\nБлагославение Коргау защищает от изгнания."
   }                   
