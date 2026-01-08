@@ -299,5 +299,19 @@
     "images": [
     "assets/screens/biz/zoo_boev.png"
   ]  
-  }                
+  },
+  {
+    "id": 26,
+    "name": "Алтарь Коргау",
+    "category": "landmark",
+    "type": "monument",
+    "owner": "",
+    "x": -2092.6130,
+    "y": 2313.9482,
+    "images": [
+    "assets/screens/biz/korgau1.png",
+    "assets/screens/biz/korgau2.png"
+  ],
+    "description": "Старый алтарь Коргау - древнего божества защиты. Статуя, окруженная цветами.\nПозволяет получить благословение Коргау, в обмен на 50 единиц сырой рыбы.\nБлагославение Коргау защищает от изгнания."
+  }                   
 ]
