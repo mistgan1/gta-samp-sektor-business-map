@@ -353,7 +353,7 @@ function renderGallery() {
     infoGallery.classList.remove('hidden');
     infoGallery.classList.add('loading'); 
 
-    /
+    
     infoImage.src = '';
     infoImage.src = galleryImages[galleryIndex] + '?v=' + Date.now();
 
