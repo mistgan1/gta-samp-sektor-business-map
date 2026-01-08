@@ -965,7 +965,7 @@ fetch('./data/businesses.json')
             if (!typeConfig) return;  
 
             iconUrl = typeConfig.icon;
-            title = `<b>${b.name}</b><br>${typeConfig.title || title}`;
+            title = `<b>${b.name}</b><br>${CATEGORIES[b.category] || b.category || '—'}`;
 
             const marker = L.marker(
                 sampToMap(b.x, b.y),
