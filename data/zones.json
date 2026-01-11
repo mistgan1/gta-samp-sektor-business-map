@@ -167,6 +167,25 @@
     ],
     "description": "Здесь находится Дух зомби и здесь проходят битвы за его дары. Зомби защищают полученные дары Духа от желающих их отнять.\nБитвы за дары Духа не привязаны ко времени и проходят тогда, когда зомби решатся их защитить.",
     "images": ["assets/screens/bases/zmdr2_1.png",
-              "assets/screens/bases/zmdr2_2.png"]
+              "assets/screens/bases/zmdr2_2.png",
+              "assets/screens/bases/zmdr2_3.png"]
+  },
+  {
+    "id": -12,
+    "name": "Хранители",
+    "category": "Территория",
+    "type": "База фракции",
+    "color": "rgba(78, 118, 173, 0.5)",  
+    "points": [
+      [217.0, 1681.0],    
+      [217.0, 1714.0],  
+      [258.0, 1714.0],
+      [258.0, 1681.0] 
+    ],
+    "description": "Полевой лагерь хранителей — одна из важнейших стратегических точек. Здесь находится ряд важных NPC, фракционный склад вакцин, склад оружия, воды и продовольствия.",
+    "images": ["assets/screens/bases/xp1.png",
+              "assets/screens/bases/xp2.png",
+              "assets/screens/bases/xp3.png",
+              "assets/screens/bases/xp4.png"]
   }
 ]
