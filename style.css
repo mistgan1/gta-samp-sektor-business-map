@@ -462,3 +462,9 @@ body {
     50% { fill-opacity: 0.7; }
     100% { fill-opacity: 0.5; }
 }
+
+#info-desc {
+    white-space: pre-wrap;      
+    line-height: 1.4;           
+    word-wrap: break-word;      
+}
