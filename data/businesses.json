@@ -410,10 +410,10 @@
     "id": 34,
     "name": "Алтарь Мёртвой невесты",
     "category": "landmark",
-    "type": "monument",
+    "type": "monument_dead",
     "owner": "",
-    "x": -208.7602,
-    "y": -482.5618,
+    "x": -1268.4099,
+    "y": 2297.4512,
     "images": [
     "assets/screens/statuedead.png"
   ],
