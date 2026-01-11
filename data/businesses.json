@@ -410,7 +410,7 @@
     "id": 34,
     "name": "Алтарь Мёртвой невесты",
     "category": "landmark",
-    "type": "monument2",
+    "type": "monument_dead",
     "owner": "",
     "x": -1268.4099,
     "y": 2297.4512,

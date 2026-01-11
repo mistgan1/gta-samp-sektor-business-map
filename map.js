@@ -220,7 +220,7 @@ const CATEGORY_TYPES = {
 
   landmark: {
     monument: 'Активная точка',
-    monument2: 'Активная точка'
+    monument_dead: 'Активная точка'
   },
 
   navigator: {
