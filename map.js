@@ -1075,7 +1075,7 @@ fetch('./data/zones.json')
     .then(r => r.json())
     .then(list => {
         list.forEach(zone => {
-            if (zone.category !== 'Территория для захвата') return;
+            if (zone.category !== 'Территория') return;
 
             
             const latLngPoints = zone.points.map(point => sampToMap(point[0], point[1]));
