@@ -468,6 +468,28 @@ function openInfoPanel(data) {
     infoPanel.setAttribute('aria-hidden', 'false');
 
     loadRatingStatus(data.id);
+
+    const shareBtn = document.getElementById('share-business-btn');
+
+    if (shareBtn && data.category === 'Территория для захвата') {
+        // Меняем текст кнопки (если хочешь)
+        shareBtn.innerHTML = '<img src="assets/img/copy.gif" class="copy-icon" alt=""> Поделиться территорией';
+        
+        // Меняем формат ссылки на #z=...
+        shareBtn.onclick = async function(e) {
+            e.preventDefault();
+            const url = `${window.location.origin}${window.location.pathname}#z=${data.id}`;
+            
+            try {
+                await navigator.clipboard.writeText(url);
+                const original = this.innerHTML;
+                this.innerHTML = '<img src="assets/img/accept_vote.gif" class="copy-icon"> Скопировано!';
+                setTimeout(() => { this.innerHTML = original; }, 2000);
+            } catch (err) {
+                console.error('Ошибка копирования', err);
+            }
+        };
+    }
 }
 
 // =============================================
@@ -1105,3 +1127,56 @@ fetch('./data/zones.json')
             });
         });
     });
+// =============================================
+// Deep linking для территорий (#z=ID)
+// =============================================
+
+function getZoneIdFromUrl() {
+    const hash = window.location.hash;
+    if (!hash) return null;
+    
+    const match = hash.match(/^#z=(\d+)/i);
+    return match ? parseInt(match[1], 10) : null;
+}
+
+async function openZoneById(id) {
+    if (!id) return;
+    
+    try {
+        const response = await fetch('./data/zones.json');
+        const zones = await response.json();
+        
+        const zone = zones.find(z => z.id === id);
+        if (!zone) return;
+        
+        const latLngPoints = zone.points.map(p => sampToMap(p[0], p[1]));
+        const bounds = L.latLngBounds(latLngPoints);
+        
+        map.fitBounds(bounds, {
+            padding: [60, 60],
+            maxZoom: 1.5,
+            animate: true
+        });
+        
+        openInfoPanel({
+            ...zone,
+            _latlng: bounds.getCenter()
+        });
+    } catch (err) {
+        console.error('Не удалось открыть зону:', err);
+    }
+}
+
+// Расширяем проверку при загрузке страницы
+window.addEventListener('load', () => {
+    const businessId = getBusinessIdFromUrl();   // существующий
+    if (businessId) {
+        openBusinessById(businessId);
+        return;
+    }
+    
+    const zoneId = getZoneIdFromUrl();           // новый
+    if (zoneId) {
+        openZoneById(zoneId);
+    }
+});
