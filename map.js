@@ -1011,3 +1011,38 @@ fetch('./data/businesses.json')
         });
     });
 
+// Новая секция: Загрузка зон (каптов)
+fetch('./data/zones.json')
+    .then(r => r.json())
+    .then(list => {
+        list.forEach(zone => {
+            if (zone.category !== 'zone') return;
+
+            // Конвертируем SAMP-координаты в Leaflet-координаты
+            const latLngPoints = zone.points.map(point => sampToMap(point[0], point[1]));
+
+            // Создаём полигон (квадрат)
+            const polygon = L.polygon(latLngPoints, {
+                color: '#ffffff',  // Цвет обводки (белый, можно изменить)
+                weight: 2,         // Толщина обводки
+                opacity: 0.8,      // Прозрачность обводки
+                fillColor: zone.color,  // Цвет заливки из JSON
+                fillOpacity: 0.5   // Прозрачность заливки (можно переопределить в JSON, если добавишь поле)
+            }).addTo(map);
+
+            // Тултип (всплывающая подсказка при наведении)
+            polygon.bindTooltip(
+                `<b>${zone.name}</b><br>Зона захвата`,
+                { direction: 'top', offset: [0, -10], sticky: true }
+            );
+
+            // Клик: Открываем инфо-панель (как для бизнесов)
+            polygon.on('click', (ev) => {
+                if (ev.originalEvent) L.DomEvent.stopPropagation(ev.originalEvent);
+                openInfoPanel({
+                    ...zone,
+                    _latlng: polygon.getBounds().getCenter()  // Центр квадрата для позиционирования
+                });
+            });
+        });
+    });
