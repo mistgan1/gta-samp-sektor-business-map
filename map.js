@@ -1091,7 +1091,7 @@ fetch('./data/zones.json')
 
             
             polygon.bindTooltip(
-                `<b>${zone.name}</b><br>Спорная территория`,
+                `<b>${zone.name}</b><br>${zone.type}}`,
                 { direction: 'top', offset: [0, -10], sticky: true }
             );
 
