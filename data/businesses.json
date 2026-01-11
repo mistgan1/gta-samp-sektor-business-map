@@ -314,5 +314,109 @@
     "assets/screens/korgau2.png"
   ],
     "description": "Старый алтарь Коргау - древнего божества защиты. Статуя, окруженная цветами.\nПозволяет получить благословение Коргау, в обмен на 50 единиц сырой рыбы.\nБлагословение Коргау защищает от изгнания."
-  }                               
+  },
+  {
+    "id": 27,
+    "name": "Рыбное место у корабля",
+    "category": "navigator",
+    "type": "fish",
+    "owner": "",
+    "x": -451.3771,
+    "y": 826.5015,
+    "images": [
+    "assets/screens/fish/fish_ship.png"
+  ],
+    "description": "Одно из живописных рыбных мест острова."
+  },
+  {
+    "id": 28,
+    "name": "Рыбное место на таинственном острове",
+    "category": "navigator",
+    "type": "fish",
+    "owner": "",
+    "x": -0.2441,
+    "y": 410.8887,
+    "images": [
+    "assets/screens/fish/fish_island.png"
+  ],
+    "description": "Одно из живописных рыбных мест острова."
+  },
+  {
+    "id": 29,
+    "name": "Рыбное место в доках",
+    "category": "navigator",
+    "type": "fish",
+    "owner": "",
+    "x": -595.0024,
+    "y": 1331.0929,
+    "images": [
+    "assets/screens/fish/fish_doc.png"
+  ],
+    "description": "Одно из живописных рыбных мест острова."
+  },
+  {
+    "id": 30,
+    "name": "Рыбное место в порту",
+    "category": "navigator",
+    "type": "fish",
+    "owner": "",
+    "x": -2295.7278,
+    "y": 2225.5554,
+    "images": [
+    "assets/screens/fish/fish_port.png"
+  ],
+    "description": "Одно из живописных рыбных мест острова."
+  }, 
+  {
+    "id": 31,
+    "name": "Рыбное место у Алтаря",
+    "category": "navigator",
+    "type": "fish",
+    "owner": "",
+    "x": -2022.9207,
+    "y": 2340.1316,
+    "images": [
+    "assets/screens/fish/fish_korgau.png"
+  ],
+    "description": "Одно из живописных рыбных мест острова."
+  },
+  {
+    "id": 32,
+    "name": "Рыбное место у пруда",
+    "category": "navigator",
+    "type": "fish",
+    "owner": "",
+    "x": -1377.0433,
+    "y": 2113.2397,
+    "images": [
+    "assets/screens/fish/fish_prud.png"
+  ],
+    "description": "Одно из живописных рыбных мест острова."
+  }, 
+  {
+    "id": 33,
+    "name": "Рыбное место на острове вулкан",
+    "category": "navigator",
+    "type": "fish",
+    "owner": "",
+    "x": -78.9469,
+    "y": -622.3158,
+    "images": [
+    "assets/screens/fish/fish_vulkan.png"
+  ],
+    "description": "Одно из живописных рыбных мест острова."
+  },
+  {
+    "id": 34,
+    "name": "Алтарь Мёртвой невесты",
+    "category": "landmark",
+    "type": "monument_dead",
+    "owner": "",
+    "x": -1268.4099,
+    "y": 2297.4512,
+    "images": [
+    "assets/screens/statuedead.png"
+  ],
+    "description": "По местным легендам известно, что это алтарь Мертвой невесты, а в книге имена тех, кто прошел тут церемонию бракосочетания и поженился. Конечно же, в таком месте может пожениться только нечисть - Темные и Зомби."
+  }                                     
 ]
