@@ -15,7 +15,6 @@ body {
     height: 100%;
 }
 
-/* TOOLTIP */
 .leaflet-tooltip {
     background: rgba(0, 0, 0, 0.85);
     color: #fff;
@@ -32,19 +31,16 @@ body {
     }
 }
 
-/* MARKER HOVER EFFECTS */
 .leaflet-marker-icon {
     transition: filter 0.25s ease, transform 0.15s ease;
 }
 
-/* Общий hover (fallback) */
 .leaflet-marker-icon:hover {
     filter: drop-shadow(0 0 10px rgba(255, 200, 0, 0.9));
     transform: scale(1.08);
     z-index: 1000;
 }
 
-/* Бизнесы — жёлтое свечение */
 .leaflet-marker-icon.marker-business:hover {
     filter: drop-shadow(0 0 10px rgba(255, 200, 0, 0.95))
             drop-shadow(0 0 16px rgba(255, 180, 0, 0.7));
@@ -52,7 +48,6 @@ body {
     z-index: 1000;
 }
 
-/* Достопримечательности — голубое свечение */
 .leaflet-marker-icon.marker-landmark:hover {
     filter: drop-shadow(0 0 10px #00d4ff)
             drop-shadow(0 0 18px #00bfffb3);
@@ -60,7 +55,6 @@ body {
     z-index: 1000;
 }
 
-/* Постоянное слабое свечение у landmark */
 .leaflet-marker-icon.marker-landmark {
     filter: drop-shadow(0 0 5px rgba(0, 212, 255, 0.55));
 }
@@ -72,7 +66,6 @@ body {
     }
 }
 
-/* COPY BUTTON */
 .copy-icon {
     width: 24px;
     height: 24px;
@@ -113,7 +106,6 @@ body {
     transform: scale(0.96);
 }
 
-/* ЛИНЕЙКА */
 .ruler-btn.active {
     background: #7ab6ff !important;
     color: #000;
@@ -133,7 +125,7 @@ body {
     pointer-events: none;
 }
 
-/* КУРСОРЫ */
+
 #map {
     cursor: default;
 }
@@ -147,7 +139,7 @@ body {
     cursor: crosshair;
 }
 
-/* INFO PANEL */
+
 .info-panel {
     position: fixed;
     top: 18px;
@@ -248,7 +240,7 @@ body {
     }
 }
 
-/* FULLSCREEN IMAGE */
+
 .image-overlay {
     position: fixed;
     inset: 0;
@@ -275,7 +267,7 @@ body {
     cursor: zoom-out;
 }
 
-/* GALLERY */
+
 .info-gallery {
     position: relative;
     width: 100%;
@@ -343,7 +335,7 @@ body {
     display: none !important;
 }
 
-/* RATING */
+
 .info-rating {
     display: flex;
     align-items: center;
@@ -403,7 +395,7 @@ body {
     opacity: 0.85;
 }
 
-/* SHARE BUTTON */
+
 .share-block {
     margin-top: 12px;
     text-align: center;
@@ -434,23 +426,19 @@ body {
     color: #e0ffe0;
 }
 
-/* =========================
-   ЗОНЫ (КАПТЫ)
-   ========================= */
-
 .zone-polygon {
     transition: fill-opacity 0.2s ease;
 }
 
 .zone-polygon:hover {
-    fill-opacity: 0.7 !important;  /* Увеличиваем непрозрачность при наведении */
-    box-shadow: 0 0 12px rgba(255, 255, 255, 0.5);  /* Тень для эффекта */
+    fill-opacity: 0.7 !important; 
+    box-shadow: 0 0 12px rgba(255, 255, 255, 0.5); 
 }
 
 .leaflet-tooltip.zone-tooltip {
     background: rgba(0, 0, 0, 0.9);
     border: 1px solid rgba(255, 255, 255, 0.2);
-    color: #ffd700;  /* Золотистый текст для тултипа */
+    color: #ffd700; 
 }
 
 .zone-polygon {
