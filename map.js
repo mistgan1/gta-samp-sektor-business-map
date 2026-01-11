@@ -195,15 +195,14 @@ const LANDMARK_TYPES = {
     monument: { icon: 'assets/icons/statue.png', title: 'Алтарь' }
 };
 
-const RESOURCE_TYPES = {
-    ore: { icon: 'assets/icons/ore.png', title: 'Руда' },
-    wood: { icon: 'assets/icons/wood.png', title: 'Лес' }
+const NAVIGATOR_TYPES = {
+    fish: { icon: 'assets/icons/fishing.png', title: 'Рыбное место' },
 };
-
+/*Названия на тултипе*/ 
 const CATEGORIES = {
   business: 'Бизнес',
   landmark: 'Достопримечательность',
-  resource: 'Ресурс',
+  navigator: 'Точка в навигаторе',
 };
 
 const CATEGORY_TYPES = {
@@ -222,9 +221,8 @@ const CATEGORY_TYPES = {
     monument: 'Активная точка'
   },
 
-  resource: {
-    ore: 'Руда',
-    wood: 'Лес'
+  navigator: {
+    fish: 'Рыбное место'
   }
 };
 
@@ -978,8 +976,8 @@ fetch('./data/businesses.json')
                 typeConfig = BUSINESS_TYPES[b.type];
             } else if (b.category === 'landmark') {
                 typeConfig = LANDMARK_TYPES[b.type];
-            } else if (b.category === 'resource') {
-                typeConfig = RESOURCE_TYPES[b.type];
+            } else if (b.category === 'navigator') {
+                typeConfig = NAVIGATOR_TYPES[b.type];
             }
 
             if (!typeConfig) return;  
