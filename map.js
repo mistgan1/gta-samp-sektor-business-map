@@ -192,7 +192,8 @@ const BUSINESS_TYPES = {
 };
 
 const LANDMARK_TYPES = {
-    monument: { icon: 'assets/icons/monument.png', title: 'Алтарь' }
+    monument: { icon: 'assets/icons/monument.png', title: 'Алтарь' },
+    monument_dead: { icon: 'assets/icons/statuedead.png', title: 'Алтарь Мёртвой невесты' }
 };
 
 const NAVIGATOR_TYPES = {
@@ -218,7 +219,8 @@ const CATEGORY_TYPES = {
   },
 
   landmark: {
-    monument: 'Активная точка'
+    monument: 'Активная точка',
+    monument2: 'Активная точка'
   },
 
   navigator: {
