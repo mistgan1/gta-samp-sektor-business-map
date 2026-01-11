@@ -192,7 +192,7 @@ const BUSINESS_TYPES = {
 };
 
 const LANDMARK_TYPES = {
-    monument: { icon: 'assets/icons/statue.png', title: 'Алтарь' }
+    monument: { icon: 'assets/icons/monument.png', title: 'Алтарь' }
 };
 
 const NAVIGATOR_TYPES = {
