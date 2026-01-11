@@ -468,52 +468,6 @@ function openInfoPanel(data) {
     infoPanel.setAttribute('aria-hidden', 'false');
 
     loadRatingStatus(data.id);
-
-    // Динамически меняем поведение кнопки "Поделиться" в зависимости от типа объекта
-    const shareBtn = document.getElementById('share-business-btn');
-
-    if (shareBtn) {
-        // Сбрасываем предыдущий onclick, если был
-        shareBtn.onclick = null;
-
-        let prefix = 'b';
-        let buttonText = 'Поделиться меткой';
-
-        if (data.category === 'zone') {
-            prefix = 'z';
-            buttonText = 'Поделиться территорией';
-        }
-
-        // Меняем текст кнопки
-        shareBtn.innerHTML = `
-            <img src="assets/img/copy.gif" class="copy-icon" alt="Копировать">
-            ${buttonText}
-        `;
-
-        // Устанавливаем новое поведение копирования
-        shareBtn.addEventListener('click', async function(e) {
-            e.preventDefault();  // предотвращаем возможное дефолтное поведение
-
-            const shareUrl = `${window.location.origin}${window.location.pathname}#${prefix}=${data.id}`;
-
-            try {
-                await navigator.clipboard.writeText(shareUrl);
-
-                // Визуальный фидбек
-                const originalHTML = this.innerHTML;
-                this.innerHTML = '<img src="assets/img/accept_vote.gif" class="copy-icon" alt=""> Скопировано!';
-                this.classList.add('copied');
-
-                setTimeout(() => {
-                    this.innerHTML = originalHTML;
-                    this.classList.remove('copied');
-                }, 2000);
-
-            } catch (err) {
-                console.error('Не удалось скопировать:', err);
-            }
-        }, { once: true });  // once: true — чтобы не накапливались обработчики
-    }
 }
 
 // =============================================
@@ -1151,56 +1105,3 @@ fetch('./data/zones.json')
             });
         });
     });
-// =============================================
-// Deep linking для территорий (#z=ID)
-// =============================================
-
-function getZoneIdFromUrl() {
-    const hash = window.location.hash;
-    if (!hash) return null;
-    
-    const match = hash.match(/^#z=(\d+)/i);
-    return match ? parseInt(match[1], 10) : null;
-}
-
-async function openZoneById(id) {
-    if (!id) return;
-    
-    try {
-        const response = await fetch('./data/zones.json');
-        const zones = await response.json();
-        
-        const zone = zones.find(z => z.id === id);
-        if (!zone) return;
-        
-        const latLngPoints = zone.points.map(p => sampToMap(p[0], p[1]));
-        const bounds = L.latLngBounds(latLngPoints);
-        
-        map.fitBounds(bounds, {
-            padding: [60, 60],
-            maxZoom: 1.5,
-            animate: true
-        });
-        
-        openInfoPanel({
-            ...zone,
-            _latlng: bounds.getCenter()
-        });
-    } catch (err) {
-        console.error('Не удалось открыть зону:', err);
-    }
-}
-
-// Расширяем проверку при загрузке страницы
-window.addEventListener('load', () => {
-    const businessId = getBusinessIdFromUrl();   // существующий
-    if (businessId) {
-        openBusinessById(businessId);
-        return;
-    }
-    
-    const zoneId = getZoneIdFromUrl();           // новый
-    if (zoneId) {
-        openZoneById(zoneId);
-    }
-});
