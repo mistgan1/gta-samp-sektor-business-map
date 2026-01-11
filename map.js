@@ -58,7 +58,7 @@ map.attributionControl.addAttribution(
 );
 
 
-L.imageOverlay('assets/map.jpg', imageBounds).addTo(map);
+L.imageOverlay('assets/map.png', imageBounds).addTo(map);
 map.fitBounds(imageBounds);
 
 if (L.Browser.mobile) {
