@@ -468,6 +468,35 @@ function openInfoPanel(data) {
     infoPanel.setAttribute('aria-hidden', 'false');
 
     loadRatingStatus(data.id);
+    
+    const shareBusinessBtn = document.getElementById('share-business-btn');
+    const shareZoneBtn = document.getElementById('share-zone-btn');
+
+    if (data.category === 'zone') {
+        shareBusinessBtn.style.display = 'none';
+        if (shareZoneBtn) {
+            shareZoneBtn.style.display = 'inline-flex';
+            
+            // Обработчик для зон (один раз, можно вынести выше)
+            shareZoneBtn.onclick = async () => {
+                const shareUrl = `${window.location.origin}${window.location.pathname}#z=${data.id}`;
+                
+                try {
+                    await navigator.clipboard.writeText(shareUrl);
+                    const originalText = shareZoneBtn.innerHTML;
+                    shareZoneBtn.innerHTML = '<img src="assets/img/accept_vote.gif" class="copy-icon" alt=""> Скопировано!';
+                    setTimeout(() => {
+                        shareZoneBtn.innerHTML = originalText;
+                    }, 2000);
+                } catch (err) {
+                    console.error('Ошибка копирования:', err);
+                }
+            };
+        }
+    } else {
+        shareBusinessBtn.style.display = 'inline-flex';
+        if (shareZoneBtn) shareZoneBtn.style.display = 'none';
+    }
 }
 
 // =============================================
@@ -1018,31 +1047,89 @@ fetch('./data/zones.json')
         list.forEach(zone => {
             if (zone.category !== 'zone') return;
 
-            // Конвертируем SAMP-координаты в Leaflet-координаты
+            
             const latLngPoints = zone.points.map(point => sampToMap(point[0], point[1]));
 
-            // Создаём полигон (квадрат)
+          
             const polygon = L.polygon(latLngPoints, {
-                color: '#ffffff',  // Цвет обводки (белый, можно изменить)
-                weight: 2,         // Толщина обводки
-                opacity: 0.8,      // Прозрачность обводки
-                fillColor: zone.color,  // Цвет заливки из JSON
-                fillOpacity: 0.5   // Прозрачность заливки (можно переопределить в JSON, если добавишь поле)
+                color: '#ffffff', 
+                weight: 2,         
+                opacity: 0.8,      
+                fillColor: zone.color,  
+                fillOpacity: 0.5   
             }).addTo(map);
 
-            // Тултип (всплывающая подсказка при наведении)
+            
             polygon.bindTooltip(
-                `<b>${zone.name}</b><br>Зона захвата`,
+                `<b>${zone.name}</b><br>Спорная территория`,
                 { direction: 'top', offset: [0, -10], sticky: true }
             );
 
-            // Клик: Открываем инфо-панель (как для бизнесов)
+            
             polygon.on('click', (ev) => {
                 if (ev.originalEvent) L.DomEvent.stopPropagation(ev.originalEvent);
                 openInfoPanel({
                     ...zone,
-                    _latlng: polygon.getBounds().getCenter()  // Центр квадрата для позиционирования
+                    _latlng: polygon.getBounds().getCenter() 
                 });
             });
         });
     });
+// =============================================
+// Поддержка deep linking по зоне (капту)
+// =============================================
+
+function getZoneIdFromUrl() {
+    const hash = window.location.hash;
+    if (!hash) return null;
+    
+    const match = hash.match(/^#z=(\d+)/i);
+    return match ? parseInt(match[1], 10) : null;
+}
+
+async function openZoneById(id) {
+    if (!id) return;
+    
+    try {
+        const response = await fetch('./data/zones.json');
+        const zones = await response.json();
+        
+        const zone = zones.find(z => z.id === id);
+        if (!zone) return;
+        
+        const latLngPoints = zone.points.map(point => sampToMap(point[0], point[1]));
+        const bounds = L.latLngBounds(latLngPoints);
+        const center = bounds.getCenter();
+        
+        // Вписываем зону в видимую область (лучше, чем фиксированный зум)
+        map.fitBounds(bounds, {
+            padding: [80, 80],     // небольшой отступ от краёв
+            maxZoom: 1.5,
+            animate: true
+        });
+        
+        // или классический вариант, если предпочитаешь:
+        // map.setView(center, 0.8, { animate: true });
+        
+        openInfoPanel({
+            ...zone,
+            _latlng: center
+        });
+    } catch (err) {
+        console.error('Не удалось открыть зону по ID из URL:', err);
+    }
+}
+
+// Проверяем URL при загрузке страницы (добавляем к существующему)
+window.addEventListener('load', () => {
+    const businessId = getBusinessIdFromUrl();
+    if (businessId) {
+        openBusinessById(businessId);
+        return;
+    }
+    
+    const zoneId = getZoneIdFromUrl();
+    if (zoneId) {
+        openZoneById(zoneId);
+    }
+});
