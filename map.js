@@ -512,6 +512,65 @@ window.addEventListener('load', () => {
     }
 });
 
+// =============================================
+// Расширение deep linking: #b= поддерживает и зоны (отрицательные id)
+// =============================================
+
+window.addEventListener('load', () => {
+    const hash = window.location.hash;
+    if (!hash) return;
+
+    const match = hash.match(/^#b=(-?\d+)/i);
+    if (!match) return;
+
+    const id = parseInt(match[1], 10);
+    if (isNaN(id)) return;
+
+    // Положительные id → бизнесы (существующая логика)
+    if (id > 0) {
+        openBusinessById(id);
+        return;
+    }
+
+    // Отрицательные id → зоны
+    if (id < 0) {
+        openZoneByNegativeId(id);
+    }
+});
+
+// Функция для открытия зоны по отрицательному id
+async function openZoneByNegativeId(id) {
+    try {
+        const response = await fetch('./data/zones.json');
+        const zones = await response.json();
+
+        const zone = zones.find(z => z.id === id);
+        if (!zone) {
+            console.warn(`Зона с id ${id} не найдена`);
+            return;
+        }
+
+        const latLngPoints = zone.points.map(point => sampToMap(point[0], point[1]));
+        const bounds = L.latLngBounds(latLngPoints);
+
+        // Красиво вписываем зону в экран
+        map.fitBounds(bounds, {
+            padding: [60, 60],          // небольшой отступ
+            maxZoom: 1.5,
+            animate: true,
+            duration: 1.2
+        });
+
+        // Открываем карточку
+        openInfoPanel({
+            ...zone,
+            _latlng: bounds.getCenter()
+        });
+    } catch (err) {
+        console.error('Ошибка при открытии зоны по id:', err);
+    }
+}
+
 // Обработчик кнопки "Поделиться"
 document.addEventListener('click', async (e) => {
     if (!e.target.closest('#share-business-btn')) return;
