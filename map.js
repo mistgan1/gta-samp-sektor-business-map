@@ -469,26 +469,50 @@ function openInfoPanel(data) {
 
     loadRatingStatus(data.id);
 
+    // Динамически меняем поведение кнопки "Поделиться" в зависимости от типа объекта
     const shareBtn = document.getElementById('share-business-btn');
 
-    if (shareBtn && data.category === 'Территория для захвата') {
-        // Меняем текст кнопки (если хочешь)
-        shareBtn.innerHTML = '<img src="assets/img/copy.gif" class="copy-icon" alt=""> Поделиться территорией';
-        
-        // Меняем формат ссылки на #z=...
-        shareBtn.onclick = async function(e) {
-            e.preventDefault();
-            const url = `${window.location.origin}${window.location.pathname}#z=${data.id}`;
-            
+    if (shareBtn) {
+        // Сбрасываем предыдущий onclick, если был
+        shareBtn.onclick = null;
+
+        let prefix = 'b';
+        let buttonText = 'Поделиться меткой';
+
+        if (data.category === 'zone') {
+            prefix = 'z';
+            buttonText = 'Поделиться территорией';
+        }
+
+        // Меняем текст кнопки
+        shareBtn.innerHTML = `
+            <img src="assets/img/copy.gif" class="copy-icon" alt="Копировать">
+            ${buttonText}
+        `;
+
+        // Устанавливаем новое поведение копирования
+        shareBtn.addEventListener('click', async function(e) {
+            e.preventDefault();  // предотвращаем возможное дефолтное поведение
+
+            const shareUrl = `${window.location.origin}${window.location.pathname}#${prefix}=${data.id}`;
+
             try {
-                await navigator.clipboard.writeText(url);
-                const original = this.innerHTML;
-                this.innerHTML = '<img src="assets/img/accept_vote.gif" class="copy-icon"> Скопировано!';
-                setTimeout(() => { this.innerHTML = original; }, 2000);
+                await navigator.clipboard.writeText(shareUrl);
+
+                // Визуальный фидбек
+                const originalHTML = this.innerHTML;
+                this.innerHTML = '<img src="assets/img/accept_vote.gif" class="copy-icon" alt=""> Скопировано!';
+                this.classList.add('copied');
+
+                setTimeout(() => {
+                    this.innerHTML = originalHTML;
+                    this.classList.remove('copied');
+                }, 2000);
+
             } catch (err) {
-                console.error('Ошибка копирования', err);
+                console.error('Не удалось скопировать:', err);
             }
-        };
+        }, { once: true });  // once: true — чтобы не накапливались обработчики
     }
 }
 
