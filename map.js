@@ -1083,7 +1083,8 @@ fetch('./data/businesses.json')
                         iconUrl: iconUrl,
                         iconSize: [28, 28],
                         iconAnchor: [14, 14],
-                        className: b.category === 'landmark' ? 'marker-landmark' : 'marker-business'
+                       /* className: b.category === 'landmark' ? 'marker-landmark' : 'marker-business'*/
+                       className: b.category === 'landmark' ? 'marker-landmark' : (b.type === 'club' || b.name.toLowerCase().includes('club') || b.name.toLowerCase().includes('клуб')) ? 'marker-club' : 'marker-business'
                     })
                 }
             ).addTo(map);

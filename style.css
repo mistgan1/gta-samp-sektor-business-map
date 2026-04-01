@@ -60,9 +60,22 @@ body {
     z-index: 1000;
 }
 
+/* Клубы - красное свечение */
+.leaflet-marker-icon.marker-club:hover {
+    filter: drop-shadow(0 0 10px #FF0000)
+            drop-shadow(0 0 18px #EE204D);
+    transform: scale(1.12);
+    z-index: 1000;
+}
+
 /* Постоянное слабое свечение у landmark */
 .leaflet-marker-icon.marker-landmark {
     filter: drop-shadow(0 0 5px rgba(0, 212, 255, 0.55));
+}
+
+/* Постоянное слабое свечение у club */
+.leaflet-marker-icon.marker-club {
+    filter: drop-shadow(0 0 5px rgba(255, 0, 51, 0.55));
 }
 
 @media (hover: none) {
