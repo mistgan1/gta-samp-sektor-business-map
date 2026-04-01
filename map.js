@@ -193,7 +193,8 @@ const BUSINESS_TYPES = {
 
 const LANDMARK_TYPES = {
     monument: { icon: 'assets/icons/monument.png', title: 'Алтарь' },
-    monument_dead: { icon: 'assets/icons/statuedead.png', title: 'Алтарь Мёртвой невесты' }
+    monument_dead: { icon: 'assets/icons/statuedead.png', title: 'Алтарь Мёртвой невесты' },
+    spring_vol: { icon: 'assets/icons/spring.png', title: 'Чаша волхвов' },
 };
 
 const NAVIGATOR_TYPES = {
@@ -220,7 +221,8 @@ const CATEGORY_TYPES = {
 
   landmark: {
     monument: 'Активная точка',
-    monument_dead: 'Активная точка'
+    monument_dead: 'Активная точка',
+    spring_vol: 'Активная точка'
   },
 
   navigator: {
