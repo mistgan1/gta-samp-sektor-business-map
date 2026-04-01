@@ -204,12 +204,20 @@ const NAVIGATOR_TYPES = {
 const ME_BUSINESS_TYPES = {
     beer: { icon: 'assets/icons/beer.png', title: 'Пивоварня' },
 };
+
+const CLUB_TYPES = {
+    bike: { icon: 'assets/icons/harley.png', title: 'Клуб байкеров' },
+    travel: { icon: 'assets/icons/travel.png', title: 'Клуб путешественников' },
+    mafia: { icon: 'assets/icons/mafia.png', title: 'Клуб мафии' },
+    scare: { icon: 'assets/icons/scare.png', title: 'Клуб ужасов' },
+};
 /*Названия на тултипе*/ 
 const CATEGORIES = {
   business: 'Бизнес',
   landmark: 'Достопримечательность',
   navigator: 'Точка в навигаторе',
   me_business: 'Личное бизнес предприятие',
+  club: 'Клуб'
 };
 
 const CATEGORY_TYPES = {
@@ -236,7 +244,13 @@ const CATEGORY_TYPES = {
 
   me_business: {
     beer: 'Пивоварня'
+  },
 
+  club: {
+    bike: 'Клуб байкеров',
+    travel: 'Клуб байкеров',
+    mafia: 'Клуб мафии',
+    scare: 'Клуб ужасов'
   }
 };
 
@@ -1053,6 +1067,8 @@ fetch('./data/businesses.json')
                 typeConfig = NAVIGATOR_TYPES[b.type];
             } else if (b.category === 'me_business') {
                 typeConfig = ME_BUSINESS_TYPES[b.type];
+            } else if (b.category === 'club') {
+                typeConfig = CLUB_TYPES[b.type];
             }
 
             if (!typeConfig) return;  
