@@ -55,7 +55,6 @@ body {
     z-index: 1000;
 }
 
-<<<<<<< HEAD
 /* Клубы - красное свечение */
 .leaflet-marker-icon.marker-club:hover {
     filter: drop-shadow(0 0 10px #FF0000)
@@ -65,8 +64,6 @@ body {
 }
 
 /* Постоянное слабое свечение у landmark */
-=======
->>>>>>> main
 .leaflet-marker-icon.marker-landmark {
     filter: drop-shadow(0 0 5px rgba(0, 212, 255, 0.55));
 }
