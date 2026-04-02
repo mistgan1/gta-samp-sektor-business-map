@@ -441,7 +441,8 @@
     "x": -347.0736,
     "y": -1047.9078,
     "images": [
-    "assets/screens/korgau3.png"
+    "assets/screens/biz/pivobiz1.png",
+    "assets/screens/biz/pivobiz2.png"
   ],
     "description": "Личная пивоварня, которую можно приобрести и отстроить, начав квестовую цепочку Хмеля.\nНайти Хмеля можно у клуба байкеров, необходимо владеть байком."
   },
