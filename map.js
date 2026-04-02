@@ -248,7 +248,7 @@ const CATEGORY_TYPES = {
 
   club: {
     bike: 'Клуб байкеров',
-    travel: 'Клуб байкеров',
+    travel: 'Клуб путешественников',
     mafia: 'Клуб мафии',
     scare: 'Клуб ужасов'
   }
