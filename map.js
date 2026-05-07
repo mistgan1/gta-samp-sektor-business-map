@@ -211,13 +211,18 @@ const CLUB_TYPES = {
     mafia: { icon: 'assets/icons/mafia.png', title: 'Клуб мафии' },
     scare: { icon: 'assets/icons/scare.png', title: 'Клуб ужасов' },
 };
+
+const IVENT_ITEM_TYPES = {
+    mine: { icon: 'assets/icons/mine_icon.png', title: 'Мина' }
+};
 /*Названия на тултипе*/ 
 const CATEGORIES = {
   business: 'Бизнес',
   landmark: 'Достопримечательность',
   navigator: 'Точка в навигаторе',
   me_business: 'Личное бизнес предприятие',
-  club: 'Клуб'
+  club: 'Клуб',
+  ivent_item: 'Ивентовский предмет'
 };
 
 const CATEGORY_TYPES = {
@@ -248,9 +253,13 @@ const CATEGORY_TYPES = {
 
   club: {
     bike: 'Клуб байкеров',
-    travel: 'Клуб байкеров',
+    travel: 'Клуб путешественников',
     mafia: 'Клуб мафии',
     scare: 'Клуб ужасов'
+  },
+
+  ivent_item: {
+    mine: 'Мина'
   }
 };
 
@@ -1069,6 +1078,8 @@ fetch('./data/businesses.json')
                 typeConfig = ME_BUSINESS_TYPES[b.type];
             } else if (b.category === 'club') {
                 typeConfig = CLUB_TYPES[b.type];
+            }else if (b.category === 'ivent_item') {
+                typeConfig = IVENT_ITEM_TYPES[b.type];
             }
 
             if (!typeConfig) return;  
@@ -1084,7 +1095,17 @@ fetch('./data/businesses.json')
                         iconSize: [28, 28],
                         iconAnchor: [14, 14],
                        /* className: b.category === 'landmark' ? 'marker-landmark' : 'marker-business'*/
-                       className: b.category === 'landmark' ? 'marker-landmark' : (b.type === 'club' || b.name.toLowerCase().includes('club') || b.name.toLowerCase().includes('клуб')) ? 'marker-club' : 'marker-business'
+                       /*className: b.category === 'landmark' ? 'marker-landmark' : (b.type === 'ivent_item' || b.type === 'club' || b.name.toLowerCase().includes('club') || b.name.toLowerCase().includes('клуб')) ? 'marker-club' : 'marker-business'*/
+                       className: b.category === 'landmark' 
+                            ? 'marker-landmark' 
+                            : (b.type === 'club' || 
+                            b.category === 'club' || 
+                            b.category === 'ivent_item' ||           // ← новая категория
+                            b.name.toLowerCase().includes('клуб') || 
+                            b.name.toLowerCase().includes('club') ||
+                            b.name.toLowerCase().includes('ивент'))   // на всякий случай
+                                ? 'marker-club' 
+                                : 'marker-business'
                     })
                 }
             ).addTo(map);
