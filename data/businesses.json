@@ -500,15 +500,132 @@
   },
   {
     "id": 41,
-    "name": "Мина",
+    "name": "Мина #1",
     "category": "ivent_item",
     "type": "mine",
     "owner": "",
     "x": -2156.2744,
     "y": 2309.4954,
     "images": [
-    "assets/screens/mine_icon.png"
+    "assets/mine_icon.png"
   ],
     "description": "Рванёт? Не должно!"
-  }                                          
+  },
+  {
+    "id": 42,
+    "name": "Мина #2",
+    "category": "ivent_item",
+    "type": "mine",
+    "owner": "",
+    "x": -1939.1315,
+    "y": 2090.2056,
+    "images": [
+    "assets/mine_icon.png"
+  ],
+    "description": "Рванёт? Не должно!"
+  },
+  {
+    "id": 43,
+    "name": "Мина #3",
+    "category": "ivent_item",
+    "type": "mine",
+    "owner": "",
+    "x": -1707.1200,
+    "y": 1740.8881,
+    "images": [
+    "assets/mine_icon.png"
+  ],
+    "description": "Рванёт? Не должно!"
+  },
+  {
+    "id": 44,
+    "name": "Мина #4",
+    "category": "ivent_item",
+    "type": "mine",
+    "owner": "",
+    "x": -1677.8396,
+    "y": 1666.8287,
+    "images": [
+    "assets/mine_icon.png"
+  ],
+    "description": "Рванёт? Не должно!"
+  },
+  {
+    "id": 45,
+    "name": "Мина #5",
+    "category": "ivent_item",
+    "type": "mine",
+    "owner": "",
+    "x": -1317.9814,
+    "y": 1484.9337,
+    "images": [
+    "assets/mine_icon.png"
+  ],
+    "description": "Рванёт? Не должно!"
+  },
+  {
+    "id": 46,
+    "name": "Мина #6",
+    "category": "ivent_item",
+    "type": "mine",
+    "owner": "",
+    "x": -1100.9390,
+    "y": 996.1953,
+    "images": [
+    "assets/mine_icon.png"
+  ],
+    "description": "Рванёт? Не должно!"
+  },
+  {
+    "id": 47,
+    "name": "Мина #7",
+    "category": "ivent_item",
+    "type": "mine",
+    "owner": "",
+    "x": -657.8588,
+    "y": 668.0501,
+    "images": [
+    "assets/mine_icon.png"
+  ],
+    "description": "Рванёт? Не должно!"
+  },
+  {
+    "id": 48,
+    "name": "Мина #8",
+    "category": "ivent_item",
+    "type": "mine",
+    "owner": "",
+    "x": -499.7330,
+    "y": 1057.9198,
+    "images": [
+    "assets/mine_icon.png"
+  ],
+    "description": "Рванёт? Не должно!"
+  }, 
+  {
+    "id": 49,
+    "name": "Мина #9",
+    "category": "ivent_item",
+    "type": "mine",
+    "owner": "",
+    "x": -625.7973,
+    "y": 1659.3099,
+    "images": [
+    "assets/mine_icon.png"
+  ],
+    "description": "Рванёт? Не должно!"
+  },
+  {
+    "id": 50,
+    "name": "Мина #10",
+    "category": "ivent_item",
+    "type": "mine",
+    "owner": "",
+    "x": -637.2694,
+    "y": 1870.5936,
+    "images": [
+    "assets/mine_icon.png"
+  ],
+    "description": "Рванёт? Не должно!"
+  }                                            
 ]
