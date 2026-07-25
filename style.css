@@ -223,6 +223,8 @@ body {
     max-width: calc(100vw - 36px);
     max-height: calc(100vh - 36px);
     overflow: hidden;
+    display: flex;
+    flex-direction: column;
     background: rgba(35, 42, 52, 0.92);
     border: 1px solid rgba(255, 255, 255, 0.10);
     border-radius: 14px;
@@ -247,6 +249,7 @@ body {
     justify-content: space-between;
     padding: 12px 14px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.10);
+    flex-shrink: 0;
 }
 
 .info-panel__title {
@@ -273,7 +276,8 @@ body {
     padding: 12px 14px 14px;
     overflow-x: hidden;
     overflow-y: auto;
-    max-height: calc(100vh - 36px - 54px);
+    flex: 1 1 auto;
+    min-height: 0;
     box-sizing: border-box;
 }
 
@@ -472,8 +476,10 @@ body {
 
 
 .share-block {
-    margin-top: 12px;
+    flex-shrink: 0;
+    padding: 12px 14px;
     text-align: center;
+    border-top: 1px solid rgba(255, 255, 255, 0.10);
 }
 
 #share-business-btn {
