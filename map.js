@@ -1,4 +1,4 @@
-const API_BASE = 'https://sektor-map-back.onrender.com';
+const API_BASE = 'https://api.s1map.ru';
 /* =========================
    USER FINGERPRINT
    ========================= test*/
@@ -86,7 +86,7 @@ async function vote(itemId, value) {
     };
 
     try {
-        const res = await fetch('https://sektor-map-back.onrender.com/vote', {
+        const res = await fetch(`${API_BASE}/vote`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(payload)
