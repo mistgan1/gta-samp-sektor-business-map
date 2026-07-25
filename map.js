@@ -1,4 +1,4 @@
-const API_BASE = 'https://api.s1map.ru';
+const API_BASE = 'https://sektor-map-back.onrender.com';
 /* =========================
    USER FINGERPRINT
    ========================= test*/
