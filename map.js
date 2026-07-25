@@ -878,11 +878,17 @@ const FilterControl = L.Control.extend({
     options: { position: 'topleft' },
     onAdd() {
         const btn = L.DomUtil.create('button', 'leaflet-bar filter-btn');
-        btn.innerHTML = '⚙️';
+        btn.innerHTML = `
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M1 1H15L9.5 7.5V13L6.5 14.5V7.5L1 1Z" stroke="#000" stroke-width="1.3" stroke-linejoin="round" fill="none"/>
+            </svg>
+        `;
         btn.style.width = '32px';
         btn.style.height = '30px';
         btn.style.cursor = 'pointer';
-        btn.style.fontSize = '16px';
+        btn.style.display = 'flex';
+        btn.style.alignItems = 'center';
+        btn.style.justifyContent = 'center';
         btn.style.background = '#fff';
         btn.style.color = '#000';
         btn.style.border = 'none';
