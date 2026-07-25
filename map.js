@@ -850,6 +850,63 @@ const RulerControl = L.Control.extend({
 
 map.addControl(new RulerControl());
 
+/* =========================
+   Фильтр меток (ивентовские предметы)
+   ========================= */
+
+const iventLayerGroup = L.layerGroup();
+
+const filterPanel = document.createElement('div');
+filterPanel.id = 'filter-panel';
+filterPanel.className = 'filter-panel hidden';
+filterPanel.innerHTML = `
+    <div class="filter-panel__header">
+        <span>Фильтр меток</span>
+        <button id="filter-close" class="filter-panel__close" type="button" aria-label="Закрыть">×</button>
+    </div>
+    <label class="filter-panel__option">
+        <input type="checkbox" id="filter-ivent-items">
+        Ивентовские предметы
+    </label>
+`;
+document.body.appendChild(filterPanel);
+
+L.DomEvent.disableClickPropagation(filterPanel);
+L.DomEvent.disableScrollPropagation(filterPanel);
+
+const FilterControl = L.Control.extend({
+    options: { position: 'topleft' },
+    onAdd() {
+        const btn = L.DomUtil.create('button', 'leaflet-bar filter-btn');
+        btn.innerHTML = '⚙️';
+        btn.style.width = '32px';
+        btn.style.height = '30px';
+        btn.style.cursor = 'pointer';
+        btn.style.fontSize = '16px';
+        btn.style.background = '#fff';
+        btn.style.color = '#000';
+        btn.style.border = 'none';
+
+        L.DomEvent.disableClickPropagation(btn);
+        btn.onclick = () => filterPanel.classList.toggle('hidden');
+        return btn;
+    }
+});
+
+map.addControl(new FilterControl());
+
+document.getElementById('filter-close').addEventListener('click', () => {
+    filterPanel.classList.add('hidden');
+});
+
+document.getElementById('filter-ivent-items').addEventListener('change', (e) => {
+    if (e.target.checked) {
+        iventLayerGroup.addTo(map);
+    } else {
+        map.removeLayer(iventLayerGroup);
+    }
+});
+
 function setCursorMode() {
     const el = map.getContainer();
     el.style.cursor = rulerActive ? 'crosshair' : 'default';
@@ -1096,19 +1153,25 @@ fetch('./data/businesses.json')
                         iconAnchor: [14, 14],
                        /* className: b.category === 'landmark' ? 'marker-landmark' : 'marker-business'*/
                        /*className: b.category === 'landmark' ? 'marker-landmark' : (b.type === 'ivent_item' || b.type === 'club' || b.name.toLowerCase().includes('club') || b.name.toLowerCase().includes('клуб')) ? 'marker-club' : 'marker-business'*/
-                       className: b.category === 'landmark' 
-                            ? 'marker-landmark' 
-                            : (b.type === 'club' || 
-                            b.category === 'club' || 
+                       className: b.category === 'landmark'
+                            ? 'marker-landmark'
+                            : (b.type === 'club' ||
+                            b.category === 'club' ||
                             b.category === 'ivent_item' ||           // ← новая категория
-                            b.name.toLowerCase().includes('клуб') || 
+                            b.name.toLowerCase().includes('клуб') ||
                             b.name.toLowerCase().includes('club') ||
                             b.name.toLowerCase().includes('ивент'))   // на всякий случай
-                                ? 'marker-club' 
+                                ? 'marker-club'
                                 : 'marker-business'
                     })
                 }
-            ).addTo(map);
+            );
+
+            if (b.category === 'ivent_item') {
+                marker.addTo(iventLayerGroup);
+            } else {
+                marker.addTo(map);
+            }
 
             marker.bindTooltip(title, { direction: 'top', offset: [0, -10], sticky: true });
 
